@@ -9,6 +9,11 @@ on:
       - 'requirements.txt'
       - '.github/workflows/deploy-backend.yml'
 
+env:
+  PROJECT_ID: aigaane-engine-2026
+  SERVICE_NAME: aigaane-api
+  REGION: asia-south1
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -26,18 +31,21 @@ jobs:
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ env.PROJECT_ID }}
 
     - name: Deploy to Cloud Run
       run: |
-        gcloud run deploy aigaane-api \
+        gcloud run deploy ${{ env.SERVICE_NAME }} \
           --source . \
-          --region asia-south1 \
+          --region ${{ env.REGION }} \
           --allow-unauthenticated \
           --min-instances 1 \
           --cpu-boost \
           --port 8080 \
           --memory 1Gi \
           --timeout 300 \
+          --project ${{ env.PROJECT_ID }} \
           --quiet
 
     - name: Smoke test /health
