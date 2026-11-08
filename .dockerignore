@@ -1,0 +1,41 @@
+﻿# Python
+backend/venv/
+.venv_ci_test/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+.eggs/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.firebase/
+frontend/.agents/
+frontend/skills-lock.json
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.github/
+
+# Local dev artifacts
+last-response.json
+*.bak
+audit_*.json
+.env.local
+.env.*.local
+
+# Test scripts at root (not part of container)
+test-parse.ps1
+
+# Docs (not needed in container)
+docs/
+*.md
+!README.md

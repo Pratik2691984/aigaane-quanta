@@ -7,3 +7,13 @@ last-response.json
 .DS_Store
 *.bak
 audit_*.json
+
+# Firebase deploy cache
+frontend/.firebase/
+
+# Firebase agent skills (auto-generated)
+frontend/.agents/
+frontend/skills-lock.json
+
+# Test venv
+.venv_ci_test/
