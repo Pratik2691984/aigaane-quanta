@@ -24,7 +24,7 @@ export default function LexiconTab() {
 
   return (
     <div style={{ padding: "20px", color: "#e2e8f0" }}>
-      <h1 style={{ color: "#a78bfa" }}>Lexicon (Kośa) Lookup</h1>
+      <h1 style={{ color: "#a78bfa" }}>Live Lexicon (Kośa) Lookup</h1>
       <p style={{ color: "#94a3b8" }}>Attest a stem against the Pāṇinian dictionary</p>
 
       <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
