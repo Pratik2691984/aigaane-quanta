@@ -43,5 +43,3 @@ jobs:
 
     - name: Deploy to Firebase Hosting
       run: npx firebase-tools deploy --only hosting --project ${{ env.PROJECT_ID }}
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gha-creds.json
