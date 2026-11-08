@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "./config";
 
 export default function NyayaTab() {
   const [candidateId, setCandidateId] = useState("cand_01");
@@ -9,7 +10,7 @@ export default function NyayaTab() {
   const verify = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/api/v3/nyaya/verify", {
+      const res = await fetch(`${API_URL}/api/v3/nyaya/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({

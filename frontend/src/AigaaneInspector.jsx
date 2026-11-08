@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "./config";
 
 const SAMPLE_INPUTS = [
   { label: "Tatpuruṣa (Primary)", value: "rAjaputraH" },
@@ -16,7 +17,7 @@ export default function AigaaneInspector() {
   const parse = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/api/v1/aigaane/parse", {
+      const res = await fetch(`${API_URL}/api/v1/aigaane/parse`, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({ text }),

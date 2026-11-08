@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "./config";
 
 export default function LexiconTab() {
   const [text, setText] = useState("rāma");
@@ -8,7 +9,7 @@ export default function LexiconTab() {
   const lookup = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/api/v3/lexicon/lookup", {
+      const res = await fetch(`${API_URL}/api/v3/lexicon/lookup`, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({ text }),
