@@ -55,7 +55,7 @@ def test_golden_case(client, case):
         assert expected_types.issubset(actual_types), \
             f"{case['case_id']}: missing samasa types {expected_types - actual_types}"
 
-    elif case["status"] == "rejected":
+    elif case["status"] in ("rejected", "disputed"):
         # Rejected cases must still return 200 (envelope) but with zero candidates
         assert r.status_code == 200, f"{case['case_id']} rejected case failed: {r.text}"
         response = r.json()

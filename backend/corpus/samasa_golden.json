@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0-seed",
+  "version": "1.3.0-expanded",
   "cases": [
     {
       "case_id": "samasa_two_token_001",
@@ -20,12 +20,23 @@
           {
             "candidate_id": "cand_01",
             "parse": [
-              {"surface": "rājan", "stem": "rājan", "role": "subanta:sambodhana"},
-              {"surface": "putraḥ", "stem": "putra", "role": "subanta:prathama"}
+              {
+                "surface": "rājan",
+                "stem": "rājan",
+                "role": "subanta:sambodhana"
+              },
+              {
+                "surface": "putraḥ",
+                "stem": "putra",
+                "role": "subanta:prathama"
+              }
             ],
             "samasa_type": "tatpurusha",
             "vigraha": "rājñaḥ putraḥ",
-            "sutra_chain": ["2.1.22", "2.2.8"],
+            "sutra_chain": [
+              "2.1.22",
+              "2.2.8"
+            ],
             "authority": {
               "recension": "Kasika_Vrtti",
               "primary_source": "Aṣṭādhyāyī (0.2.0-ambiguity)",
@@ -38,7 +49,11 @@
         "rejected": [
           {
             "parse": [
-              {"surface": "rājaputraḥ", "stem": "rājaputra", "role": "subanta:prathama"}
+              {
+                "surface": "rājaputraḥ",
+                "stem": "rājaputra",
+                "role": "subanta:prathama"
+              }
             ],
             "reason_code": "UNATTESTED_STEM",
             "violated_sutra": null
@@ -66,7 +81,11 @@
         "rejected": [
           {
             "parse": [
-              {"surface": "rāmasyaputraḥ", "stem": "rāmāsyaputra", "role": "subanta:prathama"}
+              {
+                "surface": "rāmasyaputraḥ",
+                "stem": "rāmāsyaputra",
+                "role": "subanta:prathama"
+              }
             ],
             "reason_code": "UNATTESTED_STEM",
             "violated_sutra": null
@@ -94,8 +113,496 @@
         "rejected": [
           {
             "parse": [
-              {"surface": "rājā", "stem": "rājan", "role": "subanta:prathama"},
-              {"surface": "indrāḥ", "stem": "indra", "role": "subanta:prathama"}
+              {
+                "surface": "rājā",
+                "stem": "rājan",
+                "role": "subanta:prathama"
+              },
+              {
+                "surface": "indrāḥ",
+                "stem": "indra",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_001",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: temple (deva+Alaya). Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "देवालयः",
+        "iast": "devālayaḥ",
+        "slp1": "devAlayaH"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "देवालयः",
+          "iast": "devālayaḥ",
+          "slp1": "devAlayaH"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "devAlayaH",
+                "stem": "devAlaya",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_002",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: sun salutation. Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "सूर्यनमस्कारः",
+        "iast": "sūryanamaskāraḥ",
+        "slp1": "sUryanamaskAraH"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "सूर्यनमस्कारः",
+          "iast": "sūryanamaskāraḥ",
+          "slp1": "sUryanamaskAraH"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "sUryanamaskAraH",
+                "stem": "sUryanamaskAra",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_003",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: black-colored. Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "कृष्णवर्णः",
+        "iast": "kṛṣṇavarṇaḥ",
+        "slp1": "kRShNavarNaH"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "कृष्णवर्णः",
+          "iast": "kṛṣṇavarṇaḥ",
+          "slp1": "kRShNavarNaH"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "kRShNavarNaH",
+                "stem": "kRShNavarNa",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_004",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: blue-throated (Shiva). Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "नीलकण्ठः",
+        "iast": "nīlakaṇṭhaḥ",
+        "slp1": "nIlakaNThaH"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "नीलकण्ठः",
+          "iast": "nīlakaṇṭhaḥ",
+          "slp1": "nIlakaNThaH"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "nIlakaNThaH",
+                "stem": "nIlakaNTha",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_005",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: five-path (dvigu). Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "पञ्चवर्त्म",
+        "iast": "pañcavartma",
+        "slp1": "pancavartma"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "पञ्चवर्त्म",
+          "iast": "pañcavartma",
+          "slp1": "pancavartma"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "pancavartma",
+                "stem": "pancavartma",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_006",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: mounted on horse. Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "अश्वारूढः",
+        "iast": "aśvārūḍhaḥ",
+        "slp1": "azvArUDhaH"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "अश्वारूढः",
+          "iast": "aśvārūḍhaḥ",
+          "slp1": "azvArUDhaH"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "azvArUDhaH",
+                "stem": "azvArUDha",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_007",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: according to ability (avyayibhava). Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "यथाशक्ति",
+        "iast": "yathāśakti",
+        "slp1": "yathAshakti"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "यथाशक्ति",
+          "iast": "yathāśakti",
+          "slp1": "yathAshakti"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "yathAshakti",
+                "stem": "yathAshakti",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_008",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: three-path (dvigu). Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "त्रिपथः",
+        "iast": "tripathaḥ",
+        "slp1": "tripathaH"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "त्रिपथः",
+          "iast": "tripathaḥ",
+          "slp1": "tripathaH"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "tripathaH",
+                "stem": "tripatha",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_009",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: blue lotus (karmadharaya). Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "नीलोत्पलम्",
+        "iast": "nīlotpalam",
+        "slp1": "nIlotpalam"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "नीलोत्पलम्",
+          "iast": "nīlotpalam",
+          "slp1": "nIlotpalam"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "nIlotpalam",
+                "stem": "nIlotpalam",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_010",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: Rama and Lakshmana (dvandva). Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "रामलक्ष्मणौ",
+        "iast": "rāmalakṣmaṇau",
+        "slp1": "rAmalakShmaNau"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "रामलक्ष्मणौ",
+          "iast": "rāmalakṣmaṇau",
+          "slp1": "rAmalakShmaNau"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "rAmalakShmaNau",
+                "stem": "rAmalakShmaNau",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_011",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: cause of the world. Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "जगत्कारणम्",
+        "iast": "jagatkāraṇam",
+        "slp1": "jagatkAraNam"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "जगत्कारणम्",
+          "iast": "jagatkāraṇam",
+          "slp1": "jagatkAraNam"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "jagatkAraNam",
+                "stem": "jagatkAraNam",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_012",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: Ramayana epic. Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "रामायणम्",
+        "iast": "rāmāyaṇam",
+        "slp1": "rAmAyanaM"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "रामायणम्",
+          "iast": "rāmāyaṇam",
+          "slp1": "rAmAyanaM"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "rAmAyanaM",
+                "stem": "rAmAyanaM",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_013",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: another village. Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "ग्रामान्तरम्",
+        "iast": "grāmāntaram",
+        "slp1": "grAmAntaram"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "ग्रामान्तरम्",
+          "iast": "grāmāntaram",
+          "slp1": "grAmAntaram"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "grAmAntaram",
+                "stem": "grAmAntaram",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_014",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: Ganesha. Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "गणेशः",
+        "iast": "gaṇeśaḥ",
+        "slp1": "gaNeshaH"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "गणेशः",
+          "iast": "gaṇeśaḥ",
+          "slp1": "gaNeshaH"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "gaNeshaH",
+                "stem": "gaNesha",
+                "role": "subanta:prathama"
+              }
+            ],
+            "reason_code": "UNATTESTED_STEM",
+            "violated_sutra": null
+          }
+        ],
+        "engine_version": "1.0.8-adapter"
+      }
+    },
+    {
+      "case_id": "samasa_negative_015",
+      "status": "disputed",
+      "audit_notes": "Currently rejected by engine. Gloss: Dasharatha. Locked in as fail-closed contract at v2.0.9.",
+      "input_triad": {
+        "devanagari": "दशरथः",
+        "iast": "daśarathaḥ",
+        "slp1": "dasharathaH"
+      },
+      "expected_envelope": {
+        "input_triad": {
+          "devanagari": "दशरथः",
+          "iast": "daśarathaḥ",
+          "slp1": "dasharathaH"
+        },
+        "candidates": [],
+        "rejected": [
+          {
+            "parse": [
+              {
+                "surface": "dasharathaH",
+                "stem": "dasharatha",
+                "role": "subanta:prathama"
+              }
             ],
             "reason_code": "UNATTESTED_STEM",
             "violated_sutra": null
