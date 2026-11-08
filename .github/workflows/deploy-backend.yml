@@ -1,0 +1,55 @@
+﻿name: Deploy Backend to Cloud Run
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'backend/**'
+      - 'Dockerfile'
+      - 'requirements.txt'
+      - '.github/workflows/deploy-backend.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy aigaane-api \
+          --source . \
+          --region asia-south1 \
+          --allow-unauthenticated \
+          --min-instances 1 \
+          --cpu-boost \
+          --port 8080 \
+          --memory 1Gi \
+          --timeout 300 \
+          --quiet
+
+    - name: Smoke test /health
+      run: |
+        for i in 1 2 3 4 5; do
+          if curl -fsS https://aigaane-api-868318261534.asia-south1.run.app/health | grep -q '"status":"ok"'; then
+            echo "Health check passed"
+            exit 0
+          fi
+          echo "Attempt $i failed, retrying in 10s..."
+          sleep 10
+        done
+        echo "Health check failed after 5 attempts"
+        exit 1
+
