@@ -404,10 +404,31 @@ _PRONOUNS_EXACT = {
     "tvat":    {"stem": "yuṣmad", "pos": "subhanta", "linga": "pullinga", "vibhakti": "pancami", "vacana": "ekavacana", "confidence": 0.98},
     "tava":    {"stem": "yuṣmad", "pos": "subhanta", "linga": "pullinga", "vibhakti": "shasthi", "vacana": "ekavacana", "confidence": 0.98},
     "tvayi":   {"stem": "yuṣmad", "pos": "subhanta", "linga": "pullinga", "vibhakti": "saptami", "vacana": "ekavacana", "confidence": 0.98},
+
+    # ============ EXPANSION BLOCK (Category C) ============
+    "nIla":      {"stem": "nIla",      "pos": "vizeshana", "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "mahA":      {"stem": "mahA",      "pos": "vizeshana", "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "kRShNa":    {"stem": "kRShNa",    "pos": "vizeshana", "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "deva":      {"stem": "deva",      "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "Alaya":     {"stem": "Alaya",     "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "bhuja":     {"stem": "bhuja",     "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "sUrya":     {"stem": "sUrya",     "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "candra":    {"stem": "candra",    "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "varNa":     {"stem": "varNa",     "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "patha":     {"stem": "patha",     "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "azva":      {"stem": "azva",      "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "rAma":      {"stem": "rAma",      "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "lakShmaNa": {"stem": "lakShmaNa", "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "ArUDha":    {"stem": "ArUDha",    "pos": "vizeshana", "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "namaskAra": {"stem": "namaskAra", "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "rAjan":     {"stem": "rAjan",     "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "indra":     {"stem": "indra",     "pos": "subhanta",  "linga": "pullinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    "utpala":    {"stem": "utpala",    "pos": "subhanta",  "linga": "napumsakalinga", "vibhakti": "prathama", "vacana": "ekavacana", "confidence": 0.95},
+    # ============ END EXPANSION BLOCK ============
 }
 
 _KNOWN_FEMININE_AA = {"latā": "lat", "bālā": "bāl", "kanyā": "kany"}
-_KNOWN_NEUTER_A    = {"phala": "phal", "vana": "van", "kamala": "kamal"}
+_KNOWN_NEUTER_A    = {"phala": "phal", "vana": "van", "kamala": "kamal", "utpala": "utpal", "padma": "padm"}
 
 def _analyze_subanta(word: str):
     # 1. Exact Pronouns
