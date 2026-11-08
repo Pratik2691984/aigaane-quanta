@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api import quanta_routes, aigaane_routes, corpus_routes, samasa_routes, sandhi_routes, morphology_routes, chandas_routes, lexicon_routes, studio3_routes
 APP_VERSION = "2.0.3-route-coverage"
+from backend.api import quanta_routes, aigaane_routes, corpus_routes, samasa_routes, sandhi_routes, morphology_routes, chandas_routes, lexicon_routes, studio3_routes, nyaya_routes
 
 app = FastAPI(
     title="Quanta-Aigaane Neuro-Symbolic API",
@@ -42,6 +43,8 @@ app.include_router(lexicon_routes.router, prefix="/api/v1/lexicon", tags=["lexic
 app.include_router(lexicon_routes.router, prefix="/api/v3/lexicon", tags=["lexicon"])
 app.include_router(studio3_routes.router, prefix="/api/v1/studio3", tags=["studio3"])
 app.include_router(studio3_routes.router, prefix="/api/v3/studio3", tags=["studio3"])
+app.include_router(nyaya_routes.router, prefix="/api/v1/nyaya", tags=["nyaya"])
+app.include_router(nyaya_routes.router, prefix="/api/v3/nyaya", tags=["nyaya"])
 
 @app.get("/health")
 def health():
