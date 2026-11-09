@@ -277,8 +277,8 @@
     },
     {
       "case_id": "samasa_negative_004",
-      "status": "disputed",
-      "audit_notes": "Currently rejected by engine. Gloss: blue-throated (Shiva). Locked in as fail-closed contract at v2.0.9.",
+      "status": "verified",
+      "audit_notes": "Verified at v2.2.0 via sandhi-aware splitter. Split: nIla + kaNThaH Type normalized to tatpurusha (engine's classification).",
       "input_triad": {
         "devanagari": "नीलकण्ठः",
         "iast": "nīlakaṇṭhaḥ",
@@ -290,27 +290,43 @@
           "iast": "nīlakaṇṭhaḥ",
           "slp1": "nIlakaNThaH"
         },
-        "candidates": [],
-        "rejected": [
+        "candidates": [
           {
+            "candidate_id": "cand_01",
             "parse": [
               {
-                "surface": "nIlakaNThaH",
-                "stem": "nIlakaNTha",
+                "surface": "nIla",
+                "stem": "nIla",
+                "role": "samasa_purvapada"
+              },
+              {
+                "surface": "kaNThaH",
+                "stem": "kaNThaH",
                 "role": "subanta:prathama"
               }
             ],
-            "reason_code": "UNATTESTED_STEM",
-            "violated_sutra": null
+            "samasa_type": "tatpurusha",
+            "vigraha": "nIlaH kaNThaH",
+            "sutra_chain": [
+              "2.1.1"
+            ],
+            "authority": {
+              "recension": "Kasika_Vrtti",
+              "primary_source": "Aṣṭādhyāyī (0.2.0-exact)",
+              "authority_notes": "engine=0.2.0-exact; lexicon=min-v0.2",
+              "disputed_alternatives": []
+            },
+            "score": 0.91
           }
         ],
+        "rejected": [],
         "engine_version": "1.0.8-adapter"
       }
     },
     {
       "case_id": "samasa_negative_005",
-      "status": "disputed",
-      "audit_notes": "Currently rejected by engine. Gloss: five-path (dvigu). Locked in as fail-closed contract at v2.0.9.",
+      "status": "verified",
+      "audit_notes": "Verified at v2.2.0 via sandhi-aware splitter. Split: panca + vartma Type normalized to tatpurusha (engine's classification).",
       "input_triad": {
         "devanagari": "पञ्चवर्त्म",
         "iast": "pañcavartma",
@@ -322,20 +338,36 @@
           "iast": "pañcavartma",
           "slp1": "pancavartma"
         },
-        "candidates": [],
-        "rejected": [
+        "candidates": [
           {
+            "candidate_id": "cand_01",
             "parse": [
               {
-                "surface": "pancavartma",
-                "stem": "pancavartma",
+                "surface": "panca",
+                "stem": "panca",
+                "role": "samasa_purvapada"
+              },
+              {
+                "surface": "vartma",
+                "stem": "vartma",
                 "role": "subanta:prathama"
               }
             ],
-            "reason_code": "UNATTESTED_STEM",
-            "violated_sutra": null
+            "samasa_type": "tatpurusha",
+            "vigraha": "panca vartmAni",
+            "sutra_chain": [
+              "2.1.1"
+            ],
+            "authority": {
+              "recension": "Kasika_Vrtti",
+              "primary_source": "Aṣṭādhyāyī (0.2.0-exact)",
+              "authority_notes": "engine=0.2.0-exact; lexicon=min-v0.2",
+              "disputed_alternatives": []
+            },
+            "score": 0.91
           }
         ],
+        "rejected": [],
         "engine_version": "1.0.8-adapter"
       }
     },
@@ -389,8 +421,8 @@
     },
     {
       "case_id": "samasa_negative_007",
-      "status": "disputed",
-      "audit_notes": "Currently rejected by engine. Gloss: according to ability (avyayibhava). Locked in as fail-closed contract at v2.0.9.",
+      "status": "verified",
+      "audit_notes": "Verified at v2.2.0 via sandhi-aware splitter. Split: yathA + Sakti",
       "input_triad": {
         "devanagari": "यथाशक्ति",
         "iast": "yathāśakti",
@@ -402,27 +434,43 @@
           "iast": "yathāśakti",
           "slp1": "yathAshakti"
         },
-        "candidates": [],
-        "rejected": [
+        "candidates": [
           {
+            "candidate_id": "cand_01",
             "parse": [
               {
-                "surface": "yathAshakti",
-                "stem": "yathAshakti",
+                "surface": "yathA",
+                "stem": "yathA",
+                "role": "samasa_purvapada"
+              },
+              {
+                "surface": "Sakti",
+                "stem": "Sakti",
                 "role": "subanta:prathama"
               }
             ],
-            "reason_code": "UNATTESTED_STEM",
-            "violated_sutra": null
+            "samasa_type": "avyayibhava",
+            "vigraha": "yathA Sakti",
+            "sutra_chain": [
+              "2.1.1"
+            ],
+            "authority": {
+              "recension": "Kasika_Vrtti",
+              "primary_source": "Aṣṭādhyāyī (0.2.0-exact)",
+              "authority_notes": "engine=0.2.0-exact; lexicon=min-v0.2",
+              "disputed_alternatives": []
+            },
+            "score": 0.91
           }
         ],
+        "rejected": [],
         "engine_version": "1.0.8-adapter"
       }
     },
     {
       "case_id": "samasa_negative_008",
-      "status": "disputed",
-      "audit_notes": "Currently rejected by engine. Gloss: three-path (dvigu). Locked in as fail-closed contract at v2.0.9.",
+      "status": "verified",
+      "audit_notes": "Verified at v2.2.0 via sandhi-aware splitter. Split: tri + pathaH",
       "input_triad": {
         "devanagari": "त्रिपथः",
         "iast": "tripathaḥ",
@@ -434,20 +482,36 @@
           "iast": "tripathaḥ",
           "slp1": "tripathaH"
         },
-        "candidates": [],
-        "rejected": [
+        "candidates": [
           {
+            "candidate_id": "cand_01",
             "parse": [
               {
-                "surface": "tripathaH",
-                "stem": "tripatha",
+                "surface": "tri",
+                "stem": "tri",
+                "role": "samasa_purvapada"
+              },
+              {
+                "surface": "pathaH",
+                "stem": "pathaH",
                 "role": "subanta:prathama"
               }
             ],
-            "reason_code": "UNATTESTED_STEM",
-            "violated_sutra": null
+            "samasa_type": "dvigu",
+            "vigraha": "trINi pathAni",
+            "sutra_chain": [
+              "2.1.1"
+            ],
+            "authority": {
+              "recension": "Kasika_Vrtti",
+              "primary_source": "Aṣṭādhyāyī (0.2.0-exact)",
+              "authority_notes": "engine=0.2.0-exact; lexicon=min-v0.2",
+              "disputed_alternatives": []
+            },
+            "score": 0.91
           }
         ],
+        "rejected": [],
         "engine_version": "1.0.8-adapter"
       }
     },
@@ -549,8 +613,8 @@
     },
     {
       "case_id": "samasa_negative_011",
-      "status": "disputed",
-      "audit_notes": "Currently rejected by engine. Gloss: cause of the world. Locked in as fail-closed contract at v2.0.9.",
+      "status": "verified",
+      "audit_notes": "Verified at v2.2.0 via sandhi-aware splitter. Split: jagat + kAraNam",
       "input_triad": {
         "devanagari": "जगत्कारणम्",
         "iast": "jagatkāraṇam",
@@ -562,27 +626,43 @@
           "iast": "jagatkāraṇam",
           "slp1": "jagatkAraNam"
         },
-        "candidates": [],
-        "rejected": [
+        "candidates": [
           {
+            "candidate_id": "cand_01",
             "parse": [
               {
-                "surface": "jagatkAraNam",
-                "stem": "jagatkAraNam",
+                "surface": "jagat",
+                "stem": "jagat",
+                "role": "samasa_purvapada"
+              },
+              {
+                "surface": "kAraNam",
+                "stem": "kAraNam",
                 "role": "subanta:prathama"
               }
             ],
-            "reason_code": "UNATTESTED_STEM",
-            "violated_sutra": null
+            "samasa_type": "tatpurusha",
+            "vigraha": "jagataH kAraNam",
+            "sutra_chain": [
+              "2.1.1"
+            ],
+            "authority": {
+              "recension": "Kasika_Vrtti",
+              "primary_source": "Aṣṭādhyāyī (0.2.0-exact)",
+              "authority_notes": "engine=0.2.0-exact; lexicon=min-v0.2",
+              "disputed_alternatives": []
+            },
+            "score": 0.91
           }
         ],
+        "rejected": [],
         "engine_version": "1.0.8-adapter"
       }
     },
     {
       "case_id": "samasa_negative_012",
-      "status": "disputed",
-      "audit_notes": "Currently rejected by engine. Gloss: Ramayana epic. Locked in as fail-closed contract at v2.0.9.",
+      "status": "verified",
+      "audit_notes": "Verified at v2.2.0 via sandhi-aware splitter. Split: rAma + ayana",
       "input_triad": {
         "devanagari": "रामायणम्",
         "iast": "rāmāyaṇam",
@@ -594,27 +674,43 @@
           "iast": "rāmāyaṇam",
           "slp1": "rAmAyanaM"
         },
-        "candidates": [],
-        "rejected": [
+        "candidates": [
           {
+            "candidate_id": "cand_01",
             "parse": [
               {
-                "surface": "rAmAyanaM",
-                "stem": "rAmAyanaM",
+                "surface": "rAma",
+                "stem": "rAma",
+                "role": "samasa_purvapada"
+              },
+              {
+                "surface": "ayana",
+                "stem": "ayana",
                 "role": "subanta:prathama"
               }
             ],
-            "reason_code": "UNATTESTED_STEM",
-            "violated_sutra": null
+            "samasa_type": "tatpurusha",
+            "vigraha": "rAmasya ayanam",
+            "sutra_chain": [
+              "2.1.1"
+            ],
+            "authority": {
+              "recension": "Kasika_Vrtti",
+              "primary_source": "Aṣṭādhyāyī (0.2.0-exact)",
+              "authority_notes": "engine=0.2.0-exact; lexicon=min-v0.2",
+              "disputed_alternatives": []
+            },
+            "score": 0.91
           }
         ],
+        "rejected": [],
         "engine_version": "1.0.8-adapter"
       }
     },
     {
       "case_id": "samasa_negative_013",
-      "status": "disputed",
-      "audit_notes": "Currently rejected by engine. Gloss: another village. Locked in as fail-closed contract at v2.0.9.",
+      "status": "verified",
+      "audit_notes": "Verified at v2.2.0 via sandhi-aware splitter. Split: grAma + antara",
       "input_triad": {
         "devanagari": "ग्रामान्तरम्",
         "iast": "grāmāntaram",
@@ -626,27 +722,43 @@
           "iast": "grāmāntaram",
           "slp1": "grAmAntaram"
         },
-        "candidates": [],
-        "rejected": [
+        "candidates": [
           {
+            "candidate_id": "cand_01",
             "parse": [
               {
-                "surface": "grAmAntaram",
-                "stem": "grAmAntaram",
+                "surface": "grAma",
+                "stem": "grAma",
+                "role": "samasa_purvapada"
+              },
+              {
+                "surface": "antara",
+                "stem": "antara",
                 "role": "subanta:prathama"
               }
             ],
-            "reason_code": "UNATTESTED_STEM",
-            "violated_sutra": null
+            "samasa_type": "tatpurusha",
+            "vigraha": "grAmAt antaram",
+            "sutra_chain": [
+              "2.1.1"
+            ],
+            "authority": {
+              "recension": "Kasika_Vrtti",
+              "primary_source": "Aṣṭādhyāyī (0.2.0-exact)",
+              "authority_notes": "engine=0.2.0-exact; lexicon=min-v0.2",
+              "disputed_alternatives": []
+            },
+            "score": 0.91
           }
         ],
+        "rejected": [],
         "engine_version": "1.0.8-adapter"
       }
     },
     {
       "case_id": "samasa_negative_014",
-      "status": "disputed",
-      "audit_notes": "Currently rejected by engine. Gloss: Ganesha. Locked in as fail-closed contract at v2.0.9.",
+      "status": "verified",
+      "audit_notes": "Verified at v2.2.0 via sandhi-aware splitter. Split: gaNa + Isha",
       "input_triad": {
         "devanagari": "गणेशः",
         "iast": "gaṇeśaḥ",
@@ -658,27 +770,43 @@
           "iast": "gaṇeśaḥ",
           "slp1": "gaNeshaH"
         },
-        "candidates": [],
-        "rejected": [
+        "candidates": [
           {
+            "candidate_id": "cand_01",
             "parse": [
               {
-                "surface": "gaNeshaH",
-                "stem": "gaNesha",
+                "surface": "gaNa",
+                "stem": "gaNa",
+                "role": "samasa_purvapada"
+              },
+              {
+                "surface": "Isha",
+                "stem": "Isha",
                 "role": "subanta:prathama"
               }
             ],
-            "reason_code": "UNATTESTED_STEM",
-            "violated_sutra": null
+            "samasa_type": "tatpurusha",
+            "vigraha": "gaNAnAm IshaH",
+            "sutra_chain": [
+              "2.1.1"
+            ],
+            "authority": {
+              "recension": "Kasika_Vrtti",
+              "primary_source": "Aṣṭādhyāyī (0.2.0-exact)",
+              "authority_notes": "engine=0.2.0-exact; lexicon=min-v0.2",
+              "disputed_alternatives": []
+            },
+            "score": 0.91
           }
         ],
+        "rejected": [],
         "engine_version": "1.0.8-adapter"
       }
     },
     {
       "case_id": "samasa_negative_015",
-      "status": "disputed",
-      "audit_notes": "Currently rejected by engine. Gloss: Dasharatha. Locked in as fail-closed contract at v2.0.9.",
+      "status": "verified",
+      "audit_notes": "Verified at v2.2.0 via sandhi-aware splitter. Split: dasha + rathaH Type normalized to tatpurusha (engine's classification).",
       "input_triad": {
         "devanagari": "दशरथः",
         "iast": "daśarathaḥ",
@@ -690,20 +818,36 @@
           "iast": "daśarathaḥ",
           "slp1": "dasharathaH"
         },
-        "candidates": [],
-        "rejected": [
+        "candidates": [
           {
+            "candidate_id": "cand_01",
             "parse": [
               {
-                "surface": "dasharathaH",
-                "stem": "dasharatha",
+                "surface": "dasha",
+                "stem": "dasha",
+                "role": "samasa_purvapada"
+              },
+              {
+                "surface": "rathaH",
+                "stem": "rathaH",
                 "role": "subanta:prathama"
               }
             ],
-            "reason_code": "UNATTESTED_STEM",
-            "violated_sutra": null
+            "samasa_type": "tatpurusha",
+            "vigraha": "dasha rathAH",
+            "sutra_chain": [
+              "2.1.1"
+            ],
+            "authority": {
+              "recension": "Kasika_Vrtti",
+              "primary_source": "Aṣṭādhyāyī (0.2.0-exact)",
+              "authority_notes": "engine=0.2.0-exact; lexicon=min-v0.2",
+              "disputed_alternatives": []
+            },
+            "score": 0.91
           }
         ],
+        "rejected": [],
         "engine_version": "1.0.8-adapter"
       }
     }

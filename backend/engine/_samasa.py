@@ -179,7 +179,16 @@ def generate_compound_tree(surface: str) -> Optional[dict]:
         return None
     # Normalize IAST -> SLP1 so diacritics don't break the splitter
     surface = to_slp1(surface)
-    clean = surface.rstrip("aH").rstrip("H").rstrip("m")
+    # Strip specific Sanskrit endings, in order (longest first)
+    clean = surface
+    for ending in ["aH", "AH", "aM", "AM", "H", "M", "m"]:
+        if clean.endswith(ending) and len(clean) > len(ending) + 1:
+            clean = clean[:-len(ending)]
+            break
+    # Only strip trailing 'a' if there's a meaningful prefix left
+    if clean.endswith("a") and len(clean) > 3:
+        # Don't strip 'a' if it's part of a standard stem (heuristic: keep it)
+        pass
     n = len(clean)
 
     for i in range(2, n - 1):
@@ -231,8 +240,23 @@ def generate_compound_tree(surface: str) -> Optional[dict]:
             }
     # Sandhi-aware fallback: reverse guṇa/vṛddhi transformations
     for p1_cand, p2_cand in _sandhi_split_candidates(clean):
-        hit1 = _lexicon.lookup(p1_cand) or _lexicon.lookup(p1_cand + "a")
-        hit2 = _lexicon.lookup(p2_cand) or _lexicon.lookup(p2_cand + "a") or _lexicon.lookup(p2_cand + "aH")
+        # Normalize both halves for lookup (strip endings, fix case)
+        p1_forms = [p1_cand, p1_cand + "a", p1_cand.rstrip("a") + "a"]
+        p2_forms = [p2_cand, p2_cand + "a", p2_cand + "aH", p2_cand.rstrip("M").rstrip("aH").rstrip("m").rstrip("H")]
+        # Also try capitalized first letter (e.g. Shakti vs shakti)
+        for form in list(p2_forms):
+            if form and form[0].islower():
+                p2_forms.append(form[0].upper() + form[1:])
+        
+        hit1 = None
+        for f in p1_forms:
+            hit1 = _lexicon.lookup(f)
+            if hit1: break
+        hit2 = None
+        for f in p2_forms:
+            hit2 = _lexicon.lookup(f)
+            if hit2: break
+        
         if hit1 and hit2:
             return {
                 "samasa_id": "S_GEN_SANDHI",
