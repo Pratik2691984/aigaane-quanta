@@ -1,4 +1,4 @@
-﻿"""
+"""
 CEGAR Gatekeeper -- Two-Tier Stem Attestation (v1.4.1).
 
 Tier 1: `_lexicon.lookup()` -- primary source, ~2,500-5,000 curated stems
@@ -43,6 +43,14 @@ except Exception as e:
     lookup_tala = None
     _TALA_OK = False
     logging.warning(f"_tala not importable: {e}")
+
+try:
+    from _script import to_slp1
+    _SCRIPT_OK = True
+except Exception as e:
+    to_slp1 = lambda x: x
+    _SCRIPT_OK = False
+    logging.warning(f"_script not importable: {e}")
 
 from backend.engine.pydantic_models import (
     KernelEnvelope,
@@ -163,9 +171,17 @@ class CegarGatekeeper:
             return False
         if stem.lower() in {"unknown", "unparsed", "error"}:
             return False
-        if self._attest_lexicon(stem):
+        # Normalize IAST -> SLP1 so diacritics don't break lookup
+        try:
+            slp1_stem = to_slp1(stem)
+        except Exception:
+            slp1_stem = stem
+        # Try normalized first, then original
+        if self._attest_lexicon(slp1_stem):
             return True
-        if self._attest_canon(stem):
+        if slp1_stem != stem and self._attest_lexicon(stem):
+            return True
+        if self._attest_canon(slp1_stem):
             logger.info(f"Stem '{stem}' attested via canon.db (Tier 2)")
             return True
         return False

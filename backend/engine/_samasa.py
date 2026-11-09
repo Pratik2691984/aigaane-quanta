@@ -229,7 +229,51 @@ def generate_compound_tree(surface: str) -> Optional[dict]:
                     },
                 ],
             }
+    # Sandhi-aware fallback: reverse guṇa/vṛddhi transformations
+    for p1_cand, p2_cand in _sandhi_split_candidates(clean):
+        hit1 = _lexicon.lookup(p1_cand) or _lexicon.lookup(p1_cand + "a")
+        hit2 = _lexicon.lookup(p2_cand) or _lexicon.lookup(p2_cand + "a") or _lexicon.lookup(p2_cand + "aH")
+        if hit1 and hit2:
+            return {
+                "samasa_id": "S_GEN_SANDHI",
+                "sub_tree": None,
+                "component_surface": surface,
+                "role": "single",
+                "type": "tatpurusha",
+                "vigraha": f"{p1_cand} ca {p2_cand}",
+                "confidence": 0.88,
+                "children": [
+                    {"samasa_id": "S_GEN_SANDHI.1", "component_surface": p1_cand, "role": "purva_pada", "confidence": 0.90},
+                    {"samasa_id": "S_GEN_SANDHI.2", "component_surface": p2_cand, "role": "uttara_pada", "confidence": 0.90},
+                ],
+            }
+
+    # If neither direct split nor sandhi reversal worked, return None
     return None
+
+
+def _sandhi_split_candidates(surface: str):
+    """
+    Yield candidate (p1, p2) splits by reversing common Sanskrit sandhi:
+      - Guṇa: o = a + u  ->  a | u
+      - Guṇa: e = a + i  ->  a | i
+      - Vṛddhi: ai = a + e, au = a + o  ->  a | e, a | o
+      - Savarṇa-dīrgha: ā = a + a  ->  a | a
+    """
+    # Direct splits first
+    n = len(surface)
+    for i in range(2, n - 1):
+        yield (surface[:i], surface[i:])
+    # Sandhi reversals: find middle 'o', 'e', 'ai', 'au' and split there
+    for i, ch in enumerate(surface):
+        if ch == "o" and 1 <= i < n - 1:
+            yield (surface[:i] + "a", "u" + surface[i+1:])
+            yield (surface[:i] + "a", "U" + surface[i+1:])
+        elif ch == "e" and 1 <= i < n - 1:
+            yield (surface[:i] + "a", "i" + surface[i+1:])
+            yield (surface[:i] + "a", "I" + surface[i+1:])
+        elif ch == "A" and 1 <= i < n - 1:
+            yield (surface[:i] + "a", "a" + surface[i+1:])
 
 def build_tree(surface: str) -> Optional[dict]:
     if surface in _COMPOUND_DATA:
