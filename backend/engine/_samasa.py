@@ -258,17 +258,20 @@ def generate_compound_tree(surface: str) -> Optional[dict]:
             if hit2: break
         
         if hit1 and hit2:
+            # Use the validated lexicon form (hitN["stem"]) not the raw split
+            validated_p1 = hit1.get("stem", p1_cand) if isinstance(hit1, dict) else p1_cand
+            validated_p2 = hit2.get("stem", p2_cand) if isinstance(hit2, dict) else p2_cand
             return {
                 "samasa_id": "S_GEN_SANDHI",
                 "sub_tree": None,
                 "component_surface": surface,
                 "role": "single",
                 "type": "tatpurusha",
-                "vigraha": f"{p1_cand} ca {p2_cand}",
+                "vigraha": f"{validated_p1} ca {validated_p2}",
                 "confidence": 0.88,
                 "children": [
-                    {"samasa_id": "S_GEN_SANDHI.1", "component_surface": p1_cand, "role": "purva_pada", "confidence": 0.90},
-                    {"samasa_id": "S_GEN_SANDHI.2", "component_surface": p2_cand, "role": "uttara_pada", "confidence": 0.90},
+                    {"samasa_id": "S_GEN_SANDHI.1", "component_surface": validated_p1, "role": "purva_pada", "confidence": 0.90},
+                    {"samasa_id": "S_GEN_SANDHI.2", "component_surface": validated_p2, "role": "uttara_pada", "confidence": 0.90},
                 ],
             }
 
