@@ -125,3 +125,32 @@ def format_parts_to_script(parts: List[str], target_script: str) -> List[str]:
             return s.replace("ā", "A").replace("ī", "I").replace("ū", "U")
         return [_to_itrans(p) for p in parts]
     return parts
+
+# ------------------------------------------------------------------ #
+#   IAST -> SLP1 normalization                                      #
+# ------------------------------------------------------------------ #
+
+_IAST_TO_SLP1 = {
+    "ā": "A", "ī": "I", "ū": "U", "ṛ": "R", "ṝ": "RR", "ḷ": "L", "ḹ": "LL",
+    "ai": "E", "au": "O",
+    "ṃ": "M", "ṁ": "M", "ḥ": "H", "ñ": "Y", "ṅ": "N", "ṭ": "w", "ḍ": "q",
+    "ṇ": "N", "ś": "S", "ṣ": "z", "Ā": "A", "Ī": "I", "Ū": "U", "Ṛ": "R",
+}
+
+def to_slp1(text: str) -> str:
+    """
+    Normalize IAST/Devanagari/ITRANS input to SLP1 ASCII.
+
+    This is a one-way approximation: it converts IAST diacritics to their
+    SLP1 ASCII equivalents. It does NOT handle Devanagari; call
+    to_canonical_iast first if the input might be Devanagari.
+    """
+    if not text:
+        return text
+    out = text
+    # Two-character replacements first
+    out = out.replace("ai", "E").replace("au", "O")
+    # Single-character replacements
+    for k, v in _IAST_TO_SLP1.items():
+        out = out.replace(k, v)
+    return out

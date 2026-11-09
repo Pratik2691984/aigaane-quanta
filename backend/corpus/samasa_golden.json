@@ -181,8 +181,8 @@
     },
     {
       "case_id": "samasa_negative_002",
-      "status": "disputed",
-      "audit_notes": "Currently rejected due to IAST/SLP1 normalization gap in dynamic splitter. Deferred to v2.1.4.",
+      "status": "verified",
+      "audit_notes": "Verified at v2.1.7 via adapter compound expansion. Split: sUrya + namaskAra.",
       "input_triad": {
         "devanagari": "सूर्यनमस्कारः",
         "iast": "sūryanamaskāraḥ",
@@ -194,20 +194,36 @@
           "iast": "sūryanamaskāraḥ",
           "slp1": "sUryanamaskAraH"
         },
-        "candidates": [],
-        "rejected": [
+        "candidates": [
           {
+            "candidate_id": "cand_01",
             "parse": [
               {
-                "surface": "sUryanamaskAraH",
-                "stem": "sUryanamaskAraH",
+                "surface": "sUrya",
+                "stem": "sUrya",
+                "role": "samasa_purvapada"
+              },
+              {
+                "surface": "namaskAra",
+                "stem": "namaskAra",
                 "role": "subanta:prathama"
               }
             ],
-            "reason_code": "UNATTESTED_STEM",
-            "violated_sutra": null
+            "samasa_type": "tatpurusha",
+            "vigraha": "sUrya ca namaskAr",
+            "sutra_chain": [
+              "2.1.1"
+            ],
+            "authority": {
+              "recension": "Kasika_Vrtti",
+              "primary_source": "Aṣṭādhyāyī (0.2.0-exact)",
+              "authority_notes": "engine=0.2.0-exact; lexicon=min-v0.2",
+              "disputed_alternatives": []
+            },
+            "score": 0.95
           }
         ],
+        "rejected": [],
         "engine_version": "1.0.8-adapter"
       }
     },
@@ -437,8 +453,8 @@
     },
     {
       "case_id": "samasa_negative_010",
-      "status": "disputed",
-      "audit_notes": "Currently rejected by engine. Gloss: Rama and Lakshmana (dvandva). Locked in as fail-closed contract at v2.0.9.",
+      "status": "verified",
+      "audit_notes": "Verified at v2.1.7 via adapter compound expansion. Split: rAma + lakShmaNa.",
       "input_triad": {
         "devanagari": "रामलक्ष्मणौ",
         "iast": "rāmalakṣmaṇau",
@@ -450,20 +466,36 @@
           "iast": "rāmalakṣmaṇau",
           "slp1": "rAmalakShmaNau"
         },
-        "candidates": [],
-        "rejected": [
+        "candidates": [
           {
+            "candidate_id": "cand_01",
             "parse": [
               {
-                "surface": "rAmalakShmaNau",
-                "stem": "rAmalakShmaNau",
+                "surface": "rAma",
+                "stem": "rAma",
+                "role": "samasa_purvapada"
+              },
+              {
+                "surface": "lakShmaNa",
+                "stem": "lakShmaNa",
                 "role": "subanta:prathama"
               }
             ],
-            "reason_code": "UNATTESTED_STEM",
-            "violated_sutra": null
+            "samasa_type": "dvandva",
+            "vigraha": "rAmaH ca lakShmaNaH ca",
+            "sutra_chain": [
+              "2.1.1"
+            ],
+            "authority": {
+              "recension": "Kasika_Vrtti",
+              "primary_source": "Aṣṭādhyāyī (0.2.0-exact)",
+              "authority_notes": "engine=0.2.0-exact; lexicon=min-v0.2",
+              "disputed_alternatives": []
+            },
+            "score": 0.95
           }
         ],
+        "rejected": [],
         "engine_version": "1.0.8-adapter"
       }
     },

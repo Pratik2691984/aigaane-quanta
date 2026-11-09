@@ -45,6 +45,28 @@ class EngineAdapter:
 
         try:
             legacy = legacy_engine.parse(slp1_input)
+            
+            # If the legacy engine returned a samasa_tree with multiple children
+            # but only 1 token, expand the tokens from the compound tree.
+            samasa_tree = legacy.get("samasa_tree") or {}
+            children = samasa_tree.get("children") or []
+            tokens = legacy.get("tokens") or []
+            if len(children) >= 2 and len(tokens) <= 1:
+                expanded_tokens = []
+                for idx, child in enumerate(children):
+                    is_last = (idx == len(children) - 1)
+                    expanded_tokens.append({
+                        "token_id": f"T{idx}",
+                        "pada": child.get("component_surface", ""),
+                        "stem": child.get("component_surface", ""),
+                        "pos": "subhanta" if is_last else "samasa_purvapada",
+                        "vibhakti": "prathama" if is_last else "lupta",
+                        "vacana": "ekavacana",
+                        "linga": "pullinga",
+                        "confidence": child.get("confidence", 0.90),
+                    })
+                legacy["tokens"] = expanded_tokens
+                logger.info(f"Expanded compound {slp1_input} into {len(expanded_tokens)} tokens from samasa_tree")
         except Exception as e:
             logger.error(f"Legacy parse failed on {slp1_input}: {e}")
             return KernelEnvelope(

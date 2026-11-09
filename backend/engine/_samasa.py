@@ -5,6 +5,7 @@ Decomposes Sanskrit compound words into recursive SamasaNode trees.
 
 from typing import Optional, Dict, Any, List
 import _lexicon
+from _script import to_slp1
 
 _COMPOUND_DATA: Dict[str, dict] = {
     "rājaputraḥ": {
@@ -176,6 +177,8 @@ def generate_compound_tree(surface: str) -> Optional[dict]:
     # Compounds never contain spaces
     if " " in surface:
         return None
+    # Normalize IAST -> SLP1 so diacritics don't break the splitter
+    surface = to_slp1(surface)
     clean = surface.rstrip("aH").rstrip("H").rstrip("m")
     n = len(clean)
 
@@ -275,7 +278,27 @@ def recursive_split_compound(word: str, depth: int = 1) -> Optional[Dict[str, An
                     "sub_tree": sub,
                     "confidence": 0.85
                 }
-        return None
+            # Fallback: try dynamic generate_compound_tree for lexicon-known compounds
+    try:
+        dyn = generate_compound_tree(word)
+        if dyn and dyn.get("children") and len(dyn["children"]) >= 2:
+            left = dyn["children"][0].get("component_surface", "")
+            right = dyn["children"][1].get("component_surface", "")
+            if left and right:
+                return {
+                    "surface": word,
+                    "compound_type": dyn.get("type", "tatpurusha"),
+                    "components": [left, right],
+                    "left_stem": left,
+                    "right_stem": right,
+                    "depth": depth,
+                    "sub_tree": None,
+                    "confidence": dyn.get("confidence", 0.85),
+                }
+    except Exception:
+        pass
+
+    return None
 
     left = split_res.get("left", split_res.get("components", ["", ""])[0])
     right = split_res.get("right", split_res.get("components", ["", ""])[1] if len(split_res.get("components", [])) > 1 else "")
