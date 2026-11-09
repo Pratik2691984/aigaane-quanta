@@ -57,7 +57,9 @@ class EngineAdapter:
             if len(children) < 2 and len(tokens) <= 1:
                 try:
                     import _samasa
+                    logger.info(f"[DEBUG] Attempting compound rescue for {slp1_input}")
                     dyn_tree = _samasa.generate_compound_tree(slp1_input)
+                    logger.info(f"[DEBUG] dyn_tree = {dyn_tree}")
                     if dyn_tree and dyn_tree.get("children") and len(dyn_tree["children"]) >= 2:
                         samasa_tree = dyn_tree
                         children = dyn_tree["children"]
