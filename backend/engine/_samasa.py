@@ -176,32 +176,33 @@ def generate_compound_tree(surface: str) -> Optional[dict]:
     # Compounds never contain spaces
     if " " in surface:
         return None
-    clean = surface.rstrip("ḥ").rstrip("m")
+    clean = surface.rstrip("aH").rstrip("H").rstrip("m")
     n = len(clean)
 
     for i in range(2, n - 1):
         p1 = clean[:i]
         p2 = clean[i:]
 
-        hit1 = _lexicon.lookup(p1)
+        # Try all ending combinations for the left half
+        hit1 = _lexicon.lookup(p1) or _lexicon.lookup(p1 + "a") or _lexicon.lookup(p1 + "aH")
         stem1 = p1
-        if not hit1 and _lexicon.lookup(p1 + "a"):
-            hit1 = _lexicon.lookup(p1 + "a")
-            stem1 = p1 + "a"
-
-        hit2 = _lexicon.lookup(p2) or _lexicon.lookup(p2 + "ḥ") or _lexicon.lookup(p2 + "m")
-        if not hit2 and _lexicon.lookup(p2 + "a"):
-            hit2 = _lexicon.lookup(p2 + "a")
+        if hit1:
+            stem1 = hit1.get("stem", p1)
+        
+        # Try all ending combinations for the right half
+        hit2 = _lexicon.lookup(p2) or _lexicon.lookup(p2 + "a") or _lexicon.lookup(p2 + "aH") or _lexicon.lookup(p2 + "H")
 
         if hit1 and hit2:
             ctype = _infer_compound_type(stem1, p2)
             c2_surf = surface[i:]
+            
             sub_right = None
             if len(p2) > 3:
                 try:
                     sub_right = recursive_split_compound(p2, depth=2)
                 except Exception:
                     sub_right = None
+                    
             return {
                 "samasa_id": "S_GEN_0",
                 "sub_tree": sub_right,

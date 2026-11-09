@@ -138,8 +138,10 @@ class CegarGatekeeper:
         """
         Try the stem as-is, then progressively strip Sanskrit endings.
         Recovers inflected forms like `nāgāḥ` -> `nāga`.
+        Case-insensitive to handle IAST vs SLP1 mixtures.
         """
         for cand in _candidate_forms(stem):
+            # Try original case
             try:
                 if self.lookup_fn(cand) is not None:
                     if cand != stem:
@@ -148,8 +150,23 @@ class CegarGatekeeper:
             except Exception as e:
                 logger.warning(f"_lexicon.lookup('{cand}') raised: {e}")
 
+            # Try lowercase
+            try:
+                if cand.lower() != cand and self.lookup_fn(cand.lower()) is not None:
+                    return True
+            except Exception:
+                pass
+
+            # Try capitalizing first letter (for Alaya vs alaya)
+            try:
+                capped = cand[0].upper() + cand[1:]
+                if capped != cand and self.lookup_fn(capped) is not None:
+                    return True
+            except Exception:
+                pass
+
             # Also try supplement (Tier 1b)
-            if cand in self.supplement_stems:
+            if cand in self.supplement_stems or cand.lower() in self.supplement_stems:
                 if cand != stem:
                     logger.info(f"Stem '{stem}' attested as '{cand}' (Tier 1b supplement)")
                 return True
