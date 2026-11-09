@@ -51,6 +51,21 @@ class EngineAdapter:
             samasa_tree = legacy.get("samasa_tree") or {}
             children = samasa_tree.get("children") or []
             tokens = legacy.get("tokens") or []
+            
+            # Fallback: if samasa_tree is empty AND tokens has only 1 entry,
+            # try _samasa.generate_compound_tree() directly.
+            if len(children) < 2 and len(tokens) <= 1:
+                try:
+                    import _samasa
+                    dyn_tree = _samasa.generate_compound_tree(slp1_input)
+                    if dyn_tree and dyn_tree.get("children") and len(dyn_tree["children"]) >= 2:
+                        samasa_tree = dyn_tree
+                        children = dyn_tree["children"]
+                        legacy["samasa_tree"] = dyn_tree
+                        logger.info(f"Adapter rescued compound {slp1_input} via generate_compound_tree")
+                except Exception as e:
+                    logger.warning(f"Adapter compound rescue failed for {slp1_input}: {e}")
+            
             if len(children) >= 2 and len(tokens) <= 1:
                 expanded_tokens = []
                 for idx, child in enumerate(children):
