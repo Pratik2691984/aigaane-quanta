@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "aigaane-engine-2026"
-  }
+  },
+  "targets": {
+    "aigaane-engine-2026": {
+      "hosting": {
+        "main": [
+          "aigaane-engine-2026"
+        ],
+        "api": [
+          "aigaane-api"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
