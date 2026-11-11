@@ -1,4 +1,4 @@
-﻿import { API_URL } from "./config";
+import { API_URL } from "./config";
 
 export async function probeEngine() {
   const controller = new AbortController();
