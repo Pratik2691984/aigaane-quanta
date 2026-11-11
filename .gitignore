@@ -28,3 +28,6 @@ __pycache__/
 *.pyo
 *.pyd
 # paths-filter test 2026-11-11 23:55:28
+
+# Database backups
+backend/data/*.db.bak
