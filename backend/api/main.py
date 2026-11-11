@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+﻿from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api import quanta_routes, aigaane_routes, corpus_routes, samasa_routes, sandhi_routes, morphology_routes, chandas_routes, lexicon_routes, studio3_routes
 APP_VERSION = "2.3.0-legacy-ui-bridge"
@@ -89,7 +89,7 @@ def legacy_pipeline(payload: dict = Body(...)):
         return {
             "studio_ii_verification": {"is_valid_inference": True, "mode": "Deterministic"},
             "studio_i_analysis": {"tokens": [t.dict() for t in (parse_result.candidates[0].parse if parse_result.candidates else [])]},
-            "studio_iii_acoustics": {"meter_scansion": {"meter": "Anuṣṭubh"}},
+            "studio_iii_acoustics": {"meter_scansion": {"meter": "Anuá¹£á¹­ubh"}},
             "sruti_table": get_sruti_table(240.0),
             "parse_envelope": parse_result.model_dump() if hasattr(parse_result, "model_dump") else None,
         }
@@ -100,7 +100,7 @@ def legacy_pipeline(payload: dict = Body(...)):
 def legacy_itihasa_search(q: str):
     """Legacy alias: minimal corpus search placeholder."""
     try:
-        from backend.api.corpus_routes import search as v3_search
+        from backend.api.corpus_routes import search_verses as v3_search
         return v3_search(q=q)
     except Exception as e:
         return {"results": [], "error": str(e), "total": 0}
