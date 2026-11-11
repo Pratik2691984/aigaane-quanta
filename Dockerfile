@@ -14,6 +14,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend ./backend
+COPY backend/data/canon.db ./backend/data/canon.db
 
 EXPOSE 8080
 

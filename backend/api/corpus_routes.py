@@ -1,5 +1,5 @@
-"""
-Corpus Search API — searches 701 Gītā verses via FTS5.
+﻿"""
+Corpus Search API â€” searches 701 GÄ«tÄ verses via FTS5.
 
 Backed by `canon.db` (568 KB, 701 verses, IAST + Devanagari + meter).
 """
@@ -9,12 +9,21 @@ from pathlib import Path
 
 router = APIRouter()
 
-CANON_DB_PATH = Path("C:/aigaane-master/frontend/public/sqlite/canon.db")
+CANON_DB_PATH = Path(__file__).resolve().parent.parent / "data" / "canon.db"
+from pathlib import Path
+
+# canon.db ships inside backend/data/, resolved relative to THIS file's location.
+# Works on Windows, macOS, Linux, and Cloud Run â€” no hardcoded absolute paths.
+CANON_DB_PATH = Path(__file__).resolve().parent.parent / "data" / "canon.db"
+
+# Optional: allow override via env var for local testing / alternative deploy layouts
+if os.environ.get("AIGAANE_CANON_DB"):
+    CANON_DB_PATH = Path(os.environ["AIGAANE_CANON_DB"])
 
 
 @router.get("/search")
 def search_verses(q: str = Query(..., min_length=2), limit: int = 10):
-    """Search Gītā verses by Sanskrit term. FTS5 prefix match."""
+    """Search GÄ«tÄ verses by Sanskrit term. FTS5 prefix match."""
     if not CANON_DB_PATH.exists():
         raise HTTPException(
             status_code=503,
