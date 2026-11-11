@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api import quanta_routes, aigaane_routes, corpus_routes, samasa_routes, sandhi_routes, morphology_routes, chandas_routes, lexicon_routes, studio3_routes
-APP_VERSION = "2.0.3-route-coverage"
+APP_VERSION = "2.3.0-legacy-ui-bridge"
 from backend.api import quanta_routes, aigaane_routes, corpus_routes, samasa_routes, sandhi_routes, morphology_routes, chandas_routes, lexicon_routes, studio3_routes, nyaya_routes
 
 app = FastAPI(
@@ -113,7 +113,7 @@ def health():
     return {
         "status": "ok",
         "architecture": "Neuro-Symbolic",
-        "version": "2.0.3-route-coverage",
+        "version": "2.3.0-legacy-ui-bridge",
     }
 
 
