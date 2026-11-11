@@ -38,18 +38,24 @@ def search_verses(q: str = Query(..., min_length=2), limit: int = 10):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"corpus search failed: {e}")
 
+    verses = [
+        {
+            "chapter": r[0],
+            "verse": r[1],
+            "text": r[2],
+            "iast": r[3],
+            "transliteration": r[3],  # frontend-compat alias
+            "meter": r[4],
+            "source": r[5],
+        }
+        for r in rows
+    ]
+
     return {
         "query": q,
-        "count": len(rows),
-        "verses": [
-            {
-                "chapter": r[0],
-                "verse": r[1],
-                "text": r[2],
-                "iast": r[3],
-                "meter": r[4],
-                "source": r[5],
-            }
-            for r in rows
-        ],
+        "count": len(verses),
+        "verses": verses,
+        # Backward-compat aliases for the legacy frontend
+        "results": verses,
+        "total": len(verses),
     }
