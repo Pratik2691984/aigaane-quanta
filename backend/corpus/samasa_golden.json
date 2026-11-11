@@ -426,13 +426,13 @@
       "input_triad": {
         "devanagari": "यथाशक्ति",
         "iast": "yathāśakti",
-        "slp1": "yathAshakti"
+        "slp1": "yathASakti"
       },
       "expected_envelope": {
         "input_triad": {
           "devanagari": "यथाशक्ति",
           "iast": "yathāśakti",
-          "slp1": "yathAshakti"
+          "slp1": "yathASakti"
         },
         "candidates": [
           {
@@ -570,13 +570,13 @@
       "input_triad": {
         "devanagari": "रामलक्ष्मणौ",
         "iast": "rāmalakṣmaṇau",
-        "slp1": "rAmalakShmaNau"
+        "slp1": "rAmalakzmaNau"
       },
       "expected_envelope": {
         "input_triad": {
           "devanagari": "रामलक्ष्मणौ",
           "iast": "rāmalakṣmaṇau",
-          "slp1": "rAmalakShmaNau"
+          "slp1": "rAmalakzmaNau"
         },
         "candidates": [
           {

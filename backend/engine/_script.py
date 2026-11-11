@@ -119,7 +119,7 @@ _SLP1_TO_IAST_MAP = {
     "E": "ai", "O": "au",
     # Nasals and visarga
     "M": "ṃ", "H": "ḥ",
-    "Y": "ñ", "N": "ṅ",
+    "Y": "ñ", "N": "ṇ",
     # Retroflex and sibilants
     "w": "ṭ", "q": "ḍ",
     "S": "ś", "z": "ṣ",
