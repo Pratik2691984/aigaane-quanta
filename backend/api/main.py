@@ -97,13 +97,10 @@ def legacy_pipeline(payload: dict = Body(...)):
         return {"error": str(e)}
 
 @app.get("/api/v1/itihasa/search")
-def legacy_itihasa_search(q: str):
-    """Legacy alias: minimal corpus search placeholder."""
-    try:
-        from backend.api.corpus_routes import search_verses as v3_search
-        return v3_search(q=q)
-    except Exception as e:
-        return {"results": [], "error": str(e), "total": 0}
+def legacy_itihasa_search(q: str, limit: int = 10):
+    """Legacy alias for corpus search — forwards to corpus_routes.search_verses."""
+    from backend.api.corpus_routes import search_verses as v3_search
+    return v3_search(q=q, limit=limit)
 
 app.include_router(nyaya_routes.router, prefix="/api/v1/nyaya", tags=["nyaya"])
 app.include_router(nyaya_routes.router, prefix="/api/v3/nyaya", tags=["nyaya"])
