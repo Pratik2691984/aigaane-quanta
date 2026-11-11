@@ -1,0 +1,33 @@
+name: Smoke Test Production
+on:
+  workflow_run:
+    workflows: ["Deploy Backend to Cloud Run"]
+    types: [completed]
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Cloud Run traffic migration
+        run: sleep 45
+      - name: Smoke-test all 4 public endpoints
+        run: |
+          set -e
+          BASE="https://api.aigaane.in"
+          CB="_cb=$RANDOM"
+
+          curl -sf "$BASE/health" | grep -q '"status":"ok"'
+          curl -sf "$BASE/api/v1/sruti?sa_hz=240&$CB" | grep -q intervals
+          curl -sf -X POST "$BASE/api/v1/parse" \
+            -H 'Content-Type: application/json' -d '{"text":"rAjaputraH"}' | grep -q candidates
+          curl -sf -X POST "$BASE/api/v1/pipeline" \
+            -H 'Content-Type: application/json' -d '{"text":"dharma"}' | grep -q studio_i_analysis
+
+          ITIHASA=$(curl -sf "$BASE/api/v1/itihasa/search?q=dharma&$CB")
+          echo "$ITIHASA" | grep -qv '"error"'
+          COUNT=$(echo "$ITIHASA" | python3 -c 'import json,sys;print(json.load(sys.stdin)["count"])')
+          test "$COUNT" -gt 0
+          echo "✅ All 4 endpoints live and verified"
