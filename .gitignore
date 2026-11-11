@@ -17,3 +17,8 @@ frontend/skills-lock.json
 
 # Test venv
 .venv_ci_test/
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
