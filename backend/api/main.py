@@ -17,6 +17,8 @@ app.add_middleware(
         "http://localhost:3000",
         "https://aigaane.in",
         "https://www.aigaane.in",
+        "https://api.aigaane.in",
+        "https://aigaane-api.web.app",
         "https://aigaane-engine-2026.web.app",
         "https://aigaane-engine-2026.firebaseapp.com",
     ],
