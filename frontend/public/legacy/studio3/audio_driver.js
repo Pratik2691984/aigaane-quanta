@@ -112,7 +112,7 @@ const SWARA_CANONICAL = {
 };
 
 class StudioIIIAudioEngine {
-  constructor(apiBase = "https://aigaane-api-977695793163.asia-south1.run.app") {
+  constructor(apiBase = "https://api.aigaane.in") {
     this.apiBase = apiBase;
     this.ctx = null;
     this.masterGain = null;
