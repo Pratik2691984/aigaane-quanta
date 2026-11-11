@@ -21,19 +21,30 @@ from backend.engine.pydantic_models import (
 
 logger = logging.getLogger(__name__)
 
+
 class EngineAdapter:
     def __init__(self):
-        self.version = "1.0.8-adapter"
+        self.version = "1.0.9-adapter"  # bumped: now normalizes input to IAST
 
-    def _triad(self, legacy: dict, fallback_input: str) -> OrthographicTriad:
+    def _triad(self, legacy: dict, fallback_input: str, original_input: str = None) -> OrthographicTriad:
+        """
+        Build the input_triad (SLP1, Devanagari, IAST) for the response.
+
+        `fallback_input` is what the engine was fed (likely IAST after normalization).
+        `original_input` is what the caller originally sent (SLP1, IAST, or Devanagari).
+        If original_input is provided, it's used verbatim as the `slp1` field to
+        preserve round-trip fidelity for SLP1 inputs.
+        """
         tl = legacy.get("transliteration") or {}
-        
+
         # Fallback SLP1 -> IAST map for basic display
-        iast_fallback = fallback_input.replace("H", "ḥ").replace("M", "ṃ").replace("A", "ā").replace("I", "ī").replace("U", "ū").replace("R", "ṭ").replace("S", "ṣ")
-        
+        iast_fallback = fallback_input.replace("H", "ḥ").replace("M", "ṃ").replace("A", "ā").replace("I", "ī").replace("U", "ū").replace("R", "ṛ").replace("S", "ṣ")
+
         deva = tl.get("devanagari") or iast_fallback
         iast = tl.get("iast") or iast_fallback
-        slp1 = legacy.get("surface") or fallback_input
+
+        # Prefer original_input (SLP1) if given; else fall back to legacy surface or fallback
+        slp1 = original_input or legacy.get("surface") or fallback_input
         return OrthographicTriad(slp1=slp1, devanagari=deva, iast=iast)
 
     def parse(self, slp1_input: str) -> KernelEnvelope:
@@ -43,31 +54,40 @@ class EngineAdapter:
                 candidates=[], rejected=[], engine_version=self.version + "-no-legacy"
             )
 
+        # Normalize any script (SLP1 / Devanagari / IAST) to IAST before passing
+        # to legacy_engine, which consumes IAST (post SLP1 fix in _script.py).
         try:
-            legacy = legacy_engine.parse(slp1_input)
-            
+            from _script import to_canonical_iast
+            _, iast_input = to_canonical_iast(slp1_input)
+        except Exception as _e:
+            logger.debug(f"Script normalization failed for {slp1_input!r}: {_e}")
+            iast_input = slp1_input  # graceful fallback
+
+        try:
+            legacy = legacy_engine.parse(iast_input)
+
             # If the legacy engine returned a samasa_tree with multiple children
             # but only 1 token, expand the tokens from the compound tree.
             samasa_tree = legacy.get("samasa_tree") or {}
             children = samasa_tree.get("children") or []
             tokens = legacy.get("tokens") or []
-            
+
             # Fallback: if samasa_tree is empty AND tokens has only 1 entry,
             # try _samasa.generate_compound_tree() directly.
             if len(children) < 2 and len(tokens) <= 1:
                 try:
                     import _samasa
-                    logger.info(f"[DEBUG] Attempting compound rescue for {slp1_input}")
-                    dyn_tree = _samasa.generate_compound_tree(slp1_input)
+                    logger.info(f"[DEBUG] Attempting compound rescue for {iast_input}")
+                    dyn_tree = _samasa.generate_compound_tree(iast_input)
                     logger.info(f"[DEBUG] dyn_tree = {dyn_tree}")
                     if dyn_tree and dyn_tree.get("children") and len(dyn_tree["children"]) >= 2:
                         samasa_tree = dyn_tree
                         children = dyn_tree["children"]
                         legacy["samasa_tree"] = dyn_tree
-                        logger.info(f"Adapter rescued compound {slp1_input} via generate_compound_tree")
+                        logger.info(f"Adapter rescued compound {iast_input} via generate_compound_tree")
                 except Exception as e:
-                    logger.warning(f"Adapter compound rescue failed for {slp1_input}: {e}")
-            
+                    logger.warning(f"Adapter compound rescue failed for {iast_input}: {e}")
+
             if len(children) >= 2 and len(tokens) <= 1:
                 expanded_tokens = []
                 for idx, child in enumerate(children):
@@ -83,9 +103,9 @@ class EngineAdapter:
                         "confidence": child.get("confidence", 0.90),
                     })
                 legacy["tokens"] = expanded_tokens
-                logger.info(f"Expanded compound {slp1_input} into {len(expanded_tokens)} tokens from samasa_tree")
+                logger.info(f"Expanded compound {iast_input} into {len(expanded_tokens)} tokens from samasa_tree")
         except Exception as e:
-            logger.error(f"Legacy parse failed on {slp1_input}: {e}")
+            logger.error(f"Legacy parse failed on {iast_input}: {e}")
             return KernelEnvelope(
                 input_triad=OrthographicTriad(slp1=slp1_input, devanagari=slp1_input, iast=slp1_input),
                 candidates=[], rejected=[], engine_version=self.version + "-error"
@@ -102,9 +122,10 @@ class EngineAdapter:
                 engine_version=self.version
             )
 
-        triad = self._triad(legacy, slp1_input)
+        # Pass both the normalized IAST (fallback) and the original input (for triad round-trip)
+        triad = self._triad(legacy, iast_input, original_input=slp1_input)
         candidates = []
-        
+
         primary = self._adapt_primary(legacy)
         if primary is not None:
             candidates.append(primary)
@@ -152,7 +173,7 @@ class EngineAdapter:
 
         provenance = legacy.get("provenance") or []
         engine_ver = next((p.split("=", 1)[1] for p in provenance if p.startswith("engine=")), "unknown")
-        
+
         authority = Authority(
             recension="Kasika_Vrtti",
             primary_source=f"Aṣṭādhyāyī ({engine_ver})",
@@ -239,5 +260,5 @@ class EngineAdapter:
         }
         if samasa_type and samasa_type in samasa_to_sutra:
             return samasa_to_sutra[samasa_type]
-            
+
         return ["2.1.1"]
