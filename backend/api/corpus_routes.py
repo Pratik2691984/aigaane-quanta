@@ -10,16 +10,11 @@ from pathlib import Path
 router = APIRouter()
 
 CANON_DB_PATH = Path(__file__).resolve().parent.parent / "data" / "canon.db"
-from pathlib import Path
 
-# canon.db ships inside backend/data/, resolved relative to THIS file's location.
-# Works on Windows, macOS, Linux, and Cloud Run â€” no hardcoded absolute paths.
-CANON_DB_PATH = Path(__file__).resolve().parent.parent / "data" / "canon.db"
-
-# Optional: allow override via env var for local testing / alternative deploy layouts
+# Optional override for local testing / alternative deploy layouts
+import os
 if os.environ.get("AIGAANE_CANON_DB"):
     CANON_DB_PATH = Path(os.environ["AIGAANE_CANON_DB"])
-
 
 @router.get("/search")
 def search_verses(q: str = Query(..., min_length=2), limit: int = 10):
