@@ -60,7 +60,12 @@ from backend.engine.pydantic_models import (
 
 logger = logging.getLogger(__name__)
 
-CANON_DB_PATH = Path("C:/aigaane-master/frontend/public/sqlite/canon.db")
+CANON_DB_PATH = Path(__file__).resolve().parent.parent / "data" / "canon.db"
+
+# Optional override for testing / alternative deploy layouts
+import os
+if os.environ.get("AIGAANE_CANON_DB"):
+    CANON_DB_PATH = Path(os.environ["AIGAANE_CANON_DB"])
 
 _ENDINGS_TO_STRIP = [
     "āḥ", "aḥ", "āṇi", "āni",

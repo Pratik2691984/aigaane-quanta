@@ -1411,44 +1411,48 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
 
       // --- 4. Kosha Lexicon Lookup ---
     async function lookupKosha() {
-      const word = document.getElementById("kosha-word").value.trim();
-      const badge = document.getElementById("k-badge");
-      const hint = document.getElementById("k-hint");
+  const word = document.getElementById("kosha-word").value.trim();
+  const badge = document.getElementById("k-badge");
+  const hint = document.getElementById("k-hint");
 
-      badge.className = "badge";
-      badge.textContent = "Searching...";
+  badge.className = "badge";
+  badge.textContent = "Searching...";
 
-      try {
-        const resp = await fetch(`${API_BASE}/api/v1/parse`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-          body: JSON.stringify({ text: word })
-        });
-        if (resp.ok) {
-          const data = await resp.json();
-          const tok = data.tokens[0];
-          document.getElementById("k-word").textContent = word;
-          badge.className = "badge ok";
-          badge.textContent = "✓ In Lexicon";
-          
-          let lingaStr = tok.linga ? ` · ${tok.linga}` : "";
-          if (tok.stem === "latā") lingaStr = " · Ākārānta Strīliṅga";
-          else if (tok.stem === "phala") lingaStr = " · Akārānta Napuṃsakaliṅga";
-          else if (tok.stem === "rāma" || tok.stem === "deva") lingaStr = " · Akārānta Pulliṅga";
-          else if (tok.stem === "marut") lingaStr = " · Takārānta Pulliṅga (Halanta)";
-          else if (tok.stem === "vāc") lingaStr = " · Cakārānta Strīliṅga (coḥ kuḥ 8.2.30)";
-          
-          hint.textContent = `Stem: ${tok.stem} | POS: ${tok.pos}${lingaStr}`;
-        } else {
-          badge.className = "badge err";
-          badge.textContent = "✗ Not Found";
-          hint.textContent = `Word '${word}' not found in current lexicon.`;
-        }
-      } catch (e) {
-        badge.className = "badge err";
-        badge.textContent = "Error";
+  try {
+    const resp = await fetch(`${API_BASE}/api/v1/parse`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ text: word })
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      // /parse returns {candidates: [{parse: [{surface, stem, role}]}]}
+      const firstCandidate = (data.candidates && data.candidates[0]) || null;
+      const firstToken = firstCandidate && firstCandidate.parse && firstCandidate.parse[0];
+
+      if (!firstToken) {
+        badge.className = "badge warn";
+        badge.textContent = "✗ No match";
+        hint.textContent = `'${word}' was not found in the current lexicon.`;
+        return;
       }
+
+      document.getElementById("k-word").textContent = word;
+      badge.className = "badge ok";
+      badge.textContent = "✓ In Lexicon";
+      hint.textContent = `Surface: ${firstToken.surface} | Stem: ${firstToken.stem} | Role: ${firstToken.role}`;
+    } else {
+      badge.className = "badge err";
+      badge.textContent = "✗ Not Found";
+      hint.textContent = `Word '${word}' not found in current lexicon.`;
     }
+  } catch (e) {
+    console.error("lookupKosha failed:", e);
+    badge.className = "badge err";
+    badge.textContent = "Error";
+    hint.textContent = `Lookup failed: ${e.message}`;
+  }
+}
 
     // --- 5. Gāndharvaveda 22-Śruti Audio Synthesis ---
     // Reusing existing audioCtx declaration
