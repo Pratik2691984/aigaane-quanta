@@ -4,6 +4,38 @@
       "target": "main",
       "public": "dist",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "/index.html",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+          ]
+        },
+        {
+          "source": "/",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+          ]
+        },
+        {
+          "source": "**/*.@(html)",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+          ]
+        },
+        {
+          "source": "**/*.@(js|css|svg|png|jpg|jpeg|webp|woff|woff2)",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }
+          ]
+        },
+        {
+          "source": "**/*.@(wav|mp3|ogg)",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=86400" }
+          ]
+        }
+      ],
       "rewrites": [
         {
           "source": "/api/**",
