@@ -1,4 +1,4 @@
-"""
+﻿"""
 Morphology (Subanta/Tiṅanta) domain routes.
 
 Wraps `_lexicon.lookup()` which returns full morphological analysis:
@@ -13,7 +13,7 @@ _ENGINE_DIR = Path(__file__).resolve().parent.parent / "engine"
 if str(_ENGINE_DIR) not in sys.path:
     sys.path.insert(0, str(_ENGINE_DIR))
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 
@@ -129,3 +129,58 @@ async def morphology_probe():
         "has_analyze_subanta": _LEXICON_OK and hasattr(_lexicon, "_analyze_subanta"),
         "has_analyze_tinanta": _LEXICON_OK and hasattr(_lexicon, "_analyze_tinanta"),
     }
+# ================================================================
+# Q4-B: Tiṅanta endpoints
+# ================================================================
+
+try:
+    from _tinanta import (
+        conjugate as _tinanta_conjugate,
+        paradigm as _tinanta_paradigm,
+        list_dhatus as _tinanta_list_dhatus,
+    )
+    _TINANTA_OK = True
+    _TINANTA_ERR = None
+except Exception as _e:
+    _TINANTA_OK = False
+    _TINANTA_ERR = str(_e)
+
+
+@router.get("/tinanta/dhatus")
+async def tinanta_dhatus():
+    """List available dhātus for verb conjugation."""
+    if not _TINANTA_OK:
+        raise HTTPException(status_code=503, detail=f"Tiṅanta unavailable: {_TINANTA_ERR}")
+    return {"dhatus": _tinanta_list_dhatus()}
+
+
+@router.get("/tinanta")
+async def tinanta_conjugate(
+    dhatu: str = Query(..., description="dhātu in IAST, e.g. 'kṛ', 'bhū'"),
+    lakara: str = Query("laṭ", description="laṭ | laṅ | lṛṭ | loṭ"),
+    purusha: str = Query("prathama_purusha"),
+    vacana: str = Query("ekavacana"),
+    pada: Optional[str] = Query(None, description="parasmaipada | ātmanepada"),
+):
+    """Generate a single tiṅanta form."""
+    if not _TINANTA_OK:
+        raise HTTPException(status_code=503, detail=f"Tiṅanta unavailable: {_TINANTA_ERR}")
+    result = _tinanta_conjugate(dhatu, lakara, purusha, vacana, pada)
+    if "error" in result:
+        raise HTTPException(status_code=400, detail=result["error"])
+    return result
+
+
+@router.get("/tinanta/paradigm")
+async def tinanta_paradigm(
+    dhatu: str = Query(..., description="dhātu in IAST"),
+    lakara: str = Query("laṭ", description="laṭ | laṅ | lṛṭ | loṭ"),
+    pada: Optional[str] = Query(None),
+):
+    """Return the full 9-cell paradigm."""
+    if not _TINANTA_OK:
+        raise HTTPException(status_code=503, detail=f"Tiṅanta unavailable: {_TINANTA_ERR}")
+    result = _tinanta_paradigm(dhatu, lakara, pada)
+    if "error" in result:
+        raise HTTPException(status_code=400, detail=result["error"])
+    return result
