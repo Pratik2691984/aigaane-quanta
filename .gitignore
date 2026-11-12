@@ -35,3 +35,7 @@ backend/data/*.db.bak
 # Test output files
 *_check.json
 backend/data/*.db.bak*
+
+# Backup files
+*.bak
+*.bak-cleanup

@@ -31,7 +31,7 @@ except Exception as e:
 @router.post("/")
 @router.post("")
 async def pipeline_run(
-    payload: dict = Body(..., example={"text": "dharmakṣetre kurukṣetre", "sa_hz": 240.0}),
+    payload: dict = Body(..., examples=["text": "dharmakṣetre kurukṣetre", "sa_hz": 240.0}),
 ):
     """Run the deterministic 5-stage pipeline (normalize → sandhi → morphology → chandas → śruti)."""
     if not _PIPE_OK:
