@@ -1,8 +1,8 @@
 """
 Aigaane v0.5.1 — Multi-Script Transliteration Engine
 Provides algorithmic character-wise Devanāgarī to IAST transliteration,
-ITRANS conversion, SLP1 detection+conversion, script detection, and
-script-aware parts formatting.
+ITRANS conversion, SLP1 detection+conversion, script detection,
+script-aware parts formatting, AND IAST → Devanagari (v0.5.2).
 """
 
 from typing import Tuple, List
@@ -109,36 +109,22 @@ def itrans_to_iast(text: str) -> str:
 # ------------------------------------------------------------------ #
 
 _SLP1_TO_IAST_MAP = {
-    # Two-char markers (must be replaced before single-char)
     "RR": "ṝ", "LL": "ḹ",
-    # Single-char long vowels
     "A": "ā", "I": "ī", "U": "ū",
-    # Single-char vocalic liquids
     "R": "ṛ", "L": "ḷ",
-    # Diphthongs
     "E": "ai", "O": "au",
-    # Nasals and visarga
     "M": "ṃ", "H": "ḥ",
     "Y": "ñ", "N": "ṇ",
-    # Retroflex and sibilants
     "w": "ṭ", "q": "ḍ",
     "S": "ś", "z": "ṣ",
 }
 
 
 def slp1_to_iast(text: str) -> str:
-    """
-    Convert SLP1 ASCII to IAST.
-
-    Two-char markers (RR, LL) replaced first, then single-char markers.
-    Does not modify lowercase ASCII (which is the same in SLP1 and IAST).
-    """
     if not text:
         return text
     result = text
-    # Two-char markers first
     result = result.replace("RR", "ṝ").replace("LL", "ḹ")
-    # Single-char markers
     for slp1, iast in _SLP1_TO_IAST_MAP.items():
         if slp1 in ("RR", "LL"):
             continue
@@ -151,49 +137,24 @@ def slp1_to_iast(text: str) -> str:
 # ------------------------------------------------------------------ #
 
 def detect_script(text: str) -> str:
-    """
-    Detect the input script: 'devanagari', 'itrans', 'slp1', or 'iast'.
-
-    Detection order:
-    1. Any Devanagari codepoint (U+0900-U+097F) → 'devanagari'
-    2. Presence of SLP1-only uppercase markers (H, RR, LL, etc.) → 'slp1'
-    3. Presence of ITRANS-style markers (aa, ii, uu, ~n, etc.) → 'itrans'
-    4. Otherwise → 'iast' (default for lowercase + diacritics)
-
-    Note: 'H' (visarga) is a strong SLP1 signal — IAST uses 'ḥ',
-    ITRANS uses 'H' only rarely and usually with other ITRANS markers.
-    """
     if not text:
         return "iast"
-
-    # 1. Devanagari
     for ch in text:
         if "\u0900" <= ch <= "\u097f":
             return "devanagari"
-
-    # 2. SLP1: uppercase markers that are SLP1-specific
-    # H is the strongest signal (visarga in SLP1, absent from IAST/ITRANS as bare char)
     if "H" in text:
         return "slp1"
-    # Two-char SLP1 markers
     if "RR" in text or "LL" in text:
         return "slp1"
-    # Other SLP1 uppercase markers (A/I/U/R/L/E/O/M/N/S/z/Y/w/q)
-    # Note: 'A' also appears in ITRANS as a marker — check for combined SLP1 signals
     _SLP1_MARKERS = set("AIURLEOMNSzYwq")
     if any(ch in _SLP1_MARKERS for ch in text):
-        # But 'A' alone might be ITRANS ā; check for other ITRANS markers first
         if any(m in text for m in ("aa", "ii", "uu", "~n", "~N", "R^i", ".m")):
             return "itrans"
         return "slp1"
-
-    # 3. ITRANS markers
     itrans_markers = ["~N", "~n", "R^i", "aa", "ii", "uu", ".m", "Sh", "Th", "Dh"]
     for marker in itrans_markers:
         if marker in text:
             return "itrans"
-
-    # 4. Default: IAST
     return "iast"
 
 
@@ -202,15 +163,6 @@ def detect_script(text: str) -> str:
 # ------------------------------------------------------------------ #
 
 def to_canonical_iast(text: str) -> Tuple[str, str]:
-    """
-    Detect input script and return (detected_script, iast_text).
-
-    Handles all four scripts:
-      - devanagari → deva_to_iast()
-      - itrans     → itrans_to_iast()
-      - slp1       → slp1_to_iast()
-      - iast       → returned unchanged
-    """
     script = detect_script(text)
     if script == "devanagari":
         return script, deva_to_iast(text)
@@ -244,19 +196,160 @@ _IAST_TO_SLP1 = {
 
 
 def to_slp1(text: str) -> str:
-    """
-    Normalize IAST/Devanagari/ITRANS input to SLP1 ASCII.
-
-    This is a one-way approximation: it converts IAST diacritics to their
-    SLP1 ASCII equivalents. It does NOT handle Devanagari; call
-    to_canonical_iast first if the input might be Devanagari.
-    """
     if not text:
         return text
     out = text
-    # Two-character replacements first
     out = out.replace("ai", "E").replace("au", "O")
-    # Single-character replacements
     for k, v in _IAST_TO_SLP1.items():
         out = out.replace(k, v)
     return out
+
+
+# ══════════════════════════════════════════════════════════════════ #
+#   IAST → Devanagari transliteration (v0.5.2)                       #
+# ══════════════════════════════════════════════════════════════════ #
+
+# NOTE: ḷ and ḹ are treated as CONSONANT ळ (retroflex lateral), not vowel ऌ.
+# Rationale: in Vedic Sanskrit, īḷe, agniṃ īḷe etc. use ḷ as a consonant.
+# The vowel ḷ (kḷpta) is extremely rare and can be revisited if needed.
+
+_IAST_VOWELS_INDEPENDENT = {
+    "a": "अ", "ā": "आ", "i": "इ", "ī": "ई",
+    "u": "उ", "ū": "ऊ", "ṛ": "ऋ", "ṝ": "ॠ",
+    "e": "ए", "ai": "ऐ",
+    "o": "ओ", "au": "औ",
+}
+
+_IAST_VOWELS_DEPENDENT = {
+    "a": "",
+    "ā": "ा", "i": "ि", "ī": "ी",
+    "u": "ु", "ū": "ू", "ṛ": "ृ", "ṝ": "ॄ",
+    "e": "े", "ai": "ै",
+    "o": "ो", "au": "ौ",
+}
+
+_IAST_CONSONANTS = {
+    "k": "क", "kh": "ख", "g": "ग", "gh": "घ", "ṅ": "ङ",
+    "c": "च", "ch": "छ", "j": "ज", "jh": "झ", "ñ": "ञ",
+    "ṭ": "ट", "ṭh": "ठ", "ḍ": "ड", "ḍh": "ढ", "ṇ": "ण",
+    "t": "त", "th": "थ", "d": "द", "dh": "ध", "n": "न",
+    "p": "प", "ph": "फ", "b": "ब", "bh": "भ", "m": "म",
+    "y": "य", "r": "र", "l": "ल", "v": "व",
+    "ś": "श", "ṣ": "ष", "s": "स", "h": "ह",
+    "ḷ": "ळ",
+    "ḹ": "ळ",
+}
+
+_IAST_SIGNS = {
+    "ṃ": "ं", "ṁ": "ं", "ḥ": "ः", "m̐": "ँ",
+}
+
+
+def _longest_match_iast(text: str, start: int, mapping: dict) -> Tuple[str, int]:
+    best_key = ""
+    best_len = 0
+    for key in mapping:
+        if text.startswith(key, start) and len(key) > best_len:
+            best_key = key
+            best_len = len(key)
+    return best_key, best_len
+
+
+def iast_to_devanagari(text: str) -> str:
+    """
+    Convert IAST (with diacritics) to Devanagari.
+
+    Handles:
+      - Independent vowels (word start or after vowel)
+      - Dependent vowel matras (after consonant)
+      - Consonant clusters with virama
+      - Word-final consonants (virama inserted before space/punctuation/end)
+      - Anusvara (ṃ/ṁ), visarga (ḥ), candrabindu (m̐)
+      - IAST | → Devanagari ।, || → ॥
+      - ḷ/ḹ as consonant ळ (retroflex lateral, Vedic usage)
+
+    Examples:
+        iast_to_devanagari("dharma")                → "धर्म"
+        iast_to_devanagari("saṃskṛtam")             → "संस्कृतम्"
+        iast_to_devanagari("agnim īḷe purohitaṃ")  → "अग्निम् ईळे पुरोहितं"
+    """
+    if not text:
+        return ""
+
+    for ch in text:
+        if "\u0900" <= ch <= "\u097f":
+            return text
+
+    result = []
+    i = 0
+    n = len(text)
+    prev_was_consonant = False
+
+    while i < n:
+        ch = text[i]
+
+        # Danda (|| before |)
+        if text.startswith("||", i):
+            if prev_was_consonant:
+                result.append(VIRAMA)
+                prev_was_consonant = False
+            result.append("॥")
+            i += 2
+            continue
+        if ch == "|":
+            if prev_was_consonant:
+                result.append(VIRAMA)
+                prev_was_consonant = False
+            result.append("।")
+            i += 1
+            continue
+
+        # Whitespace / punctuation / digits
+        if ch.isspace() or ch in ".,;:!?()-–—/\\'\"’‘“”…0123456789":
+            if prev_was_consonant:
+                result.append(VIRAMA)
+                prev_was_consonant = False
+            result.append(ch)
+            i += 1
+            continue
+
+        # Consonant (longest match: kh before k)
+        consonant, clen = _longest_match_iast(text, i, _IAST_CONSONANTS)
+        if clen > 0:
+            if prev_was_consonant:
+                result.append(VIRAMA)
+            result.append(_IAST_CONSONANTS[consonant])
+            prev_was_consonant = True
+            i += clen
+            continue
+
+        # Vowel (longest match: ai before a)
+        vowel, vlen = _longest_match_iast(text, i, _IAST_VOWELS_INDEPENDENT)
+        if vlen > 0:
+            if prev_was_consonant:
+                result.append(_IAST_VOWELS_DEPENDENT[vowel])
+                prev_was_consonant = False
+            else:
+                result.append(_IAST_VOWELS_INDEPENDENT[vowel])
+                prev_was_consonant = False
+            i += vlen
+            continue
+
+        # Sign (anusvara, visarga, candrabindu)
+        sign, slen = _longest_match_iast(text, i, _IAST_SIGNS)
+        if slen > 0:
+            result.append(_IAST_SIGNS[sign])
+            prev_was_consonant = False
+            i += slen
+            continue
+
+        # Unknown char → pass through
+        result.append(ch)
+        prev_was_consonant = False
+        i += 1
+
+    # Trailing consonant at end of string → virama
+    if prev_was_consonant:
+        result.append(VIRAMA)
+
+    return "".join(result)
