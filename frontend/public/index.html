@@ -818,49 +818,62 @@
     }
 
     async function combineSandhi() {
-      const p1 = document.getElementById("sandhi-p1").value.trim();
-      const p2 = document.getElementById("sandhi-p2").value.trim();
-      document.getElementById("s-p1").textContent = p1;
-      document.getElementById("s-p2").textContent = p2;
-      document.getElementById("s-res").textContent = "...";
-      const testInput = (p1 === "tat" && p2 === "iti") ? "taditi" : (p1 === "sat" && p2 === "iti") ? "saditi" : (p1 + p2);
-      try {
-        const resp = await fetch(`${API_BASE}/api/v1/parse`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-          body: JSON.stringify({ text: testInput })
-        });
-        if (!resp.ok) throw new Error("Parse failed");
-        const data = await resp.json();
-        if (data.sandhi_splits && data.sandhi_splits.length > 0) {
-          const split = data.sandhi_splits[0];
-          document.getElementById("s-res").textContent = testInput;
-          document.getElementById("s-rule-name").textContent = split.rule;
-          document.getElementById("s-sutra").textContent = `Pāṇini ${split.rule_canon_ref}` + (split.precedence_chain ? ` (${split.precedence_chain.join(" → ")})` : "");
-          document.getElementById("s-desc").textContent = `Derived into: ${split.parts.join(" + ")} (Confidence: ${(split.confidence * 100).toFixed(0)}%)`;
-        } else {
-          document.getElementById("s-res").textContent = testInput;
-          document.getElementById("s-rule-name").textContent = "Grounded Token";
-          document.getElementById("s-sutra").textContent = "Pāṇini Lexicon";
-          document.getElementById("s-desc").textContent = "Atomic token resolved directly without split.";
-        }
-      } catch (e) {
-        document.getElementById("s-res").textContent = testInput;
-        document.getElementById("s-rule-name").textContent = "Unsplit Input";
-        document.getElementById("s-sutra").textContent = "No Match";
-        document.getElementById("s-desc").textContent = "Input parsed without registered junction.";
-      }
-      try {
-        const p1DomVal = document.getElementById("sandhi-p1")?.value?.trim() || "";
-        const p2DomVal = document.getElementById("sandhi-p2")?.value?.trim() || "";
-        const sRuleCanon = document.getElementById("s-sutra")?.textContent?.match(/\d+\.\d+\.\d+/)?.[0] || "6.1.87";
-        const sRuleName = document.getElementById("s-rule-name")?.textContent?.trim() || "Guna Sandhi";
-        const sOutput = document.getElementById("s-res")?.textContent?.trim() || p1DomVal + p2DomVal;
-        renderSandhiDAG(p1DomVal, p2DomVal, sOutput, sRuleName, sRuleCanon);
-      } catch(dagErr) {
-        console.warn("DAG render skipped:", dagErr);
-      }
+  const p1 = document.getElementById("sandhi-p1")?.value?.trim() || "";
+  const p2 = document.getElementById("sandhi-p2")?.value?.trim() || "";
+  if (!p1 || !p2) return;
+
+  const badge = document.getElementById("s-rule-name");
+  const sutraEl = document.getElementById("s-sutra");
+  const descEl = document.getElementById("s-desc");
+  const resEl = document.getElementById("s-res");
+
+  badge.className = "badge";
+  badge.textContent = "Combining...";
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/v3/sandhi/combine`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ left: p1, right: p2 }),
+    });
+    if (!resp.ok) throw new Error(`Sandhi combine failed (${resp.status})`);
+    const data = await resp.json();
+    const cand = (data.candidates && data.candidates[0]) || null;
+
+    if (!cand) {
+      resEl.textContent = p1 + p2;
+      badge.className = "badge warn";
+      badge.textContent = "No sandhi candidate";
+      sutraEl.textContent = "—";
+      descEl.textContent = "No registered sandhi rule applies to this junction.";
+    } else {
+      resEl.textContent = cand.surface;
+      badge.className = "badge ok";
+      badge.textContent = cand.rule ? cand.rule.charAt(0).toUpperCase() + cand.rule.slice(1) + " Sandhi" : "Sandhi";
+      sutraEl.textContent = `Pāṇini ${cand.sutra || "—"}`;
+      descEl.textContent = `Applied sūtra ${cand.sutra} → ${cand.surface} (score ${cand.score != null ? cand.score.toFixed(2) : "n/a"})`;
     }
+  } catch (e) {
+    console.error("combineSandhi failed:", e);
+    resEl.textContent = p1 + p2;
+    badge.className = "badge err";
+    badge.textContent = "Error";
+    sutraEl.textContent = "—";
+    descEl.textContent = `Sandhi combine failed: ${e.message}`;
+  }
+
+  try {
+    const p1DomVal = document.getElementById("sandhi-p1")?.value?.trim() || "";
+    const p2DomVal = document.getElementById("sandhi-p2")?.value?.trim() || "";
+    const sRuleCanon = document.getElementById("s-sutra")?.textContent?.match(/\d+\.\d+\.\d+/)?.[0] || "6.1.87";
+    const sRuleName = document.getElementById("s-rule-name")?.textContent?.trim() || "Guṇa Sandhi";
+    const sOutput = document.getElementById("s-res")?.textContent?.trim() || p1DomVal + p2DomVal;
+    renderSandhiDAG(p1DomVal, p2DomVal, sOutput, sRuleName, sRuleCanon);
+  } catch (dagErr) {
+    console.warn("DAG render skipped:", dagErr);
+  }
+}
+
 
     // --- 2. Chandas Prosody Scanner ---
       async function scanChandas() {
