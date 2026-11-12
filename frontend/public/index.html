@@ -1468,7 +1468,7 @@
         document.getElementById("sem-gloss").textContent = sem.gloss || "\u2014";
 
         const renderList = (arr, cls) => (arr && arr.length)
-          ? arr.map(x => `<span class="${cls}">${x}</span>`).join("")
+          ? arr.map(x => `<span class="${cls}">${x}</span>`).join(" ")
           : "\u2014";
 
         document.getElementById("sem-synonyms").innerHTML = renderList(sem.synonyms, "tag");
