@@ -451,6 +451,58 @@
         </tbody>
       </table>
     </section>
+    <!-- 1c. Verb Conjugation (Q4-B) -->
+    <section class="panel" id="tinanta-panel">
+      <div class="panel-header">
+        <h2>Verb Conjugation · Tiṅanta</h2>
+        <span class="badge">Q4-B</span>
+      </div>
+      <p class="hint">
+        Deterministic tiṅanta generation for kṛ, bhū, gam, as across laṭ / laṅ / lṛṭ / loṭ.
+        Verified forms from paradigm tables (✓); other roots use generative fallback (~).
+      </p>
+      <div class="inputs" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <label style="display:flex;flex-direction:column;gap:4px;color:#94a3b8;font-size:12px;">Dhātu
+          <select id="tin-dhatu" class="sa-lg" onchange="renderTinanta()" style="padding:6px;border-radius:6px;background:#1e293b;color:#e2e8f0;border:1px solid #334155;">
+            <option value="kṛ">kṛ — to do</option>
+            <option value="bhū" selected>bhū — to be</option>
+            <option value="gam">gam — to go</option>
+            <option value="as">as — to be (irregular)</option>
+          </select>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:4px;color:#94a3b8;font-size:12px;">Lakāra
+          <select id="tin-lakara" onchange="renderTinanta()" style="padding:6px;border-radius:6px;background:#1e293b;color:#e2e8f0;border:1px solid #334155;">
+            <option value="laṭ">laṭ (present)</option>
+            <option value="laṅ" selected>laṅ (imperfect)</option>
+            <option value="lṛṭ">lṛṭ (future)</option>
+            <option value="loṭ">loṭ (imperative)</option>
+          </select>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:4px;color:#94a3b8;font-size:12px;">Pada
+          <select id="tin-pada" onchange="renderTinanta()" style="padding:6px;border-radius:6px;background:#1e293b;color:#e2e8f0;border:1px solid #334155;">
+            <option value="parasmaipada" selected>parasmaipada</option>
+            <option value="ātmanepada">ātmanepada (kṛ only)</option>
+          </select>
+        </label>
+        <button onclick="renderTinanta()" style="align-self:flex-end;">Generate</button>
+      </div>
+      <div class="result" id="tinanta-result" style="margin-top:14px;">
+        <p class="hint" id="tin-hint">Loading…</p>
+        <table id="tinanta-table" style="width:100%;border-collapse:collapse;margin-top:10px;">
+          <thead>
+            <tr style="text-align:left;color:#64748b;font-size:12px;">
+              <th style="padding:8px;">Puruṣa</th>
+              <th style="padding:8px;">Ekavacana</th>
+              <th style="padding:8px;">Dvivacana</th>
+              <th style="padding:8px;">Bahuvacana</th>
+            </tr>
+          </thead>
+          <tbody id="tinanta-body">
+            <tr><td colspan="4" style="color:#94a3b8;padding:8px;">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
     <!-- 2. Chandas Scanner -->
     <section class="panel">
       <div class="panel-header">
@@ -1849,6 +1901,6 @@
         });
       });
     })();
-  </script>    <script src="js/sandhi-golden.js"></script>
+  </script>    <script src="js/sandhi-golden.js"></script>    <script src="js/tinanta.js"></script>
 </body>
 </html>
