@@ -89,7 +89,7 @@ def legacy_pipeline(payload: dict = Body(...)):
         return {
             "studio_ii_verification": {"is_valid_inference": True, "mode": "Deterministic"},
             "studio_i_analysis": {"tokens": [t.dict() for t in (parse_result.candidates[0].parse if parse_result.candidates else [])]},
-            "studio_iii_acoustics": {"meter_scansion": {"meter": "Anuá¹£á¹­ubh"}},
+            "studio_iii_acoustics": {"meter_scansion": {"meter": "Anuṣṭubh"}},
             "sruti_table": get_sruti_table(240.0),
             "parse_envelope": parse_result.model_dump() if hasattr(parse_result, "model_dump") else None,
         }
@@ -113,7 +113,6 @@ def health():
         "version": "2.3.0-legacy-ui-bridge",
     }
 
-
 @app.get("/")
 def root():
     return {
@@ -122,3 +121,76 @@ def root():
         "version": APP_VERSION,
         "docs": "/docs",
     }
+
+# ============================================================
+# DIAGNOSTIC ENDPOINT — Added to debug corpus expansion
+# ============================================================
+@app.get("/api/v1/diagnostics/db")
+def diagnostics_db():
+    """Report canon.db state from inside the running container."""
+    import sqlite3
+    from pathlib import Path
+    
+    db_path = Path(__file__).resolve().parent.parent / "data" / "canon.db"
+    
+    if not db_path.exists():
+        return {
+            "error": "canon.db NOT FOUND",
+            "expected_path": str(db_path),
+            "cwd": str(Path.cwd()),
+        }
+    
+    try:
+        conn = sqlite3.connect(str(db_path))
+        cur = conn.cursor()
+        
+        # Total verses
+        cur.execute("SELECT COUNT(*) FROM verses")
+        verse_count = cur.fetchone()[0]
+        
+        # Total FTS entries
+        cur.execute("SELECT COUNT(*) FROM verses_fts")
+        fts_count = cur.fetchone()[0]
+        
+        # Sources breakdown
+        cur.execute("SELECT source, COUNT(*) FROM verses GROUP BY source ORDER BY COUNT(*) DESC")
+        sources = [{"source": row[0], "count": row[1]} for row in cur.fetchall()]
+        
+        # Test search 'dharma'
+        cur.execute(
+            "SELECT COUNT(*) FROM verses_fts f JOIN verses v ON v.rowid = f.rowid "
+            "WHERE verses_fts MATCH 'dharma*'"
+        )
+        dharma_matches = cur.fetchone()[0]
+        
+        # Sample non-Gita verse
+        cur.execute(
+            "SELECT record_id, book, verse, text FROM verses "
+            "WHERE source NOT LIKE '%gita%' LIMIT 1"
+        )
+        sample = cur.fetchone()
+        sample_verse = None
+        if sample:
+            sample_verse = {
+                "record_id": sample[0],
+                "book": sample[1],
+                "verse": sample[2],
+                "text_preview": sample[3][:80] if sample[3] else None,
+            }
+        
+        conn.close()
+        
+        return {
+            "db_path": str(db_path),
+            "db_size_bytes": db_path.stat().st_size,
+            "verse_count": verse_count,
+            "fts_count": fts_count,
+            "sources": sources,
+            "dharma_search_matches": dharma_matches,
+            "sample_non_gita_verse": sample_verse,
+        }
+    except Exception as e:
+        return {
+            "error": str(e),
+            "db_path": str(db_path),
+        }
