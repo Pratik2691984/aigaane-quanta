@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="sa">
 <head>
   <title>Aigaane — Deterministic Pāṇinian Sanskrit Engine & 22-Śruti Acoustics</title>
@@ -425,6 +425,32 @@
       </div>
     </section>
 
+    <!-- 1b. Known-Good Sandhi Verification Card -->
+    <section class="panel" id="sandhi-golden-panel">
+      <div class="panel-header">
+        <h2>Known-Good Sandhi Cases</h2>
+        <span class="badge">Deterministic Audit</span>
+      </div>
+      <p class="hint">
+        Live verification against the deterministic engine. Each row shows the returned
+        surface form, the governing sūtra, and pass/fail status.
+      </p>
+      <table id="sandhi-golden-table" style="width:100%;border-collapse:collapse;margin-top:12px;">
+        <thead>
+          <tr style="text-align:left;color:#64748b;font-size:12px;">
+            <th style="padding:8px;">Left</th>
+            <th style="padding:8px;">Right</th>
+            <th style="padding:8px;">Expected</th>
+            <th style="padding:8px;">Got</th>
+            <th style="padding:8px;">Sūtra</th>
+            <th style="padding:8px;">Status</th>
+          </tr>
+        </thead>
+        <tbody id="sandhi-golden-body">
+          <tr><td colspan="6" style="color:#94a3b8;padding:8px;">Running...</td></tr>
+        </tbody>
+      </table>
+    </section>
     <!-- 2. Chandas Scanner -->
     <section class="panel">
       <div class="panel-header">
@@ -1810,6 +1836,6 @@
         });
       });
     })();
-  </script>
+  </script>    <script src="js/sandhi-golden.js"></script>
 </body>
 </html>
