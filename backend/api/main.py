@@ -1,8 +1,11 @@
 ﻿from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.api import quanta_routes, aigaane_routes, corpus_routes, samasa_routes, sandhi_routes, morphology_routes, chandas_routes, lexicon_routes, studio3_routes
+from backend.api import (
+    quanta_routes, aigaane_routes, corpus_routes, samasa_routes,
+    sandhi_routes, morphology_routes, chandas_routes, lexicon_routes,
+    studio3_routes, nyaya_routes, pipeline_routes,
+)
 APP_VERSION = "2.3.0-legacy-ui-bridge"
-from backend.api import quanta_routes, aigaane_routes, corpus_routes, samasa_routes, sandhi_routes, morphology_routes, chandas_routes, lexicon_routes, studio3_routes, nyaya_routes
 
 app = FastAPI(
     title="Quanta-Aigaane Neuro-Symbolic API",
@@ -104,6 +107,10 @@ def legacy_itihasa_search(q: str, limit: int = 10):
 
 app.include_router(nyaya_routes.router, prefix="/api/v1/nyaya", tags=["nyaya"])
 app.include_router(nyaya_routes.router, prefix="/api/v3/nyaya", tags=["nyaya"])
+
+
+app.include_router(pipeline_routes.router, prefix="/api/v1/pipeline/v2", tags=["pipeline"])
+app.include_router(pipeline_routes.router, prefix="/api/v3/pipeline", tags=["pipeline"])
 
 @app.get("/health")
 def health():
