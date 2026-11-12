@@ -39,3 +39,8 @@ test-parse.ps1
 docs/
 *.md
 !README.md
+
+# Exclude canon.db from the main COPY — it's copied explicitly in Dockerfile
+backend/data/canon.db
+# Exclude from main COPY — copied explicitly in Dockerfile
+backend/data/canon.db

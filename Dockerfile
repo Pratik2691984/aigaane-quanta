@@ -13,7 +13,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy backend WITHOUT canon.db (excluded by .dockerignore)
 COPY backend ./backend
+
+# Copy canon.db explicitly — this is the ONLY layer that changes when DB updates
 COPY backend/data/canon.db ./backend/data/canon.db
 
 EXPOSE 8080
