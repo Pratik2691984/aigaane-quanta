@@ -18,14 +18,11 @@
   <link rel="stylesheet" href="./css/engine.css">
 
   <style id="session2-sticky-iast-style">
-    /* Active input focus highlight */
     input.iast-active-target, textarea.iast-active-target {
       outline: none !important;
       border-color: #38bdf8 !important;
       box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35) !important;
     }
-    
-    /* Viewport-pinned IAST Bar */
     .sticky-iast-bar {
       position: fixed;
       bottom: 0;
@@ -88,15 +85,12 @@
       color: #0b0f19;
       transform: scale(0.95);
     }
-    /* Add bottom padding to body so content isn't obscured by fixed bar */
     body {
       padding-bottom: 65px !important;
     }
   </style>
 
-
   <style id="session2-morph-card-style">
-    /* Script Toggle UI */
     .script-toggle-bar {
       display: inline-flex;
       border: 1px solid #334155;
@@ -121,193 +115,93 @@
       color: #0b0f19;
       font-weight: 700;
     }
-
-    /* Mobile Card-per-Vibhakti Table Transformation */
     @media (max-width: 768px) {
-      .subanta-table-wrap table.subanta {
-        display: block;
-        width: 100%;
-        border: none;
-      }
-      .subanta-table-wrap thead {
-        display: none;
-      }
-      .subanta-table-wrap tbody {
-        display: block;
-        width: 100%;
-      }
+      .subanta-table-wrap table.subanta { display: block; width: 100%; border: none; }
+      .subanta-table-wrap thead { display: none; }
+      .subanta-table-wrap tbody { display: block; width: 100%; }
       .subanta-table-wrap tbody tr {
-        display: block;
-        margin-bottom: 12px;
-        border: 1px solid #334155;
-        border-radius: 10px;
-        padding: 10px 14px;
-        background: #111827;
+        display: block; margin-bottom: 12px; border: 1px solid #334155;
+        border-radius: 10px; padding: 10px 14px; background: #111827;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       }
       .subanta-table-wrap tbody th {
-        display: block;
-        text-align: left;
-        color: #fbbf24;
-        font-size: 0.95rem;
-        padding: 0 0 6px 0;
-        border-bottom: 1px solid #1e293b;
-        margin-bottom: 6px;
+        display: block; text-align: left; color: #fbbf24; font-size: 0.95rem;
+        padding: 0 0 6px 0; border-bottom: 1px solid #1e293b; margin-bottom: 6px;
       }
       .subanta-table-wrap tbody td.form {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 6px 0;
-        border-bottom: 1px dashed #1e293b;
-        font-size: 1rem;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 6px 0; border-bottom: 1px dashed #1e293b; font-size: 1rem;
       }
-      .subanta-table-wrap tbody td.form:last-child {
-        border-bottom: none;
-      }
+      .subanta-table-wrap tbody td.form:last-child { border-bottom: none; }
       .subanta-table-wrap tbody td.form::before {
-        content: attr(data-vacana);
-        font-size: 0.75rem;
-        color: #94a3b8;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+        content: attr(data-vacana); font-size: 0.75rem; color: #94a3b8;
+        font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
         margin-right: 12px;
       }
     }
   </style>
 
-
   <style id="session3-sandhi-dag-style">
     .sandhi-dag-container {
-      margin-top: 1.2rem;
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 12px;
-      padding: 16px;
-      position: relative;
+      margin-top: 1.2rem; background: #0f172a; border: 1px solid #1e293b;
+      border-radius: 12px; padding: 16px; position: relative;
     }
     .sandhi-dag-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
     }
     .sandhi-dag-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-family: ui-monospace, monospace;
+      font-size: 0.85rem; font-weight: 700; color: #94a3b8;
+      text-transform: uppercase; letter-spacing: 0.08em; font-family: ui-monospace, monospace;
     }
     .copy-img-btn {
-      padding: 5px 12px;
-      border-radius: 6px;
-      border: 1px solid #334155;
-      background: #1e293b;
-      color: #38bdf8;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
+      padding: 5px 12px; border-radius: 6px; border: 1px solid #334155;
+      background: #1e293b; color: #38bdf8; font-size: 0.78rem;
+      font-weight: 600; cursor: pointer; transition: all 0.15s ease;
     }
-    .copy-img-btn:hover {
-      background: #38bdf8;
-      color: #0b0f19;
-    }
+    .copy-img-btn:hover { background: #38bdf8; color: #0b0f19; }
     .sandhi-svg-canvas {
-      width: 100%;
-      max-width: 600px;
-      height: auto;
-      display: block;
-      margin: 0 auto;
+      width: 100%; max-width: 600px; height: auto; display: block; margin: 0 auto;
     }
   </style>
 
-
   <style id="session4-audio-playhead-style">
-    /* Active Syllable Glow */
     .syl.active-playhead {
-      transform: translateY(-3px) scale(1.06);
-      border-color: #fbbf24 !important;
+      transform: translateY(-3px) scale(1.06); border-color: #fbbf24 !important;
       box-shadow: 0 0 14px rgba(251, 191, 36, 0.6) !important;
-      background: #1e1b4b !important;
-      color: #fbbf24 !important;
+      background: #1e1b4b !important; color: #fbbf24 !important;
       transition: all 0.08s ease-out;
     }
-
-    /* Playhead Visual Bar */
-    .audio-playhead-container {
-      margin-top: 14px;
-      margin-bottom: 12px;
-    }
+    .audio-playhead-container { margin-top: 14px; margin-bottom: 12px; }
     .audio-playhead-track {
-      width: 100%;
-      height: 6px;
-      background: #1e293b;
-      border-radius: 9999px;
-      overflow: hidden;
-      position: relative;
+      width: 100%; height: 6px; background: #1e293b;
+      border-radius: 9999px; overflow: hidden; position: relative;
     }
     .audio-playhead-bar {
-      height: 100%;
-      width: 0%;
+      height: 100%; width: 0%;
       background: linear-gradient(90deg, #38bdf8, #fbbf24);
-      border-radius: 9999px;
-      transition: width 0.06s linear;
+      border-radius: 9999px; transition: width 0.06s linear;
     }
-
-    /* Speed and Drone Mixer Bar */
     .audio-controls-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 10px;
-      padding-top: 10px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; margin-top: 10px; padding-top: 10px;
       border-top: 1px solid #1e293b;
     }
     .speed-toggle-group {
-      display: inline-flex;
-      border: 1px solid #334155;
-      border-radius: 6px;
-      overflow: hidden;
-      background: #0f172a;
+      display: inline-flex; border: 1px solid #334155;
+      border-radius: 6px; overflow: hidden; background: #0f172a;
     }
     .speed-btn {
-      padding: 4px 10px;
-      min-height: 32px;
-      border: 0;
-      background: #1e293b;
-      color: #94a3b8;
-      font-size: 0.78rem;
-      font-family: ui-monospace, monospace;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
+      padding: 4px 10px; min-height: 32px; border: 0; background: #1e293b;
+      color: #94a3b8; font-size: 0.78rem; font-family: ui-monospace, monospace;
+      font-weight: 600; cursor: pointer; transition: all 0.15s ease;
     }
-    .speed-btn.active {
-      background: #38bdf8;
-      color: #0b0f19;
-      font-weight: 700;
-    }
+    .speed-btn.active { background: #38bdf8; color: #0b0f19; font-weight: 700; }
     .drone-mixer-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      color: #94a3b8;
-      font-family: ui-monospace, monospace;
+      display: flex; align-items: center; gap: 8px; font-size: 0.8rem;
+      color: #94a3b8; font-family: ui-monospace, monospace;
     }
-    .drone-mixer-wrap input[type=range] {
-      width: 90px;
-      accent-color: #fbbf24;
-      cursor: pointer;
-    }
+    .drone-mixer-wrap input[type=range] { width: 90px; accent-color: #fbbf24; cursor: pointer; }
   </style>
-
 </head>
 <body>
   <div class="container">
@@ -326,11 +220,8 @@
       </nav>
     </header>
 
-    <!-- Session 1: Deterministic Hero & Scholarly Accordion -->
     <section class="deterministic-hero" style="background: linear-gradient(180deg, #121826 0%, #0b0f19 100%); border-bottom: 1px solid #1e293b; padding: 2.5rem 1.5rem 2rem; color: #f8fafc; font-family: ui-sans-serif, system-ui, sans-serif;">
       <div style="max-width: 1080px; margin: 0 auto;">
-        
-        <!-- Determinism Badge (Visible without scrolling) -->
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.2rem;">
           <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; border-radius: 9999px; padding: 4px 12px; font-size: 0.82rem; font-weight: 600; color: #34d399;">
             <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
@@ -340,16 +231,12 @@
             Aṣṭādhyāyī 1.4.2 · 6.4.22 · 8.2.1 Verified
           </div>
         </div>
-
-        <!-- Hero Statement -->
         <h2 style="font-size: clamp(1.4rem, 3.2vw, 2.2rem); font-weight: 700; line-height: 1.25; margin: 0 0 1rem; color: #f8fafc;">
           Pāṇini's 4,000 Sūtras as a <span style="color: #fbbf24; text-decoration: underline decoration-[#b45309]; text-underline-offset: 4px;">Deterministic Rule-First Engine</span>.
         </h2>
         <p style="font-size: clamp(0.95rem, 1.8vw, 1.1rem); color: #cbd5e1; max-width: 820px; line-height: 1.6; margin: 0 0 1.8rem;">
           Formal derivation graph executing strict Tripādī and asiddhavat visibility constraints. Every phoneme, compound break, and 22-Śruti microtonal pitch is computed algorithmically—not by statistical approximation.
         </p>
-
-        <!-- Scholarly Accordion (Accessible <details><summary>) -->
         <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid #334155; border-radius: 12px; padding: 0.5rem 1rem; margin-top: 1rem;">
           <details style="margin-bottom: 0.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem;">
             <summary style="font-weight: 600; font-size: 0.92rem; color: #fbbf24; cursor: pointer; padding: 0.5rem 0; outline: none; min-height: 36px; display: flex; align-items: center;">
@@ -359,7 +246,6 @@
               Contrary to common misconception, metarule 1.4.2 does not govern the entire Aṣṭādhyāyī globally. It applies strictly within the Ekasaṁjñā adhikāra (1.4.1–2.2.38). Intersūtra conflicts across sandhi and morphophonemics are resolved under the classical Paribhāṣā priority lattice: <code style="color: #38bdf8;">apavāda &gt; nitya &gt; antaraṅga &gt; para</code>.
             </div>
           </details>
-
           <details style="margin-bottom: 0.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem;">
             <summary style="font-weight: 600; font-size: 0.92rem; color: #fbbf24; cursor: pointer; padding: 0.5rem 0; outline: none; min-height: 36px; display: flex; align-items: center;">
               2. Multi-Tier Asiddhatva (Sūtras 8.2.1 pūrvatrāsiddham &amp; 6.4.22 asiddhavad atrabhāt)
@@ -368,7 +254,6 @@
               The engine enforces strict Kāśikā backward-invisibility. Tripādī rules (8.2.1–8.4.68) are treated as non-existent to the preceding Sapta-adhyāyī, and later Tripādī rules are invisible to earlier ones. Sūtras 6.4.22–6.4.129 operate under isolated shadow-state evaluation.
             </div>
           </details>
-
           <details>
             <summary style="font-weight: 600; font-size: 0.92rem; color: #fbbf24; cursor: pointer; padding: 0.5rem 0; outline: none; min-height: 36px; display: flex; align-items: center;">
               3. Microtonal 22-Śruti Synthesis (Nārada-śikṣā &amp; Ahobala Sangīta-pārijāta)
@@ -378,12 +263,9 @@
             </div>
           </details>
         </div>
-
       </div>
     </section>
 
-
-    <!-- Floating Quick Diacritics Helper -->
     <div id="diacritics-dock" style="background:var(--bg-card, #1e293b); border:1px solid #334155; border-radius:8px; padding:8px 12px; margin-bottom:18px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
       <span style="font-size:0.75rem; color:#fbbf24; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">IAST Insert:</span>
       <div style="display:flex; gap:4px; flex-wrap:wrap;">
@@ -403,7 +285,6 @@
       <span class="hint" style="font-size:0.75rem; margin-left:auto;">Click to append to focused input</span>
     </div>
 
-
     <header>
       <div class="header-om">ॐ</div>
       <h1 class="header-title">Aigaane Sanskrit Engine</h1>
@@ -417,16 +298,14 @@
         <span class="badge">Śikṣā</span>
       </div>
       <p class="hint">Join two Sanskrit phonemes and review the precedence DAG derivation.</p>
-
       <div class="inputs">
         <input id="sandhi-p1" class="sa-lg" value="a" style="width: 80px; text-align: center;" />
         <span class="hint" style="font-size: 20px;">+</span>
         <input id="sandhi-p2" class="sa-lg" value="i" style="width: 80px; text-align: center;" />
         <button onclick="combineSandhi()">Combine</button>
       </div>
-
       <div id="sandhi-dag-mount"></div>
-        <div class="result" id="sandhi-result">
+      <div class="result" id="sandhi-result">
         <div class="eq">
           <span class="sa" id="s-p1">a</span>
           <span class="op">+</span>
@@ -449,12 +328,10 @@
         <span class="badge">Piṅgala Sūtra</span>
       </div>
       <p class="hint">Scan syllable weights (L = Laghu / Light, G = Guru / Heavy) and identify the meter.</p>
-
       <div class="inputs">
         <textarea id="chandas-input">dharmakṣetre kurukṣetre</textarea>
         <button onclick="scanChandas()">Scan Meter</button>
       </div>
-
       <div class="result" id="chandas-result">
         <div class="syl-container" id="c-chips">
           <div class="syl G"><span class="txt">dhar</span><span class="w">G</span></div>
@@ -466,7 +343,6 @@
           <div class="syl G"><span class="txt">ṣet</span><span class="w">G</span></div>
           <div class="syl G"><span class="txt">re</span><span class="w">G</span></div>
         </div>
-
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
           <span class="badge ok" id="c-verdict">✓ Anuṣṭubh Pāda</span>
           <span class="badge" id="c-count">8 Syllables</span>
@@ -495,6 +371,11 @@
           <option value="c-fem">c-stem consonant (vāc · coḥ kuḥ)</option>
           <option value="n-masc">n-stem masculine (rājan · naḥ lopaḥ)</option>
           <option value="n-neut">n-stem neuter (nāman · śi/num)</option>
+          <option value="i-masc">i-stem masculine (agni)</option>
+          <option value="u-masc">u-stem masculine (śatru)</option>
+          <option value="ii-fem">ī-stem feminine (nadī)</option>
+          <option value="uu-fem">ū-stem feminine (vadhū)</option>
+          <option value="r-stem">ṛ-stem (pitṛ)</option>
         </select>
         <button onclick="renderMorphology()">Generate Forms</button>
       </div>
@@ -505,8 +386,6 @@
           <span class="badge">24 Forms</span>
         </div>
 
-        
-        <!-- Session 2: Devanāgarī-First Script Selection -->
         <div class="script-toggle-bar" role="group" aria-label="Script selection" id="morph-script-toggle">
           <button type="button" class="script-toggle-btn active" data-script="deva" onclick="setMorphScript('deva')">देवनागरी</button>
           <button type="button" class="script-toggle-btn" data-script="iast" onclick="setMorphScript('iast')">IAST</button>
@@ -545,12 +424,10 @@
         <span class="badge">1.5M+ Corpus</span>
       </div>
       <p class="hint">Exact lookup across canonical indices.</p>
-
       <div class="inputs">
         <input id="kosha-word" class="sa-lg" value="dharma" />
         <button onclick="lookupKosha()">Lookup</button>
       </div>
-
       <div class="result" id="kosha-result">
         <div style="display:flex; align-items:center; gap:14px;">
           <span class="sa-lg" id="k-word">dharma</span>
@@ -567,17 +444,14 @@
         <span class="badge">Just Intonation</span>
       </div>
       <p class="hint">Rule-driven, acoustic 22-śruti synthesis matching syllabic scansion.</p>
-
       <div class="inputs">
         <textarea id="gan-input">dharmakṣetre kurukṣetre</textarea>
         <button onclick="synthesizeAudio()">Synthesize Audio</button>
       </div>
-
       <div class="result" id="audio-result">
         <div class="player">
           <button id="play-btn" onclick="toggleAudioPlayback()">▶</button>
           <span class="track" id="audio-track-label">Ready: Just Intonation tuning (C 256Hz base)</span>
-
         <div class="audio-playhead-container" id="audio-playhead-mount">
           <div class="audio-playhead-track">
             <div class="audio-playhead-bar" id="audio-playhead-progress"></div>
@@ -594,7 +468,6 @@
             </div>
           </div>
         </div>
-
           <span class="badge ok">22-Śruti Loaded</span>
         </div>
       </div>
@@ -607,17 +480,14 @@
         <span class="badge">Rāmāyaṇa &amp; Mahābhārata</span>
       </div>
       <p class="hint">Search indexed verses with thematic annotations.</p>
-
       <div class="inputs">
         <input id="itihasa-q" value="dharma" />
         <button onclick="searchItihasa()">Search Verses</button>
       </div>
-
       <div class="result" id="itihasa-result">
         <div style="margin-bottom: 14px;">
           <span class="badge">2 Verses Found</span>
         </div>
-
         <article class="verse">
           <div class="src">
             <span class="chip">Rāmāyaṇa</span>
@@ -632,7 +502,6 @@
             "Who in this world today is virtuous, valiant, knowing dharma, grateful, truthful, and firm in vows?"
           </div>
         </article>
-
         <article class="verse">
           <div class="src">
             <span class="chip">Mahābhārata</span>
@@ -656,7 +525,6 @@
   </div>
 
     <script>
-    
     // --- Diacritics Helper & Active Input Tracking ---
     let lastActiveInput = null;
     document.addEventListener("focusin", (e) => {
@@ -676,24 +544,19 @@
       target.selectionStart = target.selectionEnd = start + char.length;
     }
 
-    
-    // --- Defensive Input Getter ---
     function safeVal(id, defaultVal = "") {
       const el = document.getElementById(id);
       return el ? el.value.trim() : defaultVal;
     }
 
-    // Fallback to production custom domain or local development port
-const API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-  ? "https://api.aigaane.in"
-  : "https://api.aigaane.in";
+    const API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      ? "https://api.aigaane.in"
+      : "https://api.aigaane.in";
 
     // --- 1. Sandhi Combiner ---
-    // --- Session 3: Sandhi DAG SVG Visualizer & Image Exporter ---
     async function renderSandhiDAG(p1, p2, output, ruleName, ruleCanon) {
       const container = document.getElementById("sandhi-dag-mount");
       if (!container) return;
-
       const canonUrl = "https://ashtadhyayi.com/sutraani/" + (ruleCanon || "6/1/87").replace(/\./g, "/");
       const isGuna = ruleCanon === "6.1.87" || (ruleName && ruleName.includes("guna"));
       const blockedSutra = isGuna ? "6.1.101 akaḥ savarṇe" : "8.3.30 hrasvasya";
@@ -709,33 +572,23 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
               <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748b" />
             </marker>
           </defs>
-
-          <!-- Links -->
           <line x1="110" y1="50" x2="220" y2="105" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)" />
           <line x1="430" y1="50" x2="320" y2="105" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)" />
           <line x1="270" y1="130" x2="270" y2="165" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arrow)" />
           <line x1="270" y1="50" x2="270" y2="70" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-blocked)" />
-
-          <!-- Input Node 1 -->
           <g>
             <rect x="30" y="25" width="130" height="42" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5" />
             <text x="95" y="52" fill="#f8fafc" font-family="'Noto Serif', serif" font-size="15" font-weight="600" text-anchor="middle">${p1 || "pūrva"}</text>
           </g>
-
-          <!-- Input Node 2 -->
           <g>
             <rect x="380" y="25" width="130" height="42" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5" />
             <text x="445" y="52" fill="#f8fafc" font-family="'Noto Serif', serif" font-size="15" font-weight="600" text-anchor="middle">${p2 || "para"}</text>
           </g>
-
-          <!-- Blocked Candidate Node -->
           <g style="cursor:help;">
             <title>${blockedReason}</title>
             <rect x="200" y="15" width="140" height="32" rx="6" fill="#182234" stroke="#475569" stroke-width="1" stroke-dasharray="4 2" />
             <text x="270" y="36" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="11" text-anchor="middle">✕ ${blockedSutra}</text>
           </g>
-
-          <!-- Winning Rule Node -->
           <g>
             <a href="${canonUrl}" target="_blank" rel="noopener noreferrer">
               <rect x="180" y="90" width="180" height="44" rx="8" fill="#1e1b4b" stroke="#fbbf24" stroke-width="2" />
@@ -743,15 +596,12 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
               <text x="270" y="126" fill="#cbd5e1" font-family="'Noto Serif', serif" font-size="11" text-anchor="middle">${ruleName || "ād guṇaḥ"}</text>
             </a>
           </g>
-
-          <!-- Result Node -->
           <g>
             <rect x="180" y="170" width="180" height="42" rx="8" fill="#042f2e" stroke="#14b8a6" stroke-width="2" />
             <text x="270" y="197" fill="#2dd4bf" font-family="'Noto Serif', serif" font-size="16" font-weight="bold" text-anchor="middle">${output || "devendra"}</text>
           </g>
         </svg>
       `;
-
       container.innerHTML = `
         <div class="sandhi-dag-container">
           <div class="sandhi-dag-header">
@@ -768,8 +618,7 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
       if (!svg) return;
       const svgData = new XMLSerializer().serializeToString(svg);
       const canvas = document.createElement("canvas");
-      canvas.width = 1080;
-      canvas.height = 440;
+      canvas.width = 1080; canvas.height = 440;
       const ctx = canvas.getContext("2d");
       const img = new Image();
       img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
@@ -804,9 +653,7 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
       document.getElementById("s-p1").textContent = p1;
       document.getElementById("s-p2").textContent = p2;
       document.getElementById("s-res").textContent = "...";
-
       const testInput = (p1 === "tat" && p2 === "iti") ? "taditi" : (p1 === "sat" && p2 === "iti") ? "saditi" : (p1 + p2);
-
       try {
         const resp = await fetch(`${API_BASE}/api/v1/parse`, {
           method: "POST",
@@ -815,7 +662,6 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
         });
         if (!resp.ok) throw new Error("Parse failed");
         const data = await resp.json();
-
         if (data.sandhi_splits && data.sandhi_splits.length > 0) {
           const split = data.sandhi_splits[0];
           document.getElementById("s-res").textContent = testInput;
@@ -834,8 +680,6 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
         document.getElementById("s-sutra").textContent = "No Match";
         document.getElementById("s-desc").textContent = "Input parsed without registered junction.";
       }
-
-      // --- Session 3: Render DAG visualizer with derivation data ---
       try {
         const p1DomVal = document.getElementById("sandhi-p1")?.value?.trim() || "";
         const p2DomVal = document.getElementById("sandhi-p2")?.value?.trim() || "";
@@ -855,9 +699,7 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
       const verdict = document.getElementById("c-verdict");
       const count = document.getElementById("c-count");
       const pattern = document.getElementById("c-pattern");
-
       chips.innerHTML = '<span class="hint">Scanning prosody...</span>';
-
       try {
         const resp = await fetch(`${API_BASE}/api/v1/parse`, {
           method: "POST",
@@ -865,21 +707,18 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
           body: JSON.stringify({ text: text })
         });
         const data = await resp.json();
-
         let meter = "Sanskrit Scansion";
         if (data.canon_refs && data.canon_refs.length > 0) {
           meter = data.canon_refs[0].reference_locator || "Anuṣṭubh";
         }
-
         chips.innerHTML = "";
-                            const syllables = text.split(" ");
-          lastScannedSyllables = [];
-          syllables.forEach((s, idx) => {
-            const w = (idx % 2 === 0) ? "G" : "L";
-            lastScannedSyllables.push({ txt: s, weight: w });
-            chips.innerHTML += `<div class="syl ${w}"><span class="txt">${s}</span><span class="w">${w}</span></div>`;
-          });
-
+        const syllables = text.split(" ");
+        lastScannedSyllables = [];
+        syllables.forEach((s, idx) => {
+          const w = (idx % 2 === 0) ? "G" : "L";
+          lastScannedSyllables.push({ txt: s, weight: w });
+          chips.innerHTML += `<div class="syl ${w}"><span class="txt">${s}</span><span class="w">${w}</span></div>`;
+        });
         verdict.textContent = `✓ ${meter}`;
         count.textContent = `${data.tokens ? data.tokens.length : 1} Words`;
         pattern.textContent = "PROSODY-ACTIVE";
@@ -889,8 +728,6 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
     }
 
     // --- 3. Morphology Subanta Table ---
-        
-    // --- Devanāgarī & SLP1 Transliteration Maps ---
     const DEVA_EXACT_MAP = {
       "devaḥ": "देवः", "devau": "देवौ", "devāḥ": "देवाः", "devam": "देवम्", "devān": "देवान्",
       "devena": "देवेन", "devābhyām": "देवाभ्याम्", "devaiḥ": "देवैः", "devāya": "देवाय",
@@ -907,7 +744,37 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
       "marutoḥ": "मरुतोः", "marutām": "मरुताम्", "maruti": "मरुति", "marutsu": "मरुत्सु",
       "vāk": "वाक्", "vācau": "वाचौ", "vācaḥ": "वाचः", "vācam": "वाचम्", "vācā": "वाचा",
       "vāgbhyām": "वाग्भ्याम्", "vāgbhiḥ": "वाग्भिः", "vāce": "वाचे", "vāgbhyaḥ": "वाग्भ्यः",
-      "vācoḥ": "वाचोः", "vācām": "वाचाम्", "vāci": "वाचि", "vākṣu": "वाक्षु"
+      "vācoḥ": "वाचोः", "vācām": "वाचाम्", "vāci": "वाचि", "vākṣu": "वाक्षु",
+      // i-stem: agni
+      "agniḥ": "अग्निः", "agnī": "अग्नी", "agnayaḥ": "अग्नयः", "agnim": "अग्निम्",
+      "agnīn": "अग्नीन्", "agninā": "अग्निना", "agnibhyām": "अग्निभ्याम्",
+      "agnibhiḥ": "अग्निभिः", "agnaye": "अग्नये", "agnibhyaḥ": "अग्निभ्यः",
+      "agneḥ": "अग्नेः", "agnyoḥ": "अग्न्योः", "agnīnām": "अग्नीनाम्",
+      "agnau": "अग्नौ", "agniṣu": "अग्निषु", "agne": "अग्ने",
+      // u-stem: śatru
+      "śatruḥ": "शत्रुः", "śatrū": "शत्रू", "śatravaḥ": "शत्रवः", "śatrum": "शत्रुम्",
+      "śatrūn": "शत्रून्", "śatruṇā": "शत्रुणा", "śatrubhyām": "शत्रुभ्याम्",
+      "śatrubhiḥ": "शत्रुभिः", "śatrave": "शत्रवे", "śatrubhyaḥ": "शत्रुभ्यः",
+      "śatroḥ": "शत्रोः", "śatrvoḥ": "शत्र्वोः", "śatrūṇām": "शत्रूणाम्",
+      "śatrau": "शत्रौ", "śatruṣu": "शत्रुषु", "śatro": "शत्रो",
+      // ī-stem: nadī
+      "nadī": "नदी", "nadyau": "नद्यौ", "nadyaḥ": "नद्यः", "nadīm": "नदीम्",
+      "nadīḥ": "नदीः", "nadyā": "नद्या", "nadībhyām": "नदीभ्याम्",
+      "nadībhiḥ": "नदीभिः", "nadyai": "नद्यै", "nadībhyaḥ": "नदीभ्यः",
+      "nadyāḥ": "नद्याः", "nadyoḥ": "नद्योः", "nadīnām": "नदीनाम्",
+      "nadyām": "नद्याम्", "nadīṣu": "नदीषु", "nadi": "नदि",
+      // ū-stem: vadhū
+      "vadhūḥ": "वधूः", "vadhvau": "वध्वौ", "vadhvaḥ": "वध्वः", "vadhūm": "वधूम्",
+      "vadhūḥ": "वधूः", "vadhvā": "वध्वा", "vadhūbhyām": "वधूभ्याम्",
+      "vadhūbhiḥ": "वधूभिः", "vadhvai": "वध्वै", "vadhūbhyaḥ": "वधूभ्यः",
+      "vadhvāḥ": "वध्वाः", "vadhvoḥ": "वध्वोः", "vadhūnām": "वधूनाम्",
+      "vadhvām": "वध्वाम्", "vadhūṣu": "वधूषु", "vadhu": "वधु",
+      // ṛ-stem: pitṛ
+      "pitā": "पिता", "pitarau": "पितरौ", "pitaraḥ": "पितरः", "pitaram": "पितरम्",
+      "pitṝn": "पितॄन्", "pitrā": "पित्रा", "pitṛbhyām": "पितृभ्याम्",
+      "pitṛbhiḥ": "पितृभिः", "pitre": "पित्रे", "pitṛbhyaḥ": "पितृभ्यः",
+      "pituḥ": "पितुः", "pitroḥ": "पित्रोः", "pitṝṇām": "पितॄणाम्",
+      "pitari": "पितरि", "pitṛṣu": "पितृषु", "pitaḥ": "पितः"
     };
 
     function toDevanagari(text) {
@@ -950,6 +817,7 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
       const tbody = document.getElementById("m-table-body");
 
       let rows = [];
+
       if (paradigm === "aa-fem") {
         lemmaInput.value = "latā";
         title.textContent = "latā";
@@ -1034,6 +902,76 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
           ["Saptamī (7th)", "nāmni / nāmani", "nāmnoḥ", "nāmasu"],
           ["Sambodhana (Voc.)", "nāma / nāman", "nāmnī / nāmanī", "nāmāni"]
         ];
+      } else if (paradigm === "i-masc") {
+        lemmaInput.value = "agni";
+        title.textContent = "agni";
+        chip.textContent = "Ikārānta · Pulliṅga";
+        rows = [
+          ["Prathamā (1st)", "agniḥ", "agnī", "agnayaḥ"],
+          ["Dvitīyā (2nd)", "agnim", "agnī", "agnīn"],
+          ["Tṛtīyā (3rd)", "agninā", "agnibhyām", "agnibhiḥ"],
+          ["Caturthī (4th)", "agnaye", "agnibhyām", "agnibhyaḥ"],
+          ["Pañcamī (5th)", "agneḥ", "agnibhyām", "agnibhyaḥ"],
+          ["Ṣaṣṭhī (6th)", "agneḥ", "agnyoḥ", "agnīnām"],
+          ["Saptamī (7th)", "agnau", "agnyoḥ", "agniṣu"],
+          ["Sambodhana (Voc.)", "agne", "agnī", "agnayaḥ"]
+        ];
+      } else if (paradigm === "u-masc") {
+        lemmaInput.value = "śatru";
+        title.textContent = "śatru";
+        chip.textContent = "Ukārānta · Pulliṅga";
+        rows = [
+          ["Prathamā (1st)", "śatruḥ", "śatrū", "śatravaḥ"],
+          ["Dvitīyā (2nd)", "śatrum", "śatrū", "śatrūn"],
+          ["Tṛtīyā (3rd)", "śatruṇā", "śatrubhyām", "śatrubhiḥ"],
+          ["Caturthī (4th)", "śatrave", "śatrubhyām", "śatrubhyaḥ"],
+          ["Pañcamī (5th)", "śatroḥ", "śatrubhyām", "śatrubhyaḥ"],
+          ["Ṣaṣṭhī (6th)", "śatroḥ", "śatrvoḥ", "śatrūṇām"],
+          ["Saptamī (7th)", "śatrau", "śatrvoḥ", "śatruṣu"],
+          ["Sambodhana (Voc.)", "śatro", "śatrū", "śatravaḥ"]
+        ];
+      } else if (paradigm === "ii-fem") {
+        lemmaInput.value = "nadī";
+        title.textContent = "nadī";
+        chip.textContent = "Īkārānta · Strīliṅga";
+        rows = [
+          ["Prathamā (1st)", "nadī", "nadyau", "nadyaḥ"],
+          ["Dvitīyā (2nd)", "nadīm", "nadyau", "nadīḥ"],
+          ["Tṛtīyā (3rd)", "nadyā", "nadībhyām", "nadībhiḥ"],
+          ["Caturthī (4th)", "nadyai", "nadībhyām", "nadībhyaḥ"],
+          ["Pañcamī (5th)", "nadyāḥ", "nadībhyām", "nadībhyaḥ"],
+          ["Ṣaṣṭhī (6th)", "nadyāḥ", "nadyoḥ", "nadīnām"],
+          ["Saptamī (7th)", "nadyām", "nadyoḥ", "nadīṣu"],
+          ["Sambodhana (Voc.)", "nadi", "nadyau", "nadyaḥ"]
+        ];
+      } else if (paradigm === "uu-fem") {
+        lemmaInput.value = "vadhū";
+        title.textContent = "vadhū";
+        chip.textContent = "Ūkārānta · Strīliṅga";
+        rows = [
+          ["Prathamā (1st)", "vadhūḥ", "vadhvau", "vadhvaḥ"],
+          ["Dvitīyā (2nd)", "vadhūm", "vadhvau", "vadhūḥ"],
+          ["Tṛtīyā (3rd)", "vadhvā", "vadhūbhyām", "vadhūbhiḥ"],
+          ["Caturthī (4th)", "vadhvai", "vadhūbhyām", "vadhūbhyaḥ"],
+          ["Pañcamī (5th)", "vadhvāḥ", "vadhūbhyām", "vadhūbhyaḥ"],
+          ["Ṣaṣṭhī (6th)", "vadhvāḥ", "vadhvoḥ", "vadhūnām"],
+          ["Saptamī (7th)", "vadhvām", "vadhvoḥ", "vadhūṣu"],
+          ["Sambodhana (Voc.)", "vadhu", "vadhvau", "vadhvaḥ"]
+        ];
+      } else if (paradigm === "r-stem") {
+        lemmaInput.value = "pitṛ";
+        title.textContent = "pitṛ";
+        chip.textContent = "Ṛkārānta · Pulliṅga";
+        rows = [
+          ["Prathamā (1st)", "pitā", "pitarau", "pitaraḥ"],
+          ["Dvitīyā (2nd)", "pitaram", "pitarau", "pitṝn"],
+          ["Tṛtīyā (3rd)", "pitrā", "pitṛbhyām", "pitṛbhiḥ"],
+          ["Caturthī (4th)", "pitre", "pitṛbhyām", "pitṛbhyaḥ"],
+          ["Pañcamī (5th)", "pituḥ", "pitṛbhyām", "pitṛbhyaḥ"],
+          ["Ṣaṣṭhī (6th)", "pituḥ", "pitroḥ", "pitṝṇām"],
+          ["Saptamī (7th)", "pitari", "pitroḥ", "pitṛṣu"],
+          ["Sambodhana (Voc.)", "pitaḥ", "pitarau", "pitaraḥ"]
+        ];
       } else {
         lemmaInput.value = "deva";
         title.textContent = "deva";
@@ -1050,13 +988,13 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
         ];
       }
 
-            function formatCell(val) {
+      function formatCell(val) {
         if (currentMorphScript === "deva") return toDevanagari(val);
         if (currentMorphScript === "slp1") return toSLP1(val);
         return val;
       }
 
-      tbody.innerHTML = rows.map(([vib, e, d, b]) => 
+      tbody.innerHTML = rows.map(([vib, e, d, b]) =>
         `<tr>
           <th>${vib}</th>
           <td class="form" data-vacana="Ekavacana (1)">${formatCell(e)}</td>
@@ -1066,396 +1004,241 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
       ).join("");
     }
 
-    
-      // --- 3B. Tiṅanta Conjugation Engine (Gaṇas 1-10) ---
-      const VERB_MATRICES = {
-        "bhu-1": {
-          title: "bhū (bhavati · to be)",
-          chip: "Gaṇa 1 · Bhvādi (śap 3.1.68) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "bhavati", "bhavataḥ", "bhavanti"],
-            ["Madhyama (2nd)", "bhavasi", "bhavathaḥ", "bhavatha"],
-            ["Uttama (1st)", "bhavāmi", "bhavāvaḥ", "bhavāmaḥ"]
-          ]
-        },
-        "ad-2": {
-          title: "ad (atti · to eat)",
-          chip: "Gaṇa 2 · Adādi (luk-vikaraṇa 2.4.72) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "atti", "attaḥ", "adanti"],
-            ["Madhyama (2nd)", "atsi", "atthaḥ", "attha"],
-            ["Uttama (1st)", "admi", "advaḥ", "admaḥ"]
-          ]
-        },
-        "as-2": {
-          title: "as (asti · to be)",
-          chip: "Gaṇa 2 · Adādi (śnasor allopaḥ 6.4.111) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "asti", "staḥ", "santi"],
-            ["Madhyama (2nd)", "asi", "sthaḥ", "stha"],
-            ["Uttama (1st)", "asmi", "svaḥ", "smaḥ"]
-          ]
-        },
-        "hu-3": {
-          title: "hu (juhoti · to sacrifice)",
-          chip: "Gaṇa 3 · Juhotyādi (ślu-vikaraṇa 6.1.10) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "juhoti", "juhutaḥ", "juhvati"],
-            ["Madhyama (2nd)", "jahoṣi", "juhuthaḥ", "juhutha"],
-            ["Uttama (1st)", "juhomi", "juhuvaḥ", "juhumaḥ"]
-          ]
-        },
-        "da-3": {
-          title: "dā (dadāti · to give)",
-          chip: "Gaṇa 3 · Juhotyādi (dādā ghādvāp 1.1.20) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "dadāti", "dattaḥ", "dadati"],
-            ["Madhyama (2nd)", "dadāsi", "datthaḥ", "dattha"],
-            ["Uttama (1st)", "dadāmi", "dadvaḥ", "dadmaḥ"]
-          ]
-        },
-        "div-4": {
-          title: "div (dīvyati · to play/shine)",
-          chip: "Gaṇa 4 · Divādi (śyan-vikaraṇa 3.1.69) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "dīvyati", "dīvyataḥ", "dīvyanti"],
-            ["Madhyama (2nd)", "dīvyasi", "dīvyathaḥ", "dīvyatha"],
-            ["Uttama (1st)", "dīvyāmi", "dīvyāvaḥ", "dīvyāmaḥ"]
-          ]
-        },
-        "su-5": {
-          title: "su (sunoti · to press soma)",
-          chip: "Gaṇa 5 · Svādi (śnu-vikaraṇa 3.1.73) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "sunoti", "sunutaḥ", "sunvanti"],
-            ["Madhyama (2nd)", "sunoṣi", "sunuthaḥ", "sunutha"],
-            ["Uttama (1st)", "sunomi", "sunuvaḥ", "sunumaḥ"]
-          ]
-        },
-        "tud-6": {
-          title: "tud (tudati · to strike)",
-          chip: "Gaṇa 6 · Tudādi (śa-vikaraṇa 3.1.77) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "tudati", "tudataḥ", "tudanti"],
-            ["Madhyama (2nd)", "tudasi", "tudathaḥ", "tudatha"],
-            ["Uttama (1st)", "tudāmi", "tudāvaḥ", "tudāmaḥ"]
-          ]
-        },
-        "rudh-7": {
-          title: "rudh (ruṇaddhi · to obstruct)",
-          chip: "Gaṇa 7 · Rudhādi (śnam-vikaraṇa 3.1.78) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "ruṇaddhi", "runddhaḥ", "rundhanti"],
-            ["Madhyama (2nd)", "ruṇatsi", "runddhaḥ", "runddha"],
-            ["Uttama (1st)", "ruṇadhmi", "rundhvaḥ", "rundhmaḥ"]
-          ]
-        },
-        "tan-8": {
-          title: "tan (tanoti · to stretch)",
-          chip: "Gaṇa 8 · Tanādi (u-vikaraṇa 3.1.79) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "tanoti", "tanutaḥ", "tanvanti"],
-            ["Madhyama (2nd)", "tanoṣi", "tanuthaḥ", "tanutha"],
-            ["Uttama (1st)", "tanomi", "tanuvaḥ", "tanumaḥ"]
-          ]
-        },
-        "kr-8": {
-          title: "kṛ (karoti · to do/make)",
-          chip: "Gaṇa 8 · Tanādi (tanādikṛñbhya uḥ 3.1.79) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "karoti", "kurutaḥ", "kurvanti"],
-            ["Madhyama (2nd)", "karoṣi", "kuruthaḥ", "kurutha"],
-            ["Uttama (1st)", "karomi", "kurvaḥ", "kurmaḥ"]
-          ]
-        },
-        "kri-9": {
-          title: "krī (krīṇāti · to buy)",
-          chip: "Gaṇa 9 · Kryādi (śnā-vikaraṇa 3.1.81) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "krīṇāti", "krīṇītaḥ", "krīṇanti"],
-            ["Madhyama (2nd)", "krīṇāsi", "krīṇīthaḥ", "krīṇītha"],
-            ["Uttama (1st)", "krīṇāmi", "krīṇīvaḥ", "krīṇīmaḥ"]
-          ]
-        },
-        "jna-9": {
-          title: "jñā (jānāti · to know)",
-          chip: "Gaṇa 9 · Kryādi (jñājanorjā 7.3.79) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "jānāti", "jānītaḥ", "jānanti"],
-            ["Madhyama (2nd)", "jānāsi", "jānīthaḥ", "jānītha"],
-            ["Uttama (1st)", "jānāmi", "jānīvaḥ", "jānīmaḥ"]
-          ]
-        },
-        "cur-10": {
-          title: "cur (corayati · to steal)",
-          chip: "Gaṇa 10 · Curādi (ṇic-vikaraṇa 3.1.25) · Parasmaipada",
-          rows: [
-            ["Prathama (3rd)", "corayati", "corayataḥ", "corayanti"],
-            ["Madhyama (2nd)", "corayasi", "corayathaḥ", "corayatha"],
-            ["Uttama (1st)", "corayāmi", "corayāvaḥ", "corayāmaḥ"]
-          ]
-        }
-      };
+    // --- 3B. Tiṅanta Conjugation Engine ---
+    const VERB_MATRICES = {
+      "bhu-1": { title: "bhū (bhavati · to be)", chip: "Gaṇa 1 · Bhvādi (śap 3.1.68) · Parasmaipada", rows: [["Prathama (3rd)", "bhavati", "bhavataḥ", "bhavanti"], ["Madhyama (2nd)", "bhavasi", "bhavathaḥ", "bhavatha"], ["Uttama (1st)", "bhavāmi", "bhavāvaḥ", "bhavāmaḥ"]] },
+      "ad-2": { title: "ad (atti · to eat)", chip: "Gaṇa 2 · Adādi (luk-vikaraṇa 2.4.72) · Parasmaipada", rows: [["Prathama (3rd)", "atti", "attaḥ", "adanti"], ["Madhyama (2nd)", "atsi", "atthaḥ", "attha"], ["Uttama (1st)", "admi", "advaḥ", "admaḥ"]] },
+      "as-2": { title: "as (asti · to be)", chip: "Gaṇa 2 · Adādi (śnasor allopaḥ 6.4.111) · Parasmaipada", rows: [["Prathama (3rd)", "asti", "staḥ", "santi"], ["Madhyama (2nd)", "asi", "sthaḥ", "stha"], ["Uttama (1st)", "asmi", "svaḥ", "smaḥ"]] },
+      "hu-3": { title: "hu (juhoti · to sacrifice)", chip: "Gaṇa 3 · Juhotyādi (ślu-vikaraṇa 6.1.10) · Parasmaipada", rows: [["Prathama (3rd)", "juhoti", "juhutaḥ", "juhvati"], ["Madhyama (2nd)", "jahoṣi", "juhuthaḥ", "juhutha"], ["Uttama (1st)", "juhomi", "juhuvaḥ", "juhumaḥ"]] },
+      "da-3": { title: "dā (dadāti · to give)", chip: "Gaṇa 3 · Juhotyādi (dādā ghādvāp 1.1.20) · Parasmaipada", rows: [["Prathama (3rd)", "dadāti", "dattaḥ", "dadati"], ["Madhyama (2nd)", "dadāsi", "datthaḥ", "dattha"], ["Uttama (1st)", "dadāmi", "dadvaḥ", "dadmaḥ"]] },
+      "div-4": { title: "div (dīvyati · to play/shine)", chip: "Gaṇa 4 · Divādi (śyan-vikaraṇa 3.1.69) · Parasmaipada", rows: [["Prathama (3rd)", "dīvyati", "dīvyataḥ", "dīvyanti"], ["Madhyama (2nd)", "dīvyasi", "dīvyathaḥ", "dīvyatha"], ["Uttama (1st)", "dīvyāmi", "dīvyāvaḥ", "dīvyāmaḥ"]] },
+      "su-5": { title: "su (sunoti · to press soma)", chip: "Gaṇa 5 · Svādi (śnu-vikaraṇa 3.1.73) · Parasmaipada", rows: [["Prathama (3rd)", "sunoti", "sunutaḥ", "sunvanti"], ["Madhyama (2nd)", "sunoṣi", "sunuthaḥ", "sunutha"], ["Uttama (1st)", "sunomi", "sunuvaḥ", "sunumaḥ"]] },
+      "tud-6": { title: "tud (tudati · to strike)", chip: "Gaṇa 6 · Tudādi (śa-vikaraṇa 3.1.77) · Parasmaipada", rows: [["Prathama (3rd)", "tudati", "tudataḥ", "tudanti"], ["Madhyama (2nd)", "tudasi", "tudathaḥ", "tudatha"], ["Uttama (1st)", "tudāmi", "tudāvaḥ", "tudāmaḥ"]] },
+      "rudh-7": { title: "rudh (ruṇaddhi · to obstruct)", chip: "Gaṇa 7 · Rudhādi (śnam-vikaraṇa 3.1.78) · Parasmaipada", rows: [["Prathama (3rd)", "ruṇaddhi", "runddhaḥ", "rundhanti"], ["Madhyama (2nd)", "ruṇatsi", "runddhaḥ", "runddha"], ["Uttama (1st)", "ruṇadhmi", "rundhvaḥ", "rundhmaḥ"]] },
+      "tan-8": { title: "tan (tanoti · to stretch)", chip: "Gaṇa 8 · Tanādi (u-vikaraṇa 3.1.79) · Parasmaipada", rows: [["Prathama (3rd)", "tanoti", "tanutaḥ", "tanvanti"], ["Madhyama (2nd)", "tanoṣi", "tanuthaḥ", "tanutha"], ["Uttama (1st)", "tanomi", "tanuvaḥ", "tanumaḥ"]] },
+      "kr-8": { title: "kṛ (karoti · to do/make)", chip: "Gaṇa 8 · Tanādi (tanādikṛñbhya uḥ 3.1.79) · Parasmaipada", rows: [["Prathama (3rd)", "karoti", "kurutaḥ", "kurvanti"], ["Madhyama (2nd)", "karoṣi", "kuruthaḥ", "kurutha"], ["Uttama (1st)", "karomi", "kurvaḥ", "kurmaḥ"]] },
+      "kri-9": { title: "krī (krīṇāti · to buy)", chip: "Gaṇa 9 · Kryādi (śnā-vikaraṇa 3.1.81) · Parasmaipada", rows: [["Prathama (3rd)", "krīṇāti", "krīṇītaḥ", "krīṇanti"], ["Madhyama (2nd)", "krīṇāsi", "krīṇīthaḥ", "krīṇītha"], ["Uttama (1st)", "krīṇāmi", "krīṇīvaḥ", "krīṇīmaḥ"]] },
+      "jna-9": { title: "jñā (jānāti · to know)", chip: "Gaṇa 9 · Kryādi (jñājanorjā 7.3.79) · Parasmaipada", rows: [["Prathama (3rd)", "jānāti", "jānītaḥ", "jānanti"], ["Madhyama (2nd)", "jānāsi", "jānīthaḥ", "jānītha"], ["Uttama (1st)", "jānāmi", "jānīvaḥ", "jānīmaḥ"]] },
+      "cur-10": { title: "cur (corayati · to steal)", chip: "Gaṇa 10 · Curādi (ṇic-vikaraṇa 3.1.25) · Parasmaipada", rows: [["Prathama (3rd)", "corayati", "corayataḥ", "corayanti"], ["Madhyama (2nd)", "corayasi", "corayathaḥ", "corayatha"], ["Uttama (1st)", "corayāmi", "corayāvaḥ", "corayāmaḥ"]] }
+    };
 
-      function renderVerbConjugation() {
-        const sel = document.getElementById("verb-root-select");
-        if (!sel) return;
-        const key = sel.value;
-        const data = VERB_MATRICES[key];
-        if (!data) return;
-
-        document.getElementById("v-title").textContent = data.title;
-        document.getElementById("v-chip").textContent = data.chip;
-        const tbody = document.getElementById("v-table-body");
-        tbody.innerHTML = data.rows.map(([purusa, e, d, b]) =>
-          `<tr><th>${purusa}</th><td class="form">${e}</td><td class="form">${d}</td><td class="form">${b}</td></tr>`
-        ).join("");
-      }
-
-
-      // --- 5. Gāndharvaveda 22-Śruti Web Audio Synthesizer ---
-      let audioCtx = null;
-      let activeOsc = null;
-      let activeGain = null;
-
-      function getAudioContext() {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-        return audioCtx;
-      }
-
-      function stopAllAudio() {
-        if (activeOsc) {
-          try {
-            activeGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05);
-            setTimeout(() => {
-              if (activeOsc) {
-                activeOsc.stop();
-                activeOsc.disconnect();
-                activeOsc = null;
-              }
-            }, 60);
-          } catch(e) {}
-        }
-        const badge = document.getElementById("active-svara-badge");
-        if (badge) {
-          badge.className = "badge";
-          badge.textContent = "Silence";
-        }
-      }
-
-      function playFrequency(hz, name, symbol) {
-        const ctx = getAudioContext();
-        stopAllAudio();
-
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(hz, ctx.currentTime);
-
-        gain.gain.setValueAtTime(0.001, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.04);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start();
-        activeOsc = osc;
-        activeGain = gain;
-
-        const badge = document.getElementById("active-svara-badge");
-        if (badge) {
-          badge.className = "badge ok";
-          badge.textContent = `▶ Playing ${symbol} (${name}) · ${hz} Hz`;
-        }
-      }
-
-      async function loadSrutiMatrix() {
-        const saHz = parseFloat(document.getElementById("sa-hz-input").value) || 240.0;
-        const tbody = document.getElementById("sruti-table-body");
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:16px;">Loading 22-Śruti Matrix...</td></tr>`;
-
-        try {
-          const resp = await fetch(`${API_BASE}/api/v1/sruti?sa_hz=${saHz}`);
-          if (!resp.ok) throw new Error("Failed to fetch sruti matrix");
-          const data = await resp.json();
-
-          tbody.innerHTML = data.intervals.map(item => `
-            <tr style="cursor:pointer;" onclick="playFrequency(${item.frequency_hz}, '${item.name}', '${item.svara_symbol}')">
-              <td>${item.index}</td>
-              <td style="font-weight:600;">${item.name}</td>
-              <td>${item.svara}</td>
-              <td style="font-family:monospace; font-weight:700; color:var(--accent);">${item.svara_symbol}</td>
-              <td style="font-family:monospace;">${item.ratio}</td>
-              <td style="font-family:monospace; color:var(--primary);">${item.frequency_hz} Hz</td>
-              <td style="font-family:monospace;">${item.cents}¢</td>
-              <td style="font-family:monospace; color:${item.tet_deviation_cents >= 0 ? '#10b981' : '#f59e0b'};">
-                ${item.tet_deviation_cents > 0 ? '+' : ''}${item.tet_deviation_cents}¢
-              </td>
-              <td>
-                <button class="btn" style="padding:4px 8px; font-size:0.75rem;" onclick="event.stopPropagation(); playFrequency(${item.frequency_hz}, '${item.name}', '${item.svara_symbol}')">
-                  ▶ Play
-                </button>
-              </td>
-            </tr>
-          `).join("");
-        } catch (e) {
-          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--danger); padding:16px;">Error: ${e.message}</td></tr>`;
-        }
-      }
-
-      
-      // --- 5B. 22-Śruti MIDI Downloader ---
-      async function downloadSrutiMidi() {
-        const sel = document.getElementById("midi-scale-select");
-        const saHz = parseFloat(document.getElementById("sa-hz-input").value) || 240.0;
-        if (!sel) return;
-        const svaras = sel.value.split(",");
-
-        const payload = {
-          svaras: svaras,
-          sa_hz: saHz,
-          sa_midi_note: 60,
-          tempo_bpm: 76
-        };
-
-        try {
-          const resp = await fetch(`${API_BASE}/api/v1/sruti/midi/export`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          if (!resp.ok) throw new Error("Failed to export MIDI");
-          const blob = await resp.blob();
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.style.display = "none";
-          a.href = url;
-          a.download = `aigaane_22_sruti_${svaras.slice(0, 3).join("_")}.mid`;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-        } catch (e) {
-          alert("Error downloading MIDI: " + e.message);
-        }
-      }
-
-      
-      // --- 6. Studio Pipeline Orchestrator (v0.9.1) ---
-      let currentPipelineMidiB64 = null;
-
-      async function runStudioPipeline() {
-        const text = document.getElementById("pipeline-input").value.trim();
-        const resBox = document.getElementById("pipeline-result");
-        const jsonOut = document.getElementById("pipeline-json");
-        const b2 = document.getElementById("pipe-s2-badge");
-        const b1 = document.getElementById("pipe-s1-badge");
-        const b3 = document.getElementById("pipe-s3-badge");
-        const playBtn = document.getElementById("pipe-play-btn");
-
-        if (!text) return;
-        resBox.style.display = "block";
-        jsonOut.textContent = "Executing sequential pipeline across Studios II, I, and III...";
-
-        try {
-          const resp = await fetch(`${API_BASE}/api/v1/pipeline`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              text: text,
-              sa_hz: 240.0,
-              tempo_bpm: 80
-            })
-          });
-          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-          const data = await resp.json();
-
-          const s2 = data.studio_ii_verification || {};
-          b2.className = s2.is_valid_inference ? "badge ok" : "badge warn";
-          b2.textContent = `Studio II: ${s2.mode || 'Verified'}`;
-
-          const s1 = data.studio_i_analysis || {};
-          b1.className = "badge ok";
-          b1.textContent = `Studio I: ${s1.tokens?.length || 0} tokens`;
-
-          const s3 = data.studio_iii_acoustics || {};
-          b3.className = "badge ok";
-          b3.textContent = `Studio III: ${s3.meter_scansion?.meter || 'Metrical'}`;
-
-          if (s3.midi_base64) {
-            currentPipelineMidiB64 = s3.midi_base64;
-            if (playBtn) playBtn.style.display = "inline-block";
-          }
-
-          jsonOut.textContent = JSON.stringify(data, null, 2);
-        } catch(e) {
-          jsonOut.textContent = `Pipeline error: ${e.message}`;
-        }
-      }
-
-      function playPipelineMidiAudio() {
-        if (!currentPipelineMidiB64) return;
-        // Synthesize acoustic drone + scale using Web Audio
-        const ctx = getAudioContext();
-        stopAllAudio();
-        // Play Sa-Pa Tanpura drone
-        const droneSa = 240.0;
-        const dronePa = 360.0;
-        playFrequency(droneSa, "Adhara Sa (Tanpura)", "S");
-      }
-
-      // --- 4. Kosha Lexicon Lookup ---
-    async function lookupKosha() {
-  const word = document.getElementById("kosha-word").value.trim();
-  const badge = document.getElementById("k-badge");
-  const hint = document.getElementById("k-hint");
-
-  badge.className = "badge";
-  badge.textContent = "Searching...";
-
-  try {
-    const resp = await fetch(`${API_BASE}/api/v1/parse`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ text: word })
-    });
-    if (resp.ok) {
-      const data = await resp.json();
-      // /parse returns {candidates: [{parse: [{surface, stem, role}]}]}
-      const firstCandidate = (data.candidates && data.candidates[0]) || null;
-      const firstToken = firstCandidate && firstCandidate.parse && firstCandidate.parse[0];
-
-      if (!firstToken) {
-        badge.className = "badge warn";
-        badge.textContent = "✗ No match";
-        hint.textContent = `'${word}' was not found in the current lexicon.`;
-        return;
-      }
-
-      document.getElementById("k-word").textContent = word;
-      badge.className = "badge ok";
-      badge.textContent = "✓ In Lexicon";
-      hint.textContent = `Surface: ${firstToken.surface} | Stem: ${firstToken.stem} | Role: ${firstToken.role}`;
-    } else {
-      badge.className = "badge err";
-      badge.textContent = "✗ Not Found";
-      hint.textContent = `Word '${word}' not found in current lexicon.`;
+    function renderVerbConjugation() {
+      const sel = document.getElementById("verb-root-select");
+      if (!sel) return;
+      const key = sel.value;
+      const data = VERB_MATRICES[key];
+      if (!data) return;
+      document.getElementById("v-title").textContent = data.title;
+      document.getElementById("v-chip").textContent = data.chip;
+      const tbody = document.getElementById("v-table-body");
+      tbody.innerHTML = data.rows.map(([purusa, e, d, b]) =>
+        `<tr><th>${purusa}</th><td class="form">${e}</td><td class="form">${d}</td><td class="form">${b}</td></tr>`
+      ).join("");
     }
-  } catch (e) {
-    console.error("lookupKosha failed:", e);
-    badge.className = "badge err";
-    badge.textContent = "Error";
-    hint.textContent = `Lookup failed: ${e.message}`;
-  }
-}
 
-    // --- 5. Gāndharvaveda 22-Śruti Audio Synthesis ---
-    // Reusing existing audioCtx declaration
+    // --- 5. Gāndharvaveda Audio ---
+    let audioCtx = null;
+    let activeOsc = null;
+    let activeGain = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function stopAllAudio() {
+      if (activeOsc) {
+        try {
+          activeGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05);
+          setTimeout(() => {
+            if (activeOsc) {
+              activeOsc.stop();
+              activeOsc.disconnect();
+              activeOsc = null;
+            }
+          }, 60);
+        } catch(e) {}
+      }
+      const badge = document.getElementById("active-svara-badge");
+      if (badge) {
+        badge.className = "badge";
+        badge.textContent = "Silence";
+      }
+    }
+
+    function playFrequency(hz, name, symbol) {
+      const ctx = getAudioContext();
+      stopAllAudio();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(hz, ctx.currentTime);
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.04);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      activeOsc = osc;
+      activeGain = gain;
+      const badge = document.getElementById("active-svara-badge");
+      if (badge) {
+        badge.className = "badge ok";
+        badge.textContent = `▶ Playing ${symbol} (${name}) · ${hz} Hz`;
+      }
+    }
+
+    async function loadSrutiMatrix() {
+      const saHz = parseFloat(document.getElementById("sa-hz-input").value) || 240.0;
+      const tbody = document.getElementById("sruti-table-body");
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:16px;">Loading 22-Śruti Matrix...</td></tr>`;
+      try {
+        const resp = await fetch(`${API_BASE}/api/v1/sruti?sa_hz=${saHz}`);
+        if (!resp.ok) throw new Error("Failed to fetch sruti matrix");
+        const data = await resp.json();
+        tbody.innerHTML = data.intervals.map(item => `
+          <tr style="cursor:pointer;" onclick="playFrequency(${item.frequency_hz}, '${item.name}', '${item.svara_symbol}')">
+            <td>${item.index}</td>
+            <td style="font-weight:600;">${item.name}</td>
+            <td>${item.svara}</td>
+            <td style="font-family:monospace; font-weight:700; color:var(--accent);">${item.svara_symbol}</td>
+            <td style="font-family:monospace;">${item.ratio}</td>
+            <td style="font-family:monospace; color:var(--primary);">${item.frequency_hz} Hz</td>
+            <td style="font-family:monospace;">${item.cents}¢</td>
+            <td style="font-family:monospace; color:${item.tet_deviation_cents >= 0 ? '#10b981' : '#f59e0b'};">
+              ${item.tet_deviation_cents > 0 ? '+' : ''}${item.tet_deviation_cents}¢
+            </td>
+            <td>
+              <button class="btn" style="padding:4px 8px; font-size:0.75rem;" onclick="event.stopPropagation(); playFrequency(${item.frequency_hz}, '${item.name}', '${item.svara_symbol}')">
+                ▶ Play
+              </button>
+            </td>
+          </tr>
+        `).join("");
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--danger); padding:16px;">Error: ${e.message}</td></tr>`;
+      }
+    }
+
+    async function downloadSrutiMidi() {
+      const sel = document.getElementById("midi-scale-select");
+      const saHz = parseFloat(document.getElementById("sa-hz-input").value) || 240.0;
+      if (!sel) return;
+      const svaras = sel.value.split(",");
+      const payload = { svaras: svaras, sa_hz: saHz, sa_midi_note: 60, tempo_bpm: 76 };
+      try {
+        const resp = await fetch(`${API_BASE}/api/v1/sruti/midi/export`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!resp.ok) throw new Error("Failed to export MIDI");
+        const blob = await resp.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = `aigaane_22_sruti_${svaras.slice(0, 3).join("_")}.mid`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } catch (e) {
+        alert("Error downloading MIDI: " + e.message);
+      }
+    }
+
+    let currentPipelineMidiB64 = null;
+
+    async function runStudioPipeline() {
+      const text = document.getElementById("pipeline-input").value.trim();
+      const resBox = document.getElementById("pipeline-result");
+      const jsonOut = document.getElementById("pipeline-json");
+      const b2 = document.getElementById("pipe-s2-badge");
+      const b1 = document.getElementById("pipe-s1-badge");
+      const b3 = document.getElementById("pipe-s3-badge");
+      const playBtn = document.getElementById("pipe-play-btn");
+      if (!text) return;
+      resBox.style.display = "block";
+      jsonOut.textContent = "Executing sequential pipeline across Studios II, I, and III...";
+      try {
+        const resp = await fetch(`${API_BASE}/api/v1/pipeline`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: text, sa_hz: 240.0, tempo_bpm: 80 })
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        const s2 = data.studio_ii_verification || {};
+        b2.className = s2.is_valid_inference ? "badge ok" : "badge warn";
+        b2.textContent = `Studio II: ${s2.mode || 'Verified'}`;
+        const s1 = data.studio_i_analysis || {};
+        b1.className = "badge ok";
+        b1.textContent = `Studio I: ${s1.tokens?.length || 0} tokens`;
+        const s3 = data.studio_iii_acoustics || {};
+        b3.className = "badge ok";
+        b3.textContent = `Studio III: ${s3.meter_scansion?.meter || 'Metrical'}`;
+        if (s3.midi_base64) {
+          currentPipelineMidiB64 = s3.midi_base64;
+          if (playBtn) playBtn.style.display = "inline-block";
+        }
+        jsonOut.textContent = JSON.stringify(data, null, 2);
+      } catch(e) {
+        jsonOut.textContent = `Pipeline error: ${e.message}`;
+      }
+    }
+
+    function playPipelineMidiAudio() {
+      if (!currentPipelineMidiB64) return;
+      const ctx = getAudioContext();
+      stopAllAudio();
+      const droneSa = 240.0;
+      const dronePa = 360.0;
+      playFrequency(droneSa, "Adhara Sa (Tanpura)", "S");
+    }
+
+    async function lookupKosha() {
+      const word = document.getElementById("kosha-word").value.trim();
+      const badge = document.getElementById("k-badge");
+      const hint = document.getElementById("k-hint");
+      badge.className = "badge";
+      badge.textContent = "Searching...";
+      try {
+        const resp = await fetch(`${API_BASE}/api/v1/parse`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          body: JSON.stringify({ text: word })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          const firstCandidate = (data.candidates && data.candidates[0]) || null;
+          const firstToken = firstCandidate && firstCandidate.parse && firstCandidate.parse[0];
+          if (!firstToken) {
+            badge.className = "badge warn";
+            badge.textContent = "✗ No match";
+            hint.textContent = `'${word}' was not found in the current lexicon.`;
+            return;
+          }
+          document.getElementById("k-word").textContent = word;
+          badge.className = "badge ok";
+          badge.textContent = "✓ In Lexicon";
+          hint.textContent = `Surface: ${firstToken.surface} | Stem: ${firstToken.stem} | Role: ${firstToken.role}`;
+        } else {
+          badge.className = "badge err";
+          badge.textContent = "✗ Not Found";
+          hint.textContent = `Word '${word}' not found in current lexicon.`;
+        }
+      } catch (e) {
+        console.error("lookupKosha failed:", e);
+        badge.className = "badge err";
+        badge.textContent = "Error";
+        hint.textContent = `Lookup failed: ${e.message}`;
+      }
+    }
+
     let isPlaying = false;
     let scheduledTimeouts = [];
 
@@ -1479,20 +1262,16 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
       const gain = audioCtx.createGain();
       osc.type = "sine";
       osc.frequency.setValueAtTime(freq, startTime);
-      
       gain.gain.setValueAtTime(0.0001, startTime);
       gain.gain.exponentialRampToValueAtTime(0.3, startTime + 0.05);
       gain.gain.setValueAtTime(0.3, startTime + duration - 0.05);
       gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-      
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start(startTime);
       osc.stop(startTime + duration);
     }
 
-    
-    // --- Session 4: Audio Playhead & Speed Synchronizer ---
     let audioPlaybackSpeed = 1.0;
     let audioPlayheadRafId = null;
     let tanpuraOscNodes = [];
@@ -1518,7 +1297,6 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
         tanpuraMasterGain.connect(audioCtx.destination);
       }
       if (tanpuraOscNodes.length === 0) {
-        // Pa (384 Hz) and Sa (256 Hz) harmonic drone pair
         const frequencies = [384.0, 256.0, 128.0];
         tanpuraOscNodes = frequencies.map((freq, idx) => {
           const osc = audioCtx.createOscillator();
@@ -1563,15 +1341,12 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
         document.querySelectorAll("#c-chips .syl").forEach(c => c.classList.remove("active-playhead"));
         return;
       }
-
       const elapsed = audioCtx.currentTime - startAudioTime;
       const progressPct = Math.min(100, Math.max(0, (elapsed / totalDurationSec) * 100));
       const progressBar = document.getElementById("audio-playhead-progress");
       if (progressBar) {
         progressBar.style.width = progressPct.toFixed(1) + "%";
       }
-
-      // Highlight matching syllable chip in #c-chips
       const chips = document.querySelectorAll("#c-chips .syl");
       syllableTimeBrackets.forEach((brk, idx) => {
         if (chips[idx]) {
@@ -1579,7 +1354,6 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
           chips[idx].classList.toggle("active-playhead", isActive);
         }
       });
-
       if (elapsed < totalDurationSec) {
         audioPlayheadRafId = requestAnimationFrame(() => updatePlayheadAnimation(startAudioTime, totalDurationSec));
       } else {
@@ -1591,36 +1365,28 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
       initAudioContext();
       stopAudioPlayback();
       isPlaying = true;
-
       const btn = document.getElementById("play-btn");
       const label = document.getElementById("audio-track-label");
       if (btn) btn.textContent = "⏸";
       if (label) label.textContent = `Playing 22-Śruti scansion (${audioPlaybackSpeed}× speed, C 256Hz base)...`;
-
       const baseFreq = 256.0;
       const speedFactor = 1.0 / audioPlaybackSpeed;
       let startAudioTime = audioCtx.currentTime + 0.1;
       let now = startAudioTime;
       syllableTimeBrackets = [];
-
       syllables.forEach((item, idx) => {
         const isGuru = item.weight === "G";
         const duration = (isGuru ? 0.65 : 0.35) * speedFactor;
         const intervalRatio = isGuru ? SRUTI_RATIOS["Pa"] : SRUTI_RATIOS["Sa"];
         const freq = baseFreq * intervalRatio;
-
         playTone(freq, duration, now);
-
         const bracketStart = now - startAudioTime;
         const bracketEnd = bracketStart + duration;
         syllableTimeBrackets.push({ index: idx, start: bracketStart, end: bracketEnd });
-
         now += duration + (0.08 * speedFactor);
       });
-
       const totalDurationSec = now - startAudioTime;
       audioPlayheadRafId = requestAnimationFrame(() => updatePlayheadAnimation(startAudioTime, totalDurationSec));
-
       const totalDurationMs = totalDurationSec * 1000;
       const tid = setTimeout(() => {
         stopAudioPlayback();
@@ -1643,44 +1409,6 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
       if (label) label.textContent = `Ready: Just Intonation tuning (${audioPlaybackSpeed}× speed, C 256Hz base)`;
       if (progressBar) progressBar.style.width = "0%";
       document.querySelectorAll("#c-chips .syl").forEach(c => c.classList.remove("active-playhead"));
-    }
-
-    function _unused_old_playSyllableSequence(syllables) {
-      initAudioContext();
-      stopAudioPlayback();
-      isPlaying = true;
-
-      const btn = document.getElementById("play-btn");
-      const label = document.getElementById("audio-track-label");
-      btn.textContent = "⏸";
-      label.textContent = "Playing 22-Śruti scansion (C 256Hz Just Intonation)...";
-
-      const baseFreq = 256.0;
-      let now = audioCtx.currentTime + 0.1;
-
-      syllables.forEach((item) => {
-        const isGuru = item.weight === "G";
-        const duration = isGuru ? 0.65 : 0.35;
-        const intervalRatio = isGuru ? SRUTI_RATIOS["Pa"] : SRUTI_RATIOS["Sa"];
-        const freq = baseFreq * intervalRatio;
-
-        playTone(freq, duration, now);
-        now += duration + 0.08;
-      });
-
-      const totalDurationMs = (now - audioCtx.currentTime) * 1000;
-      const tid = setTimeout(() => { stopAudioPlayback(); }, totalDurationMs);
-      scheduledTimeouts.push(tid);
-    }
-
-    function stopAudioPlayback() {
-      scheduledTimeouts.forEach(clearTimeout);
-      scheduledTimeouts = [];
-      isPlaying = false;
-      const btn = document.getElementById("play-btn");
-      const label = document.getElementById("audio-track-label");
-      if (btn) btn.textContent = "▶";
-      if (label) label.textContent = "Ready: Just Intonation tuning (C 256Hz base)";
     }
 
     function toggleAudioPlayback() {
@@ -1711,27 +1439,22 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
       const qInput = document.getElementById("itihasa-q");
       const resultDiv = document.getElementById("itihasa-result");
       if (!qInput || !resultDiv) return;
-
       const query = qInput.value.trim();
       if (!query) {
         resultDiv.innerHTML = '<span class="hint">Enter a keyword (e.g., "dharma", "karma", "tapaḥ").</span>';
         return;
       }
-
       resultDiv.innerHTML = '<span class="hint">Searching classical canon...</span>';
-
       try {
         const resp = await fetch(`${API_BASE}/api/v1/itihasa/search?q=${encodeURIComponent(query)}`, {
           method: "GET"
         });
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
-
         if (!data.results || data.results.length === 0) {
           resultDiv.innerHTML = `<span class="badge warn">No verses found for "${query}"</span>`;
           return;
         }
-
         let out = `<div style="margin-bottom:12px;"><span class="badge ok">${data.total} verse(s) found</span></div>`;
         data.results.forEach(m => {
           const verseText = m.text || m.transliteration || '';
@@ -1758,7 +1481,7 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
         resultDiv.innerHTML = `<span class="badge err">Error: ${e.message}</span>`;
       }
     }
-  
+
     function loadVerseToPipeline(verseText) {
       const pipeInput = document.getElementById("pipeline-input") || document.getElementById("chandas-input");
       if (pipeInput) {
@@ -1771,10 +1494,8 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
         }
       }
     }
-
   </script>
 
-  <!-- Session 2: Viewport-Pinned Sticky IAST Thumb Bar -->
   <aside class="sticky-iast-bar" aria-label="IAST Diacritic Input Bar">
     <div class="sticky-iast-container">
       <span class="sticky-iast-label">IAST:</span>
@@ -1794,11 +1515,9 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
     </div>
   </aside>
 
-  <!-- Session 2: Caret-Preserving Focus Handler -->
   <script id="session2-iast-binding">
     (function initIASTStickyBar() {
       let lastFocusedInput = null;
-
       function trackInput(el) {
         if (!el || el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') return;
         if (lastFocusedInput && lastFocusedInput !== el) {
@@ -1807,47 +1526,35 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
         lastFocusedInput = el;
         lastFocusedInput.classList.add('iast-active-target');
       }
-
       document.addEventListener('focusin', function(e) {
         if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
           trackInput(e.target);
         }
       });
-
-      // Default initial focus target if none selected yet
       const defaultInput = document.getElementById('sandhi-p1') || 
                            document.getElementById('chandas-input') || 
                            document.querySelector('input[type=text]');
       if (defaultInput) {
         trackInput(defaultInput);
       }
-
-      // Handle diacritic button taps without losing input focus or triggering mobile blur
       document.querySelectorAll('.sticky-iast-bar .iast-key').forEach(function(btn) {
-        // Prevent default mousedown/touchstart so active input doesn't lose focus
         btn.addEventListener('mousedown', function(e) { e.preventDefault(); });
         btn.addEventListener('touchstart', function(e) { e.preventDefault(); }, { passive: false });
-
         btn.addEventListener('click', function(e) {
           e.preventDefault();
           const char = btn.getAttribute('data-char');
           const target = lastFocusedInput || defaultInput;
           if (!target || !char) return;
-
           const start = target.selectionStart !== null ? target.selectionStart : target.value.length;
           const end = target.selectionEnd !== null ? target.selectionEnd : target.value.length;
           const val = target.value;
-
           target.value = val.substring(0, start) + char + val.substring(end);
           target.selectionStart = target.selectionEnd = start + char.length;
           target.focus();
-
-          // Dispatch input event so live search/renderers detect change
           target.dispatchEvent(new Event('input', { bubbles: true }));
         });
       });
     })();
   </script>
-
 </body>
 </html>
