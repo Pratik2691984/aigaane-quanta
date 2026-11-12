@@ -694,37 +694,63 @@
     }
 
     // --- 2. Chandas Prosody Scanner ---
-    async function scanChandas() {
+      async function scanChandas() {
       const text = document.getElementById("chandas-input").value.trim();
       const chips = document.getElementById("c-chips");
       const verdict = document.getElementById("c-verdict");
       const count = document.getElementById("c-count");
       const pattern = document.getElementById("c-pattern");
+      
+      if (!text) {
+        chips.innerHTML = '<span class="hint">Enter a verse to scan.</span>';
+        return;
+      }
+      
       chips.innerHTML = '<span class="hint">Scanning prosody...</span>';
+      
       try {
-        const resp = await fetch(`${API_BASE}/api/v1/parse`, {
+        const resp = await fetch(`${API_BASE}/api/v1/chandas/scan`, {
           method: "POST",
           headers: { "Content-Type": "application/json; charset=utf-8" },
           body: JSON.stringify({ text: text })
         });
+        
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
-        let meter = "Sanskrit Scansion";
-        if (data.canon_refs && data.canon_refs.length > 0) {
-          meter = data.canon_refs[0].reference_locator || "Anuṣṭubh";
+        
+        if (data.errors) {
+          chips.innerHTML = `<span class="hint" style="color:var(--danger)">Error: ${data.errors}</span>`;
+          return;
         }
+        
+        // Render syllable chips with real L/G weights
         chips.innerHTML = "";
-        const syllables = text.split(" ");
-        lastScannedSyllables = [];
-        syllables.forEach((s, idx) => {
-          const w = (idx % 2 === 0) ? "G" : "L";
-          lastScannedSyllables.push({ txt: s, weight: w });
-          chips.innerHTML += `<div class="syl ${w}"><span class="txt">${s}</span><span class="w">${w}</span></div>`;
-        });
-        verdict.textContent = `✓ ${meter}`;
-        count.textContent = `${data.tokens ? data.tokens.length : 1} Words`;
-        pattern.textContent = "PROSODY-ACTIVE";
+        if (data.weights && data.weights.length > 0) {
+          const syllables = text.split(/\s+/);
+          data.weights.forEach((w, idx) => {
+            const sylText = syllables[idx] || "—";
+            chips.innerHTML += `<div class="syl ${w}"><span class="txt">${sylText}</span><span class="w">${w}</span></div>`;
+          });
+        }
+        
+        // Update verdict / count / pattern from real scansion
+        const meterName = data.meter?.meter || "unknown";
+        verdict.textContent = `✓ ${meterName}`;
+        verdict.className = data.meter ? "badge ok" : "badge warn";
+        
+        count.textContent = `${data.syllable_count || 0} Syllables · ${data.matra_sum || 0} Mātrās`;
+        pattern.textContent = data.pattern || "—";
+        
+        // Add meter details if available
+        if (data.meter && data.meter.reference_locator) {
+          const existingHint = document.querySelector("#chandas-result .hint");
+          if (existingHint) {
+            existingHint.textContent = `Meter: ${data.meter.meter} (${data.meter.reference_locator}) · Match type: ${data.meter.match_type || "syllable_count"}`;
+          }
+        }
+        
       } catch (e) {
-        chips.innerHTML = '<span class="hint" style="color:var(--danger)">Error scanning text</span>';
+        chips.innerHTML = `<span class="hint" style="color:var(--danger)">Error scanning text: ${e.message}</span>`;
       }
     }
 

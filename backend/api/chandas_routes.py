@@ -3,11 +3,10 @@ Chandas (meter) domain routes.
 
 Exposes Piṅgala-style L/G scansion and meter classification:
 
-  POST /chandas/scan   → full scansion: L/G pattern + mātrā + meter
-  POST /chandas/analyze → meter classification only (lighter)
-  GET  /chandas/probe   → module availability
-
-Backed by `_chhandas.analyze_verse` and `_chhandas_scanner.scan_iast`.
+  POST /chandas/scan     → full scansion: L/G pattern + mātrā + meter
+  POST /chandas/analyze  → meter classification only (lighter)
+  GET  /chandas/meters   → list all supported meters
+  GET  /chandas/probe    → module availability
 """
 import sys
 from pathlib import Path
@@ -18,7 +17,7 @@ if str(_ENGINE_DIR) not in sys.path:
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 router = APIRouter(tags=["chandas"])
 
@@ -28,13 +27,6 @@ try:
 except Exception:
     _chhandas = None
     _CHHANDAS_OK = False
-
-try:
-    import _chhandas_scanner
-    _SCANNER_OK = True
-except Exception:
-    _chhandas_scanner = None
-    _SCANNER_OK = False
 
 try:
     import _script
@@ -61,22 +53,13 @@ def _to_iast(text: str) -> str:
         return text
 
 
-def _compute_matra(weights: List[str]) -> int:
-    """Mātrā sum: L=1, G=2."""
-    return sum(2 if w == "G" else 1 for w in weights)
-
-
 @router.post("/scan")
 async def scan_chandas(payload: ChandasScanRequest):
     """
-    Full Piṅgala scansion:
-      - L/G weight per syllable
-      - mātrā sum (L=1, G=2)
-      - meter classification (Anuṣṭubh, Triṣṭubh, etc.)
-      - pāda structure
+    Full scansion: L/G weights, mātrā count, and meter identification.
     """
-    if not _SCANNER_OK and not _CHHANDAS_OK:
-        raise HTTPException(status_code=503, detail="No chandas module available")
+    if not _CHHANDAS_OK:
+        raise HTTPException(status_code=503, detail="Chandas module unavailable")
 
     text = payload.text.strip()
     if not text:
@@ -84,61 +67,71 @@ async def scan_chandas(payload: ChandasScanRequest):
 
     iast = _to_iast(text)
 
-    weights: List[str] = []
-    meter_info: Optional[dict] = None
-    errors: List[str] = []
-
-    if _SCANNER_OK and hasattr(_chhandas_scanner, "scan_iast"):
-        try:
-            result = _chhandas_scanner.scan_iast(iast)
-            if isinstance(result, list):
-                weights = [str(w) for w in result]
-        except Exception as e:
-            errors.append(f"scanner: {e}")
-
-    if _CHHANDAS_OK and hasattr(_chhandas, "analyze_verse"):
-        try:
-            info = _chhandas.analyze_verse(iast)
-            if isinstance(info, dict):
-                meter_info = info
-        except Exception as e:
-            errors.append(f"analyze: {e}")
-
-    return {
-        "surface": text,
-        "iast": iast,
-        "weights": weights,
-        "syllable_count": len(weights),
-        "matra_sum": _compute_matra(weights) if weights else 0,
-        "meter": meter_info,
-        "errors": errors if errors else None,
-    }
+    try:
+        result = _chhandas.scan_verse(iast)
+        result["surface"] = text  # Preserve original input (may be Devanagari, IAST, etc.)
+        result["iast"] = iast
+        result["errors"] = None
+        return result
+    except Exception as e:
+        return {
+            "surface": text,
+            "iast": iast,
+            "weights": [],
+            "pattern": "",
+            "syllable_count": 0,
+            "matra_sum": 0,
+            "meter": None,
+            "errors": str(e),
+        }
 
 
 @router.post("/analyze")
 async def analyze_chandas(payload: ChandasScanRequest):
-    """Meter classification only — lighter than /scan."""
+    """
+    Lighter endpoint: meter classification only.
+    Returns 'found' key for back-compat with legacy frontend expectations.
+    """
     if not _CHHANDAS_OK:
-        raise HTTPException(status_code=503, detail="Chandas analyzer unavailable")
+        raise HTTPException(status_code=503, detail="Chandas module unavailable")
 
     text = payload.text.strip()
     if not text:
         raise HTTPException(status_code=400, detail="Empty input")
 
     iast = _to_iast(text)
+
     try:
         result = _chhandas.analyze_verse(iast)
+        return {
+            "surface": text,
+            "iast": iast,
+            "found": result is not None,  # Back-compat key
+            "meter": result,
+            "errors": None,
+        }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Analyze failed: {e}")
+        return {
+            "surface": text,
+            "iast": iast,
+            "found": False,
+            "meter": None,
+            "errors": str(e),
+        }
 
-    if not result:
-        return {"surface": text, "iast": iast, "found": False, "meter": None}
+
+@router.get("/meters")
+async def list_meters():
+    """List all supported meters."""
+    if not _CHHANDAS_OK:
+        raise HTTPException(status_code=503, detail="Chandas module unavailable")
 
     return {
-        "surface": text,
-        "iast": iast,
-        "found": True,
-        "meter": result,
+        "count": len(_chhandas._CHHANDAS_TABLE),
+        "meters": [
+            {"name": name, **data}
+            for name, data in _chhandas._CHHANDAS_TABLE.items()
+        ],
     }
 
 
@@ -146,8 +139,9 @@ async def analyze_chandas(payload: ChandasScanRequest):
 async def chandas_probe():
     return {
         "chhandas_ok": _CHHANDAS_OK,
-        "scanner_ok": _SCANNER_OK,
+        "scanner_ok": _CHHANDAS_OK,  # Back-compat: scanner was merged into _chhandas
         "script_ok": _SCRIPT_OK,
         "has_analyze_verse": _CHHANDAS_OK and hasattr(_chhandas, "analyze_verse"),
-        "has_scan_iast": _SCANNER_OK and hasattr(_chhandas_scanner, "scan_iast"),
+        "has_scan_iast": _CHHANDAS_OK and hasattr(_chhandas, "scan_verse"),
+        "meter_count": len(_chhandas._CHHANDAS_TABLE) if _CHHANDAS_OK else 0,
     }
