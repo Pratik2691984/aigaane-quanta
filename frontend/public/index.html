@@ -376,6 +376,7 @@
           <option value="ii-fem">ī-stem feminine (nadī)</option>
           <option value="uu-fem">ū-stem feminine (vadhū)</option>
           <option value="r-stem">ṛ-stem (pitṛ)</option>
+          <option value="in-masc">in-stem masculine (balin)</option>
         </select>
         <button onclick="renderMorphology()">Generate Forms</button>
       </div>
@@ -765,7 +766,7 @@
       "nadyām": "नद्याम्", "nadīṣu": "नदीषु", "nadi": "नदि",
       // ū-stem: vadhū
       "vadhūḥ": "वधूः", "vadhvau": "वध्वौ", "vadhvaḥ": "वध्वः", "vadhūm": "वधूम्",
-      "vadhūḥ": "वधूः", "vadhvā": "वध्वा", "vadhūbhyām": "वधूभ्याम्",
+      "vadhvā": "वध्वा", "vadhūbhyām": "वधूभ्याम्",
       "vadhūbhiḥ": "वधूभिः", "vadhvai": "वध्वै", "vadhūbhyaḥ": "वधूभ्यः",
       "vadhvāḥ": "वध्वाः", "vadhvoḥ": "वध्वोः", "vadhūnām": "वधूनाम्",
       "vadhvām": "वध्वाम्", "vadhūṣu": "वधूषु", "vadhu": "वधु",
@@ -774,7 +775,28 @@
       "pitṝn": "पितॄन्", "pitrā": "पित्रा", "pitṛbhyām": "पितृभ्याम्",
       "pitṛbhiḥ": "पितृभिः", "pitre": "पित्रे", "pitṛbhyaḥ": "पितृभ्यः",
       "pituḥ": "पितुः", "pitroḥ": "पित्रोः", "pitṝṇām": "पितॄणाम्",
-      "pitari": "पितरि", "pitṛṣu": "पितृषु", "pitaḥ": "पितः"
+      "pitari": "पितरि", "pitṛṣu": "पितृषु", "pitaḥ": "पितः",
+      
+      // rājan (n-masc) — Nakārānta Pulliṅga
+      "rājā": "राजा", "rājānau": "राजानौ", "rājānaḥ": "राजानः", "rājānam": "राजानम्",
+      "rājñaḥ": "राज्ञः", "rājñā": "राज्ञा", "rājabhyām": "राजभ्याम्",
+      "rājabhiḥ": "राजभिः", "rājñe": "राज्ञे", "rājabhyaḥ": "राजभ्यः",
+      "rājñoḥ": "राज्ञोः", "rājñām": "राज्ञाम्", "rājñi": "राज्ञि",
+      "rājani": "राजनि", "rājasu": "राजसु", "rājan": "राजन्",
+      
+      // nāman (n-neut) — Nakārānta Napuṃsakaliṅga
+      "nāma": "नाम", "nāmnī": "नाम्नी", "nāmanī": "नामनी", "nāmāni": "नामानि",
+      "nāmnā": "नाम्ना", "nāmabhyām": "नामभ्याम्", "nāmabhiḥ": "नामभिः",
+      "nāmne": "नाम्ने", "nāmabhyaḥ": "नामभ्यः", "nāmnaḥ": "नाम्नः",
+      "nāmnoḥ": "नाम्नोः", "nāmnām": "नाम्नाम्", "nāmni": "नाम्नि",
+      "nāmani": "नामनि", "nāmasu": "नामसु", "nāman": "नामन्",
+      
+      // balin (in-masc) — In-kārānta Pulliṅga
+      "balī": "बली", "balinau": "बलिनौ", "balinaḥ": "बलिनः", "balinam": "बलिनम्",
+      "balinā": "बलिना", "balibhyām": "बलिभ्याम्", "balibhiḥ": "बलिभिः",
+      "baline": "बलिने", "balibhyaḥ": "बलिभ्यः", "balinoḥ": "बलिनोः",
+      "balinām": "बलिनाम्", "balini": "बलिनि", "baliṣu": "बलिषु",
+      "balin": "बलिन्",
     };
 
     function toDevanagari(text) {
@@ -957,6 +979,20 @@
           ["Ṣaṣṭhī (6th)", "vadhvāḥ", "vadhvoḥ", "vadhūnām"],
           ["Saptamī (7th)", "vadhvām", "vadhvoḥ", "vadhūṣu"],
           ["Sambodhana (Voc.)", "vadhu", "vadhvau", "vadhvaḥ"]
+        ];
+      } else if (paradigm === "in-masc") {
+        lemmaInput.value = "balin";
+        title.textContent = "balin";
+        chip.textContent = "In-kārānta · Pulliṅga (balin)";
+        rows = [
+          ["Prathamā (1st)", "balī", "balinau", "balinaḥ"],
+          ["Dvitīyā (2nd)", "balinam", "balinau", "balinaḥ"],
+          ["Tṛtīyā (3rd)", "balinā", "balibhyām", "balibhiḥ"],
+          ["Caturthī (4th)", "baline", "balibhyām", "balibhyaḥ"],
+          ["Pañcamī (5th)", "balinaḥ", "balibhyām", "balibhyaḥ"],
+          ["Ṣaṣṭhī (6th)", "balinaḥ", "balinoḥ", "balinām"],
+          ["Saptamī (7th)", "balini", "balinoḥ", "baliṣu"],
+          ["Sambodhana (Voc.)", "balin", "balinau", "balinaḥ"]
         ];
       } else if (paradigm === "r-stem") {
         lemmaInput.value = "pitṛ";
