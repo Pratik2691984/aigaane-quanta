@@ -39,5 +39,3 @@ test-parse.ps1
 docs/
 *.md
 !README.md
-
-# Exclude canon.db from the main COPY — it's copied explicitly in Dockerfile
