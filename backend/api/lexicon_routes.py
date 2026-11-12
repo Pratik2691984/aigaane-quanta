@@ -1,13 +1,16 @@
 """
 Lexicon (Kośa) domain routes — dictionary-style access to the 2-5K stem lexicon.
 
-Wraps `_lexicon.lookup()`, which returns:
-  {stem, pos, linga, vibhakti, vacana, confidence, [dhatu, gana]}
+Wraps `_lexicon.lookup()` (morphological analysis) and `_semantic_index.lookup_semantic()`
+(etymological + semantic metadata).
 
 Provides:
-  POST /lexicon/lookup      → full morphology with match strategy attribution
-  POST /lexicon/attest      → boolean: is this stem attested?
-  GET  /lexicon/probe       → module availability
+  POST /lexicon/lookup           → full morphology with match strategy attribution
+  POST /lexicon/attest           → boolean: is this stem attested?
+  GET  /lexicon/semantic         → semantic metadata (dhātu, nirukta, synonyms, citations)
+  GET  /lexicon/semantic/stats   → coverage stats of the semantic index
+  GET  /lexicon/semantic/search  → search by dhātu or synonym
+  GET  /lexicon/probe            → module availability
 """
 import sys
 from pathlib import Path
@@ -16,9 +19,9 @@ _ENGINE_DIR = Path(__file__).resolve().parent.parent / "engine"
 if str(_ENGINE_DIR) not in sys.path:
     sys.path.insert(0, str(_ENGINE_DIR))
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 router = APIRouter(tags=["lexicon"])
 
@@ -29,25 +32,27 @@ except Exception:
     _lexicon = None
     _LEXICON_OK = False
 
+try:
+    import _semantic_index
+    _SEMANTIC_OK = True
+except Exception:
+    _semantic_index = None
+    _SEMANTIC_OK = False
 
-# Matching strategies: try exact, then progressively strip endings
+
+# ==============================================================================
+# MATCHING STRATEGIES (unchanged from original)
+# ==============================================================================
+
 _MATCH_STRATEGIES = [
-    "exact",           # Try as-is
-    "strip_aH",        # SLP1 nominative singular
-    "strip_AH",        # SLP1 plural
-    "strip_H",         # bare visarga
-    "strip_aḥ",        # IAST nominative singular
-    "strip_āḥ",        # IAST plural
-    "strip_ḥ",         # bare IAST visarga
-    "add_a",           # base + 'a' (most common masc stem)
-    "add_A",           # base + 'A'
+    "exact", "strip_aH", "strip_AH", "strip_H",
+    "strip_aḥ", "strip_āḥ", "strip_ḥ",
+    "add_a", "add_A",
 ]
 
 
 def _try_lookup_with_strategy(text: str) -> tuple:
-    """
-    Try lookup with fallback strategies. Returns (result, strategy_used, tried_count).
-    """
+    """Try lookup with fallback strategies. Returns (result, strategy_used, tried_count)."""
     strategies_tried = []
 
     # Strategy 1: exact
@@ -69,7 +74,6 @@ def _try_lookup_with_strategy(text: str) -> tuple:
                 hit = _lexicon.lookup(base)
                 if hit:
                     return (hit, name, len(strategies_tried))
-                # also try base + 'a'
                 hit = _lexicon.lookup(base + "a")
                 if hit:
                     return (hit, name + "+a", len(strategies_tried))
@@ -104,6 +108,10 @@ def _try_lookup_with_strategy(text: str) -> tuple:
     return (None, None, len(strategies_tried))
 
 
+# ==============================================================================
+# REQUEST MODELS
+# ==============================================================================
+
 class LexiconLookupRequest(BaseModel):
     text: str = Field(..., min_length=1, description="Stem or inflected form")
 
@@ -112,15 +120,13 @@ class LexiconAttestRequest(BaseModel):
     stem: str = Field(..., min_length=1, description="Bare stem to check")
 
 
+# ==============================================================================
+# ENDPOINT: /lookup — existing, unchanged
+# ==============================================================================
+
 @router.post("/lookup")
 async def lexicon_lookup(payload: LexiconLookupRequest):
-    """
-    Dictionary-style lookup with strategy attribution.
-
-    Tries exact match, then progressively strips Sanskrit endings to
-    recover the base stem. Reports which strategy succeeded so the
-    frontend can surface "matched via ending-strip" vs "exact match".
-    """
+    """Dictionary-style lookup with strategy attribution."""
     if not _LEXICON_OK:
         raise HTTPException(status_code=503, detail="Lexicon module unavailable")
 
@@ -158,14 +164,13 @@ async def lexicon_lookup(payload: LexiconLookupRequest):
     }
 
 
+# ==============================================================================
+# ENDPOINT: /attest — existing, unchanged
+# ==============================================================================
+
 @router.post("/attest")
 async def lexicon_attest(payload: LexiconAttestRequest):
-    """
-    Boolean attestation check — is this bare stem in the lexicon?
-
-    Lighter than `/lookup` — just returns true/false. Useful for
-    frontend validation without full morphology payload.
-    """
+    """Boolean attestation check."""
     if not _LEXICON_OK:
         raise HTTPException(status_code=503, detail="Lexicon module unavailable")
 
@@ -185,11 +190,122 @@ async def lexicon_attest(payload: LexiconAttestRequest):
     }
 
 
+# ==============================================================================
+# NEW ENDPOINT: /semantic — semantic metadata lookup
+# ==============================================================================
+
+@router.get("/semantic")
+async def lookup_semantic_endpoint(
+    stem: str = Query(..., min_length=1, description="Sanskrit stem (e.g., 'dharma')"),
+):
+    """
+    Semantic metadata: dhātu, gaṇa, nirukta, gloss, synonyms, antonyms, citations.
+
+    Unlike /lookup (which does morphological analysis on an inflected form),
+    /semantic takes a bare stem and returns its etymological + semantic metadata.
+    """
+    if not _SEMANTIC_OK:
+        raise HTTPException(status_code=503, detail="Semantic index unavailable")
+
+    stem_clean = stem.strip().lower()
+    if not stem_clean:
+        raise HTTPException(status_code=400, detail="Empty stem")
+
+    try:
+        result = _semantic_index.lookup_semantic(stem_clean)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Semantic lookup failed: {e}")
+
+    if result is None:
+        return {
+            "stem": stem_clean,
+            "found": False,
+            "suggestion": "Try a common Sanskrit term like 'dharma', 'karma', 'ātman', 'brahman', 'yoga', 'mokṣa'.",
+        }
+
+    return {
+        "stem": stem_clean,
+        "found": True,
+        **result,
+    }
+
+
+# ==============================================================================
+# NEW ENDPOINT: /semantic/stats — coverage stats
+# ==============================================================================
+
+@router.get("/semantic/stats")
+async def semantic_stats():
+    """Return statistics about the semantic index coverage."""
+    if not _SEMANTIC_OK:
+        raise HTTPException(status_code=503, detail="Semantic index unavailable")
+
+    return _semantic_index.get_stats()
+
+
+# ==============================================================================
+# NEW ENDPOINT: /semantic/search — search by dhātu or synonym
+# ==============================================================================
+
+@router.get("/semantic/search")
+async def semantic_search(
+    dhatu: Optional[str] = Query(None, description="Search by dhātu (e.g., 'dhṛ')"),
+    synonym: Optional[str] = Query(None, description="Search by synonym (e.g., 'dharmya')"),
+):
+    """
+    Search the semantic index by dhātu or synonym.
+
+    Examples:
+      /lexicon/semantic/search?dhatu=dhṛ       → all words derived from √dhṛ
+      /lexicon/semantic/search?synonym=dharmya → all words with 'dharmya' as synonym
+    """
+    if not _SEMANTIC_OK:
+        raise HTTPException(status_code=503, detail="Semantic index unavailable")
+
+    if not dhatu and not synonym:
+        raise HTTPException(
+            status_code=400,
+            detail="Must provide either 'dhatu' or 'synonym' parameter",
+        )
+
+    try:
+        if dhatu:
+            results = _semantic_index.search_by_dhatu(dhatu.strip())
+            return {
+                "search_type": "dhatu",
+                "query": dhatu.strip(),
+                "count": len(results),
+                "results": results,
+            }
+        else:
+            results = _semantic_index.search_by_synonym(synonym.strip())
+            return {
+                "search_type": "synonym",
+                "query": synonym.strip(),
+                "count": len(results),
+                "results": results,
+            }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Semantic search failed: {e}")
+
+
+# ==============================================================================
+# ENDPOINT: /probe — module availability
+# ==============================================================================
+
 @router.get("/probe")
 async def lexicon_probe():
     return {
         "lexicon_ok": _LEXICON_OK,
+        "semantic_ok": _SEMANTIC_OK,
         "has_lookup": _LEXICON_OK and hasattr(_lexicon, "lookup"),
+        # Back-compat: legacy test/client expects this key
         "has_lookup_classical_verb": _LEXICON_OK and hasattr(_lexicon, "lookup_classical_verb"),
+        # Back-compat: legacy test/client expects 'strategies'
         "strategies": _MATCH_STRATEGIES,
+        # New: also expose under canonical name
+        "match_strategies": _MATCH_STRATEGIES,
+        "semantic_entries": (
+            _semantic_index.get_stats()["total_entries"] if _SEMANTIC_OK else 0
+        ),
     }
