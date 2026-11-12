@@ -1,13 +1,21 @@
-﻿"""
+"""
 Aigaane v0.3.0 — Category G & J Chhandas Prosody Engine
-20+ classical Sanskrit meters with Piṅgala-style syllable weight detection.
+25 classical Sanskrit meters (20 classical + 5 Vedic) with Piṅgala-style
+syllable weight detection.
+
+Priority 3 (Q5-B) added:
+  - pathyā-triṣṭubh (Vedic Triṣṭubh variant A)
+  - vipulā-triṣṭubh (Vedic Triṣṭubh variant B)
+  - pathyā-jagatī (Vedic Jagatī variant A)
+  - āpīḍā-jagatī (Vedic Jagatī variant B)
+  - mahāpankti (rare Vedic 4×10 meter)
 """
 
 import unicodedata
 from typing import Optional, Dict, List
 
 # ==============================================================================
-# METER TABLE — 20 classical meters
+# METER TABLE — 25 meters (20 classical + 5 Vedic)
 # ==============================================================================
 # Each entry defines:
 #   - canon_name: source text
@@ -55,7 +63,7 @@ _CHHANDAS_TABLE: Dict[str, dict] = {
         "reference_locator": "uṣṇih 8+8+12",
         "syllables": 28, "quarters": 3, "syllables_per_quarter": "8+8+12",
     },
-    
+
     # === Triṣṭubh family (11 syllables) ===
     "indravajrā": {
         "canon_name": "Chhandaḥśāstra",
@@ -74,7 +82,7 @@ _CHHANDAS_TABLE: Dict[str, dict] = {
         "reference_locator": "upajāti 4×11 (mixed)",
         "syllables": 44, "quarters": 4, "syllables_per_quarter": 11,
     },
-    
+
     # === Jagatī family (12 syllables) ===
     "vaṃśasthā": {
         "canon_name": "Chhandaḥśāstra",
@@ -86,7 +94,7 @@ _CHHANDAS_TABLE: Dict[str, dict] = {
         "reference_locator": "indravaṃśā 4×12",
         "syllables": 48, "quarters": 4, "syllables_per_quarter": 12,
     },
-    
+
     # === Major classical kāvya meters ===
     "vasantatilakā": {
         "canon_name": "Chhandaḥśāstra",
@@ -131,6 +139,49 @@ _CHHANDAS_TABLE: Dict[str, dict] = {
         "reference_locator": "vaitālīya 14+16",
         "syllables": 60, "quarters": 4, "syllables_per_quarter": "14+16",
     },
+
+    # ═══════════════════════════════════════════════════════════════════
+    # Vedic meters (Priority 3 — Q5-B)
+    # ═══════════════════════════════════════════════════════════════════
+    # These are the classical Vedic variants of Triṣṭubh and Jagatī.
+    # Distinguished from generic triṣṭubh/jagatī by specific varna_pattern
+    # cadence (last 4-5 syllables).
+
+    # === Triṣṭubh variants (11 syllables/pāda) ===
+    "pathyā-triṣṭubh": {
+        "canon_name": "Vedic Chandas",
+        "reference_locator": "pathyā-triṣṭubh 4×11 (Vedic)",
+        "syllables": 44, "quarters": 4, "syllables_per_quarter": 11,
+        "varna_pattern": "GGGGGLLLLGGLG",
+    },
+    "vipulā-triṣṭubh": {
+        "canon_name": "Vedic Chandas",
+        "reference_locator": "vipulā-triṣṭubh 4×11 (Vedic)",
+        "syllables": 44, "quarters": 4, "syllables_per_quarter": 11,
+        "varna_pattern": "GGGGGLLGLGGLG",
+    },
+
+    # === Jagatī variants (12 syllables/pāda) ===
+    "pathyā-jagatī": {
+        "canon_name": "Vedic Chandas",
+        "reference_locator": "pathyā-jagatī 4×12 (Vedic)",
+        "syllables": 48, "quarters": 4, "syllables_per_quarter": 12,
+        "varna_pattern": "GGGGGLLLLGGLLG",
+    },
+    "āpīḍā-jagatī": {
+        "canon_name": "Vedic Chandas",
+        "reference_locator": "āpīḍā-jagatī 4×12 (Vedic)",
+        "syllables": 48, "quarters": 4, "syllables_per_quarter": 12,
+        "varna_pattern": "GGGGGLLGLGGLLG",
+    },
+
+    # === Mahāpankti (10 syllables/pāda — rare Vedic) ===
+    "mahāpankti": {
+        "canon_name": "Vedic Chandas",
+        "reference_locator": "mahāpankti 4×10 (Vedic)",
+        "syllables": 40, "quarters": 4, "syllables_per_quarter": 10,
+        "varna_pattern": "GGGLGGGLGGGLGGGL",
+    },
 }
 
 # ==============================================================================
@@ -148,14 +199,14 @@ def count_syllables_iast(text: str) -> int:
 def _compute_weights(text: str) -> List[str]:
     """Compute Piṅgala-style L/G weights for each syllable."""
     s = unicodedata.normalize("NFC", text.lower().strip())
-    
+
     SHORT_VOWELS = {'a', 'i', 'u', 'ṛ', 'ḷ'}
     LONG_VOWELS = {'ā', 'ī', 'ū', 'ṝ', 'e', 'o'}
     DIPHTHONGS = {'ai', 'au'}
     SIGNS = {'ṃ', 'ḥ'}
     VOWELS = SHORT_VOWELS | LONG_VOWELS | DIPHTHONGS
     ALL_VOWELS = VOWELS | SIGNS
-    
+
     phonemes = []
     i = 0
     while i < len(s):
@@ -169,7 +220,7 @@ def _compute_weights(text: str) -> List[str]:
         elif ch.isalpha():
             phonemes.append(ch)
         i += 1
-    
+
     weights = []
     for idx, p in enumerate(phonemes):
         if p not in VOWELS:
@@ -191,7 +242,7 @@ def _compute_weights(text: str) -> List[str]:
             weights.append("G")
             continue
         weights.append("L")
-    
+
     return weights
 
 
@@ -203,6 +254,7 @@ def _compute_weights(text: str) -> List[str]:
 _PADA_COUNT_TO_METERS = {
     # Samavṛtta (uniform pāda length)
     8: ["anuṣṭubh"],
+    10: ["mahāpankti"],
     11: ["triṣṭubh", "indravajrā", "upendravajrā", "upajāti"],
     12: ["jagatī", "vaṃśasthā", "indravaṃśā"],
     14: ["vasantatilakā"],
@@ -213,16 +265,17 @@ _PADA_COUNT_TO_METERS = {
 }
 
 # Total syllable counts → candidate meters (for full-verse matching)
+# Order matters: specific variants first, generic fallbacks last.
 _TOTAL_SYLLABLES_TO_METERS = {
     # Vedic
     24: ["gāyatrī"],
     28: ["uṣṇih"],
     36: ["bṛhatī"],
-    40: ["pankti"],
+    40: ["pankti", "mahāpankti"],
     # Classical
     32: ["anuṣṭubh"],
-    44: ["triṣṭubh", "indravajrā", "upendravajrā", "upajāti"],
-    48: ["jagatī", "vaṃśasthā", "indravaṃśā"],
+    44: ["triṣṭubh", "pathyā-triṣṭubh", "vipulā-triṣṭubh", "indravajrā", "upendravajrā", "upajāti"],
+    48: ["jagatī", "pathyā-jagatī", "āpīḍā-jagatī", "vaṃśasthā", "indravaṃśā"],
     50: ["puṣpitāgrā"],
     56: ["vasantatilakā"],
     60: ["mālinī", "mālabhāriṇī", "vaitālīya"],
@@ -235,7 +288,7 @@ _TOTAL_SYLLABLES_TO_METERS = {
 def detect_meter(weights: List[str]) -> Optional[dict]:
     """
     Detect the meter based on L/G weights.
-    
+
     Strategy:
       1. If pattern matches a known varna_pattern → specific meter
       2. If total syllable count matches a known meter → return candidate
@@ -244,12 +297,13 @@ def detect_meter(weights: List[str]) -> Optional[dict]:
     """
     n = len(weights)
     pattern = "".join(weights)
-    
+
     # 1. Try varna pattern match (most specific)
-    for meter_name, meter_data in _CHHANDAS_TABLE.items():
+    #    Iterate in reverse to prefer later-added (more specific) meters
+    for meter_name, meter_data in reversed(list(_CHHANDAS_TABLE.items())):
         if meter_data.get("varna_pattern") == pattern:
             return {"meter": meter_name, **meter_data, "match_type": "varna_pattern"}
-    
+
     # 2. Try total syllable count
     if n in _TOTAL_SYLLABLES_TO_METERS:
         candidates = _TOTAL_SYLLABLES_TO_METERS[n]
@@ -261,23 +315,23 @@ def detect_meter(weights: List[str]) -> Optional[dict]:
         # Otherwise return first candidate
         meter_name = candidates[0]
         return {"meter": meter_name, **_CHHANDAS_TABLE[meter_name], "match_type": "total_syllables"}
-    
+
     # 3. Try per-pāda (input is a single pāda)
     if n in _PADA_COUNT_TO_METERS:
         candidates = _PADA_COUNT_TO_METERS[n]
         meter_name = candidates[0]
         return {"meter": meter_name, **_CHHANDAS_TABLE[meter_name], "match_type": "pada_syllables"}
-    
+
     # 4. Half-verse: multiply by 2
     if n * 2 in _TOTAL_SYLLABLES_TO_METERS:
         meter_name = _TOTAL_SYLLABLES_TO_METERS[n * 2][0]
         return {"meter": meter_name, **_CHHANDAS_TABLE[meter_name], "match_type": "half_verse"}
-    
+
     # 5. Quarter-verse: multiply by 4
     if n * 4 in _TOTAL_SYLLABLES_TO_METERS:
         meter_name = _TOTAL_SYLLABLES_TO_METERS[n * 4][0]
         return {"meter": meter_name, **_CHHANDAS_TABLE[meter_name], "match_type": "quarter_verse"}
-    
+
     return None
 
 
@@ -301,7 +355,7 @@ def scan_verse(surface: str) -> dict:
     """
     weights = _compute_weights(surface)
     meter = detect_meter(weights)
-    
+
     return {
         "surface": surface,
         "weights": weights,
