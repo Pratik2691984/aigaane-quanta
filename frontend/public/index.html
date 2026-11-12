@@ -202,6 +202,109 @@
     }
     .drone-mixer-wrap input[type=range] { width: 90px; accent-color: #fbbf24; cursor: pointer; }
   </style>
+
+  <style id="q6d-kosha-semantic-style">
+/* Q6-D: Kosha Semantic Panel */
+    .kosha-semantic-panel {
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: linear-gradient(180deg, #121826 0%, #0b0f19 100%);
+      border: 1px solid #334155;
+      border-radius: 10px;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .semantic-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .semantic-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fbbf24;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-family: ui-monospace, monospace;
+    }
+    .semantic-source {
+      font-size: 0.72rem;
+      color: #64748b;
+      font-family: ui-monospace, monospace;
+    }
+    .semantic-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .semantic-row {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 12px;
+      align-items: start;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .semantic-label {
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding-top: 2px;
+    }
+    .semantic-value {
+      color: #e2e8f0;
+      word-break: break-word;
+    }
+    .semantic-value .deva {
+      font-family: 'Noto Serif Devanagari', serif;
+    }
+    .semantic-value .tag {
+      display: inline-block;
+      padding: 1px 8px;
+      margin: 1px 4px 1px 0;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      color: #fbbf24;
+      font-family: 'Noto Serif', serif;
+    }
+    .semantic-value .citation {
+      display: inline-block;
+      padding: 1px 8px;
+      margin: 1px 4px 1px 0;
+      background: #1e1b4b;
+      border: 1px solid #fbbf24;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      color: #fbbf24;
+      font-family: ui-monospace, monospace;
+    }
+    .semantic-value .dhatu-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      background: #042f2e;
+      border: 1px solid #14b8a6;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      color: #2dd4bf;
+      font-weight: 700;
+      font-family: 'Noto Serif', serif;
+    }
+    @media (max-width: 640px) {
+      .semantic-row {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+      .semantic-label {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -429,12 +532,51 @@
         <input id="kosha-word" class="sa-lg" value="dharma" />
         <button onclick="lookupKosha()">Lookup</button>
       </div>
-      <div class="result" id="kosha-result">
+            <div class="result" id="kosha-result">
         <div style="display:flex; align-items:center; gap:14px;">
           <span class="sa-lg" id="k-word">dharma</span>
           <span class="badge ok" id="k-badge">✓ Lexical Match</span>
         </div>
         <p class="hint" id="k-hint" style="margin-top:10px;">Found in canonical headword index (SLP1: <code>Darma</code> · <i>D represents dental aspirated ध</i>).</p>
+
+        <!-- NEW: Semantic metadata panel (Q6-D) -->
+        <div id="kosha-semantic-panel" class="kosha-semantic-panel" style="display:none;">
+          <div class="semantic-header">
+            <span class="semantic-title">Semantic Metadata</span>
+            <span class="semantic-source">_semantic_index (54 entries)</span>
+          </div>
+
+          <div class="semantic-grid">
+            <div class="semantic-row" id="sem-dhatu-row">
+              <span class="semantic-label">Dhātu</span>
+              <span class="semantic-value" id="sem-dhatu">—</span>
+            </div>
+            <div class="semantic-row" id="sem-nirukta-row">
+              <span class="semantic-label">Nirukta</span>
+              <span class="semantic-value" id="sem-nirukta">—</span>
+            </div>
+            <div class="semantic-row" id="sem-gloss-row">
+              <span class="semantic-label">Gloss</span>
+              <span class="semantic-value" id="sem-gloss">—</span>
+            </div>
+            <div class="semantic-row" id="sem-synonyms-row">
+              <span class="semantic-label">Synonyms</span>
+              <span class="semantic-value" id="sem-synonyms">—</span>
+            </div>
+            <div class="semantic-row" id="sem-antonyms-row">
+              <span class="semantic-label">Antonyms</span>
+              <span class="semantic-value" id="sem-antonyms">—</span>
+            </div>
+            <div class="semantic-row" id="sem-related-row">
+              <span class="semantic-label">Related</span>
+              <span class="semantic-value" id="sem-related">—</span>
+            </div>
+            <div class="semantic-row" id="sem-citations-row">
+              <span class="semantic-label">Citations</span>
+              <span class="semantic-value" id="sem-citations">—</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1266,8 +1408,13 @@
       const word = document.getElementById("kosha-word").value.trim();
       const badge = document.getElementById("k-badge");
       const hint = document.getElementById("k-hint");
+      const semPanel = document.getElementById("kosha-semantic-panel");
+
       badge.className = "badge";
       badge.textContent = "Searching...";
+      if (semPanel) semPanel.style.display = "none";
+
+      // 1. Morphological lookup (/parse) — existing behavior
       try {
         const resp = await fetch(`${API_BASE}/api/v1/parse`, {
           method: "POST",
@@ -1282,22 +1429,67 @@
             badge.className = "badge warn";
             badge.textContent = "✗ No match";
             hint.textContent = `'${word}' was not found in the current lexicon.`;
-            return;
+          } else {
+            document.getElementById("k-word").textContent = word;
+            badge.className = "badge ok";
+            badge.textContent = "✓ In Lexicon";
+            hint.textContent = `Surface: ${firstToken.surface} | Stem: ${firstToken.stem} | Role: ${firstToken.role}`;
           }
-          document.getElementById("k-word").textContent = word;
-          badge.className = "badge ok";
-          badge.textContent = "✓ In Lexicon";
-          hint.textContent = `Surface: ${firstToken.surface} | Stem: ${firstToken.stem} | Role: ${firstToken.role}`;
         } else {
           badge.className = "badge err";
           badge.textContent = "✗ Not Found";
           hint.textContent = `Word '${word}' not found in current lexicon.`;
         }
       } catch (e) {
-        console.error("lookupKosha failed:", e);
+        console.error("lookupKosha /parse failed:", e);
         badge.className = "badge err";
         badge.textContent = "Error";
         hint.textContent = `Lookup failed: ${e.message}`;
+      }
+
+      // 2. Semantic lookup (/lexicon/semantic) — NEW (Q6-D)
+      try {
+        const semResp = await fetch(
+          `${API_BASE}/api/v1/lexicon/semantic?stem=${encodeURIComponent(word)}`
+        );
+        if (!semResp.ok) return;
+        const sem = await semResp.json();
+        if (!sem.found) {
+          if (semPanel) semPanel.style.display = "none";
+          return;
+        }
+
+        document.getElementById("sem-dhatu").innerHTML =
+          `<span class="dhatu-badge">\u221A ${sem.dhatu}</span> ` +
+          `<span style="color:#94a3b8;font-size:0.85rem;">${sem.gana || ""}` +
+          (sem.gana_number ? ` \u00B7 ga\u1E47a ${sem.gana_number}` : "") + `</span>`;
+        document.getElementById("sem-nirukta").textContent = sem.nirukta || "\u2014";
+        document.getElementById("sem-gloss").textContent = sem.gloss || "\u2014";
+
+        const renderList = (arr, cls) => (arr && arr.length)
+          ? arr.map(x => `<span class="${cls}">${x}</span>`).join("")
+          : "\u2014";
+
+        document.getElementById("sem-synonyms").innerHTML = renderList(sem.synonyms, "tag");
+        document.getElementById("sem-antonyms").innerHTML = renderList(sem.antonyms, "tag");
+        document.getElementById("sem-related").innerHTML = renderList(sem.related, "tag");
+        document.getElementById("sem-citations").innerHTML = renderList(sem.citations, "citation");
+
+        const toggleRow = (id, hasData) => {
+          const el = document.getElementById(id);
+          if (el) el.style.display = hasData ? "" : "none";
+        };
+        toggleRow("sem-dhatu-row", !!sem.dhatu);
+        toggleRow("sem-nirukta-row", !!sem.nirukta);
+        toggleRow("sem-gloss-row", !!sem.gloss);
+        toggleRow("sem-synonyms-row", sem.synonyms && sem.synonyms.length > 0);
+        toggleRow("sem-antonyms-row", sem.antonyms && sem.antonyms.length > 0);
+        toggleRow("sem-related-row", sem.related && sem.related.length > 0);
+        toggleRow("sem-citations-row", sem.citations && sem.citations.length > 0);
+
+        if (semPanel) semPanel.style.display = "block";
+      } catch (e) {
+        console.warn("Semantic lookup failed (non-fatal):", e);
       }
     }
 
