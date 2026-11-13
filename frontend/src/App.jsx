@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import AigaaneInspector from "./AigaaneInspector";
 import NyayaTab from "./NyayaTab";
 import LexiconTab from "./LexiconTab";
+import PipelineTab from "./PipelineTab";
 import Studio3Tab from "./Studio3Tab";
 import { probeEngine } from "./engineStatus";
 
@@ -18,6 +19,7 @@ export default function App() {
     { id: "nyaya", label: "Nyāya Verifier" },
     { id: "lexicon", label: "Lexicon" },
     { id: "studio3", label: "Studio III (Tāla)" },
+    { id: "pipeline", label: "Pipeline" },
   ];
 
   return (
@@ -62,6 +64,7 @@ export default function App() {
         {activeTab === "nyaya" && <NyayaTab />}
         {activeTab === "lexicon" && <LexiconTab />}
         {activeTab === "studio3" && <Studio3Tab />}
+        {activeTab === "pipeline" && <PipelineTab />}
       </main>
     </div>
   );
