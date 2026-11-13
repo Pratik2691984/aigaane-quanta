@@ -1,83 +1,48 @@
 ﻿# Aigaane — Session Handoff
 
-**Last commit:** `e5bf1db` (master)
+**Last commit:** `3bba2fc` (master)
 **Live revision:** `aigaane-api-00070-pzm` (Cloud Run, 100% traffic)
-**Frontend:** https://aigaane.in · **Backend:** https://api.aigaane.in
+**Frontend:** https://aigaane.in (static) · https://aigaane.in/quanta/ (5-tab React app)
+**Backend:** https://api.aigaane.in (12 endpoints live)
 
-## Current state
+## Current state (Q8 closed)
 
 ### Verified live endpoints
-- `/health` → status=ok, version=2.3.0-legacy-ui-bridge
-- `/api/v3/sandhi/combine` → candidates[{surface,rule,sutra,score}]
-- `/api/v1/lexicon/semantic?stem=X` → {dhatu,gana,gana_number,nirukta,gloss,synonyms,antonyms,related,citations}
-- `/api/v3/morphology/tinanta` → {surface,source:'table'|'generated',confidence}
-- `/api/v3/morphology/tinanta/paradigm` → {rows[{purusha,cells[{vacana,surface,source}]}]}
-- `/api/v3/morphology/tinanta/dhatus` → {dhatus[...]}
-- `/api/v3/pipeline` → {input,normalized,tokens,chandas,sruti_map,stages,warnings}
-- `/api/v1/pipeline` (LEGACY, smoke test target) → {studio_i_analysis,...} — DO NOT TOUCH
+- `/health` -> status=ok, version=2.3.0-legacy-ui-bridge
+- `/api/v3/sandhi/combine` -> candidates[{surface,rule,sutra,score}]
+- `/api/v1/lexicon/semantic?stem=X` -> {dhatu,gana,gana_number,nirukta,gloss,synonyms,antonyms,related,citations}
+- `/api/v3/morphology/tinanta` -> {surface,source:'table'|'generated',confidence}
+- `/api/v3/morphology/tinanta/paradigm` -> {rows[{purusha,cells[{vacana,surface,source}]}]}
+- `/api/v3/morphology/tinanta/dhatus` -> {dhatus[...]}
+- `/api/v3/pipeline` -> {input,normalized,tokens,chandas,sruti_map,stages,warnings} (5/5 stages live)
+- `/api/v1/pipeline` (LEGACY, smoke test target) -> {studio_i_analysis,...} — DO NOT TOUCH
 
-### Frontend panels live
-- aigaane.in/: Sandhi Combiner, golden 5-case card, verb conjugation, Kosha+semantic, Chandas, Subanta, audio, Itihasa — all present
-- aigaane.in/quanta/: 4 tabs (Inspector, Nyaya, Lexicon, Studio3) — no pipeline tab yet
+### Frontend surfaces (both live)
+- `aigaane.in/`: Sandhi Combiner, golden 5-case card, verb conjugation, Kosha+semantic, Chandas, Subanta, audio, Itihasa
+- `aigaane.in/quanta/`: 5-tab React app — Aigaane Inspector, Nyaya Verifier, Lexicon (morphology + semantic), Studio III (Tala), Pipeline (5-stage deterministic renderer)
 
-### Data
-- _DHATUPATHA: 15 roots, all 10 gaṇas
-- _tinanta_data.PARADIGMS: 4 roots (kṛ, bhū, gam, as) × 4 lakāras × 9 cells
+### Data & Tests
+- _DHATUPATHA: 15 roots across all 10 ganas · PARADIGMS: 4 roots (kr, bhu, gam, as) x 4 lakaras x 9 cells
 - _semantic_index: 54 entries · canon.db: 1,748 verses · _chhandas: 25 meters
+- 166 passing pytest tests · 10/10 Q4-B curl · 5/5 golden sandhi · 5/5 pipeline stages live
 
-### Tests
-- 166 passing · 10/10 Q4-B curl · 5/5 golden sandhi card live
+## Next task: Q4-C (Atmanepada completion)
+- Complete atmanepada paradigms for kr, labh, da, cur, vah, jna in backend/engine/_tinanta_data.py
+- Verify via /api/v3/morphology/tinanta/paradigm and update tinanta.js label
 
-## Next task: Pipeline frontend tab
-
-Create `frontend/src/PipelineTab.jsx`:
-- Verse textarea, sample inputs, Analyze button
-- POST `{API_URL}/api/v3/pipeline` with `{text}`
-- Render 5 collapsible cards: Normalize, Tokens, Chandas, 22-Sruti Map, Stages
-- Style: bg #0f172a, cards #1e293b, accents #a78bfa and #38bdf8, text #e2e8f0
-
-Modify `frontend/src/App.jsx`:
-- Import PipelineTab
-- Add `{ id: 'pipeline', label: 'Pipeline' }` to tabs array
-- Add `{activeTab === 'pipeline' && <PipelineTab />}`
-
-Reference: frontend/src/NyayaTab.jsx, frontend/src/LexiconTab.jsx
-
-Build: `cd frontend; npm run build`, then git add + commit + push. Deploy ~35s.
-
-## Roadmap after pipeline tab
-- P1: Q4-C Ātmanepada completion (1 session)
-- P2: Q7 Itihāsa expansion (2-3 weeks)
-- P2: Audio worklet + tāla dropdown (1-2 sessions)
-- P2: dist/ cleanup (30 min)
-- P3: Retire legacy /api/v1/pipeline (uses LLM)
-- P3: Layer-A derivation engine (~15 sessions)
+## Roadmap after Q4-C
+- P2: Q7 Itihasa expansion (Ramayana, Mahabharata)
+- P2: Audio worklet + tala dropdown in /quanta/
+- P2: dist/ cleanup (stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/)
+- P3: Retire legacy /api/v1/pipeline (LLM-backed)
+- P3: Layer-A derivation engine
 
 ## Gotchas (do not repeat)
+1. **PowerShell UTF-8**: `Invoke-RestMethod` mangles UTF-8. Use `curl.exe` or Python urllib for verification.
+2. **Regex on multi-line imports**: Read main.py as array, splice by index, write back. Never regex import blocks.
+3. **Body() examples**: Must be `examples=[{...}]` (list of dicts).
+4. **Firebase cache & rewrites**: HTML is no-cache; /quanta/** rewrites to /quanta.html.
+5. **Deploy fails on SyntaxError**: Always run `python -c 'import ...'` locally before push.
 
-1. **PowerShell UTF-8**: `Invoke-RestMethod` mangles UTF-8 (ā→Ä, ṣ→á¹£). Use `curl.exe` or Python urllib for verification.
-2. **Regex on multi-line imports**: two main.py corruptions. Rule: read as array, splice by index, write back. Never regex import blocks.
-3. **Body() examples**: must be `examples=[{...}]` (list of dicts), not `examples=['key': val]`.
-4. **Firebase cache**: explicit headers in firebase.json (HTML no-cache, JS/CSS max-age=300). New file types need headers.
-5. **Vite copyPublicDir**: public/ auto-copied to dist/ on build. Just edit + build.
-6. **Deploy fails on SyntaxError**: Cloud Run health check catches it, traffic stays on last healthy rev. Always `python -c 'import ...'` before push.
-6. **Sandhi DAG vs result box**: separate code paths. If they disagree, cache or wrong endpoint.
-
-## Environment
-- Local: C:\aigaane-quanta (Win PowerShell 5.1)
-- Repo: Pratik2691984/aigaane-quanta
-- Firebase project: aigaane-engine-2026
-- Cloud Run: aigaane-api, asia-south1
-- Auto-deploy on push to master (CI + Frontend/Backend + Smoke Test)
-
-## Verification commands (curl-safe)
-```powershell
-curl.exe -s https://api.aigaane.in/health
-curl.exe -s -X POST https://api.aigaane.in/api/v3/pipeline -H 'Content-Type: application/json' -d '{"text":"dharmakṣetre kurukṣetre"}'
-curl.exe -s 'https://api.aigaane.in/api/v3/morphology/tinanta?dhatu=bh%C5%AB&lakara=la%E1%B9%85'
-curl.exe -s 'https://api.aigaane.in/api/v1/lexicon/semantic?stem=dharma'
-```
-
-## Paste into new DeepSeek chat
-
-> Continuing Aigaane at C:\aigaane-quanta, commit e5bf1db, live revision aigaane-api-00070-pzm. All backend endpoints verified. Read .github/SESSION_HANDOFF.md for full state. Next: create frontend/src/PipelineTab.jsx and wire into App.jsx. Start by having me run `Get-Content .github\SESSION_HANDOFF.md`, then walk me through PipelineTab.jsx + App.jsx changes.
+## Resume prompt
+> Continuing Aigaane at C:\aigaane-quanta (commit 3bba2fc, rev aigaane-api-00070-pzm). Q8 is closed and both frontends (aigaane.in/ and 5-tab aigaane.in/quanta/) are live. Read .github/SESSION_HANDOFF.md and start Q4-C (Atmanepada completion in _tinanta_data.py).
