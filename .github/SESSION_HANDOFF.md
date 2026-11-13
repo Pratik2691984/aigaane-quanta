@@ -1,48 +1,50 @@
 ﻿# Aigaane — Session Handoff
 
-**Last commit:** `930afca` (master)
-**Live revision:** `aigaane-api-00070-pzm` (Cloud Run, 100% traffic)
-**Frontend:** https://aigaane.in (static) · https://aigaane.in/quanta/ (5-tab React app)
-**Backend:** https://api.aigaane.in (12 endpoints live)
+**Last commit:** (auto-updated by next commit)
+**Live revision:** (gcloud run services describe aigaane-api --region=asia-south1 --format="value(status.latestReadyRevisionName)")
+**Frontend:** https://aigaane.in (static, 7 panels) · https://aigaane.in/quanta/ (5-tab React)
+**Backend:** https://api.aigaane.in (15+ endpoints)
 
-## Current state (Q8 closed)
+## Status: Q4-C v1 COMPLETE
+
+### What shipped this session
+- Sandhi combiner calls /api/v3/sandhi/combine (DAG fixed, 5/5 golden cases PASS)
+- Q4-B: laṅ/lṛṭ/loṭ parasmaipada for kṛ, bhū, gam, as
+- Q6-D: semantic lexicon panel (root + quanta)
+- Q8: 5-stage deterministic pipeline at /api/v3/pipeline
+- /quanta/ routing fix: React app serves at /quanta/ (was serving marketing page)
+- Q4-C v1: 189 ātmanepada cells for kṛ, labh, dā, cur, vah, jñā; dā loṭ explicitly unverified
 
 ### Verified live endpoints
-- `/health` -> status=ok, version=2.3.0-legacy-ui-bridge
-- `/api/v3/sandhi/combine` -> candidates[{surface,rule,sutra,score}]
-- `/api/v1/lexicon/semantic?stem=X` -> {dhatu,gana,gana_number,nirukta,gloss,synonyms,antonyms,related,citations}
-- `/api/v3/morphology/tinanta` -> {surface,source:'table'|'generated',confidence}
-- `/api/v3/morphology/tinanta/paradigm` -> {rows[{purusha,cells[{vacana,surface,source}]}]}
-- `/api/v3/morphology/tinanta/dhatus` -> {dhatus[...]}
-- `/api/v3/pipeline` -> {input,normalized,tokens,chandas,sruti_map,stages,warnings} (5/5 stages live)
-- `/api/v1/pipeline` (LEGACY, smoke test target) -> {studio_i_analysis,...} — DO NOT TOUCH
+- /health → ok
+- /api/v3/sandhi/combine → candidates[{surface,rule,sutra,score}]
+- /api/v3/pipeline → {normalized,tokens,chandas,sruti_map,stages} (5/5)
+- /api/v3/morphology/tinanta → 9 roots, 351 cells
+- /api/v1/lexicon/semantic → 54 entries
+- /api/v1/pipeline (LEGACY) → studio_i_analysis — DO NOT TOUCH
 
-### Frontend surfaces (both live)
-- `aigaane.in/`: Sandhi Combiner, golden 5-case card, verb conjugation, Kosha+semantic, Chandas, Subanta, audio, Itihasa
-- `aigaane.in/quanta/`: 5-tab React app — Aigaane Inspector, Nyaya Verifier, Lexicon (morphology + semantic), Studio III (Tala), Pipeline (5-stage deterministic renderer)
-
-### Data & Tests
-- _DHATUPATHA: 15 roots across all 10 ganas · PARADIGMS: 4 roots (kr, bhu, gam, as) x 4 lakaras x 9 cells
+### Data
+- _DHATUPATHA: 15 roots
+- _tinanta_data.PARADIGMS: 351 cells (parasmaipada + ātmanepada)
 - _semantic_index: 54 entries · canon.db: 1,748 verses · _chhandas: 25 meters
-- 166 passing pytest tests · 10/10 Q4-B curl · 5/5 golden sandhi · 5/5 pipeline stages live
 
-## Next task: Q4-C (Atmanepada completion)
-- Complete atmanepada paradigms for kr, labh, da, cur, vah, jna in backend/engine/_tinanta_data.py
-- Verify via /api/v3/morphology/tinanta/paradigm and update tinanta.js label
+### Tests
+- 166 core + 25 Q4-C ātmanepada = 191 passing
+- 10/10 Q4-B curl · 5/5 golden sandhi · 5/5 pipeline stages
 
-## Roadmap after Q4-C
-- P2: Q7 Itihasa expansion (Ramayana, Mahabharata)
-- P2: Audio worklet + tala dropdown in /quanta/
-- P2: dist/ cleanup (stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/)
-- P3: Retire legacy /api/v1/pipeline (LLM-backed)
-- P3: Layer-A derivation engine
+### Next task options
+A) P2 cleanup: remove stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/ (30 min)
+B) Q7 Itihāsa expansion: Rāmāyaṇa + Mahābhārata into canon.db (2-3 weeks)
+C) P3 Q4-C v2: verify dā loṭ ātmanepada against primary source
 
-## Gotchas (do not repeat)
-1. **PowerShell UTF-8**: `Invoke-RestMethod` mangles UTF-8. Use `curl.exe` or Python urllib for verification.
-2. **Regex on multi-line imports**: Read main.py as array, splice by index, write back. Never regex import blocks.
-3. **Body() examples**: Must be `examples=[{...}]` (list of dicts).
-4. **Firebase cache & rewrites**: HTML is no-cache; /quanta/** rewrites to /quanta.html.
-5. **Deploy fails on SyntaxError**: Always run `python -c 'import ...'` locally before push.
+### Gotchas (do not repeat)
+1. **PowerShell UTF-8**: Invoke-RestMethod mangles UTF-8 (ā→Ä). Use curl.exe or Python urllib.
+2. **Regex on multi-line imports**: read as array, splice by index. Never regex import blocks.
+3. **Body() examples**: examples=[{...}] list of dicts.
+4. **Deploy fails on SyntaxError**: run `python -c "import ..."` before push.
+5. **pytest binary not on PATH**: use `python -m pytest`.
+6. **Anchor strings in replace**: quote style (single vs double) matters.
+7. **Firebase rewrites**: /quanta/** → /quanta.html, must come BEFORE catch-all **
 
-## Resume prompt
-> Continuing Aigaane at C:\aigaane-quanta (commit 3bba2fc, rev aigaane-api-00070-pzm). Q8 is closed and both frontends (aigaane.in/ and 5-tab aigaane.in/quanta/) are live. Read .github/SESSION_HANDOFF.md and start Q4-C (Atmanepada completion in _tinanta_data.py).
+### Resume prompt for new chat
+> Continuing Aigaane at C:\aigaane-quanta. Read .github/SESSION_HANDOFF.md. Q4-C v1 complete (189 ātmanepada cells, dā loṭ unverified). Both frontends live. Next: pick from the roadmap — P2 cleanup or Q7 Itihāsa expansion.
