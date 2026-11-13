@@ -1,6 +1,6 @@
 ﻿# Aigaane — Session Handoff
 
-**Last commit:** (auto-updated by next commit)
+**Last commit:** c9e05a3 (chore: dist/ cleanup)
 **Live revision:** (gcloud run services describe aigaane-api --region=asia-south1 --format="value(status.latestReadyRevisionName)")
 **Frontend:** https://aigaane.in (static, 7 panels) · https://aigaane.in/quanta/ (5-tab React)
 **Backend:** https://api.aigaane.in (15+ endpoints)
@@ -32,7 +32,12 @@
 - 166 core + 25 Q4-C ātmanepada = 191 passing
 - 10/10 Q4-B curl · 5/5 golden sandhi · 5/5 pipeline stages
 
-### Next task options
+### P2 dist/ cleanup COMPLETE (c9e05a3)
+- Removed 336 stale files (15.65 MB)
+- Deploy now 4.7× faster (~89 files vs 424)
+- Live verified: CSS, sandhi-golden.js, tinanta.js all load correctly
+
+## Next task options
 A) P2 cleanup: remove stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/ (30 min)
 B) Q7 Itihāsa expansion: Rāmāyaṇa + Mahābhārata into canon.db (2-3 weeks)
 C) P3 Q4-C v2: verify dā loṭ ātmanepada against primary source

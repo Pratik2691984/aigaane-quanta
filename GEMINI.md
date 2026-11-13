@@ -10,6 +10,13 @@ Live: https://aigaane.in (static) · https://aigaane.in/quanta/ (5-tab React) ·
 - Sandhi: 5/5 golden cases PASS · Pipeline: 5/5 stages OK
 - Tests: 191 passing (166 core + 25 Q4-C ātmanepada)
 
+## P2 dist/ cleanup — COMPLETE (commit c9e05a3)
+- Removed public/quanta.bak/ (255 files, 11.91 MB)
+- Removed public/legacy/ (81 files, 3.74 MB)
+- public/: 422 → 86 files (19.5 → 3.85 MB)
+- dist/: 425 → 89 files
+- Firebase deploy now uploads ~89 files instead of 424 (4.7× faster)
+
 ## Next task
 Pick one:
 A) P2 cleanup: remove stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/ from public/ and dist/
