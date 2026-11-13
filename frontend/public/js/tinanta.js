@@ -46,8 +46,16 @@
 
       body.innerHTML = rows;
       if (hint) {
-        hint.innerHTML = '✓ <strong>' + data.dhatu + '</strong> · ' + data.lakara + ' · ' + data.pada + ' — gaṇa ' + data.gana + '. ' +
-          '<span style="color:#4ade80;">✓</span> verified &nbsp; <span style="color:#fbbf24;">~</span> generated';
+        if (data.unverified || (data.error && data.source === 'unsupported')) {
+          hint.innerHTML = '⚠ <strong>' + data.dhatu + '</strong> · ' + data.lakara + ' · ' + data.pada +
+            ' — <span style="color:#fbbf24;">' + (data.warning || data.error || 'not yet verified') + '</span>';
+        } else {
+          var noteHtml = data.usage_note
+            ? '<br><span style="color:#fbbf24;font-size:12px;">ⓘ ' + data.usage_note + '</span>'
+            : '';
+          hint.innerHTML = '✓ <strong>' + data.dhatu + '</strong> · ' + data.lakara + ' · ' + data.pada + ' — gaṇa ' + data.gana + '. ' +
+            '<span style="color:#4ade80;">✓</span> verified &nbsp; <span style="color:#fbbf24;">~</span> generated' + noteHtml;
+        }
       }
     } catch (e) {
       body.innerHTML = '<tr><td colspan="4" style="color:#f87171;padding:8px;">Error: ' + e.message + '</td></tr>';

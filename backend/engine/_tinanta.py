@@ -12,7 +12,7 @@ from __future__ import annotations
 from typing import Optional
 
 from _lexicon import _DHATUPATHA
-from _tinanta_data import PARADIGMS, _LOT_PARASMAI, _LOT_ATMANE
+from _tinanta_data import PARADIGMS, _LOT_PARASMAI, _LOT_ATMANE, ATMANEPADA_USAGE_NOTES, ATMANEPADA_UNVERIFIED
 
 SUPPORTED_LAKARAS = ["laṭ", "laṅ", "lṛṭ", "loṭ"]
 SUPPORTED_PADAS = ["parasmaipada", "ātmanepada"]
@@ -148,7 +148,7 @@ def conjugate(
 
     verified = _lookup_table(dhatu, lakara, pada, purusha, vacana)
     if verified:
-        return {
+        res = {
             "dhatu": dhatu,
             "lakara": lakara,
             "pada": pada,
@@ -157,6 +157,18 @@ def conjugate(
             "surface": verified,
             "source": "table",
             "confidence": 1.0,
+        }
+        if pada == "ātmanepada" and dhatu in ATMANEPADA_USAGE_NOTES:
+            res["usage_note"] = ATMANEPADA_USAGE_NOTES[dhatu]
+        return res
+
+    if pada == "ātmanepada" and (dhatu, lakara) in ATMANEPADA_UNVERIFIED:
+        return {
+            "error": f"ātmanepada {lakara} for {dhatu} not yet verified against primary sources",
+            "dhatu": dhatu,
+            "lakara": lakara,
+            "pada": pada,
+            "source": "unsupported",
         }
 
     stem = None
@@ -207,6 +219,12 @@ def paradigm(dhatu: str, lakara: str = "laṭ", pada: Optional[str] = None) -> d
         "gana": info.get("gana"),
         "rows": [],
     }
+    if pada == "ātmanepada" and dhatu in ATMANEPADA_USAGE_NOTES:
+        out["usage_note"] = ATMANEPADA_USAGE_NOTES[dhatu]
+    if pada == "ātmanepada" and (dhatu, lakara) in ATMANEPADA_UNVERIFIED:
+        out["unverified"] = True
+        out["warning"] = f"ātmanepada {lakara} for {dhatu} not yet verified"
+        return out
     for pur in PURUSHAS:
         row = {"purusha": pur, "cells": []}
         for vac in VACANAS:

@@ -282,3 +282,23 @@ PARADIGMS = {
         },
     },
 }
+
+
+# ================================================================
+# Q4-C merge (added by _tinanta_data_atmanepada)
+# ================================================================
+try:
+    from _tinanta_data_atmanepada import (
+        ATMANEPADA_PARADIGMS as _ATM_PARADIGMS,
+        ATMANEPADA_USAGE_NOTES,
+        ATMANEPADA_UNVERIFIED,
+    )
+    for _root, _lakaras in _ATM_PARADIGMS.items():
+        PARADIGMS.setdefault(_root, {})
+        for _lak, _padas in _lakaras.items():
+            PARADIGMS[_root].setdefault(_lak, {})
+            for _pada, _cells in _padas.items():
+                PARADIGMS[_root][_lak].setdefault(_pada, {}).update(_cells)
+except ImportError:
+    ATMANEPADA_USAGE_NOTES = {}
+    ATMANEPADA_UNVERIFIED = set()
