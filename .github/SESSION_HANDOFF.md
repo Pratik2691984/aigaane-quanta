@@ -1,6 +1,6 @@
 ﻿# Aigaane — Session Handoff
 
-**Last commit:** `3bba2fc` (master)
+**Last commit:** `930afca` (master)
 **Live revision:** `aigaane-api-00070-pzm` (Cloud Run, 100% traffic)
 **Frontend:** https://aigaane.in (static) · https://aigaane.in/quanta/ (5-tab React app)
 **Backend:** https://api.aigaane.in (12 endpoints live)
