@@ -18,14 +18,13 @@ Sources: M.R. Kale (Higher Sanskrit Grammar), Siddhāntakaumudī, Whitney.
 ATMANEPADA_USAGE_NOTES = {
     "cur": "ātmanepada_rare: cur (gaṇa 10) is grammatically ubhayapada, but classical Sanskrit strongly prefers parasmaipada (corayati).",
     "vah": "ātmanepada_semantic: vah (gaṇa 1) uses parasmaipada (vahati) for 'to carry' and ātmanepada (vahate) specifically in the sense 'to marry'.",
-    "dā":  "ātmanepada_loṭ_unverified: dā loṭ (imperative) ātmanepada paradigm is not yet verified against primary sources. laṭ / laṅ / lṛṭ are fully verified.",
+    "dā":  "ātmanepada_note: dā (gaṇa 3, juhotyādi) uses the weak reduplicated stem dad- before ātmanepada endings. loṭ forms verified against Kale §389.",
 }
 
 # Roots for which a specific lakāra's ātmanepada paradigm is explicitly
 # not yet verified. When conjugate() falls through to generation for one
 # of these, it returns source="unsupported" instead of a guessed form.
 ATMANEPADA_UNVERIFIED = {
-    ("dā", "loṭ"),
 }
 
 ATMANEPADA_PARADIGMS = {
@@ -149,6 +148,19 @@ ATMANEPADA_PARADIGMS = {
                 ("uttama_purusha",   "ekavacana"):  "dāsye",
                 ("uttama_purusha",   "dvivacana"):  "dāsyāvahe",
                 ("uttama_purusha",   "bahuvacana"): "dāsyāmahe",
+            },
+        },
+        "loṭ": {
+            "ātmanepada": {
+                ("prathama_purusha", "ekavacana"):  "dattām",
+                ("prathama_purusha", "dvivacana"):  "dadātām",
+                ("prathama_purusha", "bahuvacana"): "dadatām",
+                ("madhyama_purusha", "ekavacana"):  "datsva",
+                ("madhyama_purusha", "dvivacana"):  "dadāthām",
+                ("madhyama_purusha", "bahuvacana"): "daddhvam",
+                ("uttama_purusha",   "ekavacana"):  "dadai",
+                ("uttama_purusha",   "dvivacana"):  "dadāvahai",
+                ("uttama_purusha",   "bahuvacana"): "dadāmahai",
             },
         },
     },

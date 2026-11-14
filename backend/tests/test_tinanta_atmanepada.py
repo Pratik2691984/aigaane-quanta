@@ -29,6 +29,13 @@ client = TestClient(app)
         ("dā", "laṭ", "madhyama_purusha", "ekavacana", "datse"),
         ("dā", "laṅ", "prathama_purusha", "ekavacana", "adatta"),
         ("dā", "lṛṭ", "prathama_purusha", "ekavacana", "dāsyate"),
+        # dā loṭ — now verified (Q4-C v2)
+        ("dā", "loṭ", "prathama_purusha", "ekavacana", "dattām"),
+        ("dā", "loṭ", "prathama_purusha", "dvivacana", "dadātām"),
+        ("dā", "loṭ", "madhyama_purusha", "ekavacana", "datsva"),
+        ("dā", "loṭ", "madhyama_purusha", "bahuvacana", "daddhvam"),
+        ("dā", "loṭ", "uttama_purusha", "ekavacana", "dadai"),
+        ("dā", "loṭ", "uttama_purusha", "bahuvacana", "dadāmahai"),
         # cur
         ("cur", "laṭ", "prathama_purusha", "ekavacana", "corayate"),
         ("cur", "lṛṭ", "prathama_purusha", "ekavacana", "corayiṣyate"),
@@ -58,7 +65,8 @@ def test_golden_atmanepada_forms(dhatu, lakara, purusha, vacana, expected):
     assert body["source"] == "table"
 
 
-def test_da_lot_atmanepada_unverified():
+def test_da_lot_atmanepada_verified():
+    """After Q4-C v2, dā loṭ ātmanepada is verified (Kale §389)."""
     r = client.get(
         "/api/v3/morphology/tinanta",
         params={
@@ -67,8 +75,10 @@ def test_da_lot_atmanepada_unverified():
             "pada": "ātmanepada",
         },
     )
-    assert r.status_code == 400
-    assert "not yet verified" in r.json()["detail"]
+    assert r.status_code == 200
+    body = r.json()
+    assert body["surface"] == "dattām"
+    assert body["source"] == "table"
 
 
 def test_usage_notes_for_cur_vah():
