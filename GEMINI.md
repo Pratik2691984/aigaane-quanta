@@ -6,9 +6,9 @@ Live: https://aigaane.in (static) · https://aigaane.in/quanta/ (5-tab React) ·
 ## Current verified state (Q4-C closed)
 - /health: ok · /api/v3/pipeline: 5/5 stages OK · PipelineTab live in /quanta/
 - /api/v1/pipeline (LEGACY): returns studio_i_analysis — DO NOT BREAK (smoke test asserts it)
-- Tinanta: 9 roots, 351 verified cells (189 ātmanepada across kṛ, labh, dā, cur, vah, jñā; dā loṭ explicitly unverified → 400)
+- Tinanta: 9 roots, 360 verified cells (198 ātmanepada across kṛ, labh, dā, cur, vah, jñā; ATMANEPADA_UNVERIFIED empty at commit cbbdd16)
 - Sandhi: 5/5 golden cases PASS · Pipeline: 5/5 stages OK
-- Tests: 191 passing (166 core + 25 Q4-C ātmanepada)
+- Tests: 197 passing (166 core + 31 Q4-C ātmanepada)
 
 ## P2 dist/ cleanup — COMPLETE (commit c9e05a3)
 - Removed public/quanta.bak/ (255 files, 11.91 MB)

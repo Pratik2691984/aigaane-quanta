@@ -13,7 +13,7 @@
 - Q6-D: semantic lexicon panel (root + quanta)
 - Q8: 5-stage deterministic pipeline at /api/v3/pipeline
 - /quanta/ routing fix: React app serves at /quanta/ (was serving marketing page)
-- Q4-C v1: 189 ātmanepada cells for kṛ, labh, dā, cur, vah, jñā; dā loṭ explicitly unverified
+- Q4-C v2 (cbbdd16): all 198 ātmanepada cells verified across kṛ, labh, dā, cur, vah, jñā (ATMANEPADA_UNVERIFIED empty)
 
 ### Verified live endpoints
 - /health → ok
@@ -25,11 +25,11 @@
 
 ### Data
 - _DHATUPATHA: 15 roots
-- _tinanta_data.PARADIGMS: 351 cells (parasmaipada + ātmanepada)
+- _tinanta_data.PARADIGMS: 360 cells (144 parasmaipada + 216 ātmanepada)
 - _semantic_index: 54 entries · canon.db: 1,748 verses · _chhandas: 25 meters
 
 ### Tests
-- 166 core + 25 Q4-C ātmanepada = 191 passing
+- 166 core + 31 Q4-C ātmanepada = 197 passing
 - 10/10 Q4-B curl · 5/5 golden sandhi · 5/5 pipeline stages
 
 ### P2 dist/ cleanup COMPLETE (c9e05a3)
