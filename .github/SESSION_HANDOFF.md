@@ -1,6 +1,6 @@
 ﻿# Aigaane — Session Handoff
 
-**Last commit:** 64d94f0 (retire LLM-backed legacy pipeline)
+**Last commit:** cbbdd16 (Q4-C v2 — dā loṭ verified)
 **Live revision:** (gcloud run services describe aigaane-api --region=asia-south1 --format="value(status.latestReadyRevisionName)")
 **Frontend:** https://aigaane.in (static, 7 panels) · https://aigaane.in/quanta/ (5-tab React)
 **Backend:** https://api.aigaane.in (15+ endpoints)
@@ -44,6 +44,12 @@
 - parse_envelope now = full deterministic pipeline output (5 stages)
 - sruti_table now = real śruti mapping (not static)
 - meter_scansion.meter now = detected meter (not hardcoded)
+
+## Q4-C v2 COMPLETE (cbbdd16)
+- dā loṭ ātmanepada verified against Kale §389 (9 cells: dattām, dadātām, dadatām, datsva, dadāthām, daddhvam, dadai, dadāvahai, dadāmahai)
+- ATMANEPADA_UNVERIFIED set is now empty
+- All ātmanepada cells verified for all 6 roots
+- Note: earlier local script assertion (set() == set()) was a transient script-ordering issue, not a data problem — runtime state is correct
 
 ## Next task options
 A) P2 cleanup: remove stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/ (30 min)

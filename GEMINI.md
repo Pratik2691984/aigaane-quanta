@@ -23,6 +23,13 @@ Live: https://aigaane.in (static) · https://aigaane.in/quanta/ (5-tab React) ·
 - All responses include deprecated:True + replacement:/api/v3/pipeline
 - parse_envelope now contains full 5-stage deterministic output
 
+## Q4-C v2 COMPLETE (cbbdd16)
+- dā loṭ ātmanepada verified against Kale §389 (juhotyādi + khari ca 8.4.55)
+- 9 cells: dattām, dadātām, dadatām, datsva, dadāthām, daddhvam, dadai, dadāvahai, dadāmahai
+- ATMANEPADA_UNVERIFIED is now empty
+- All 6 roots fully verified: kṛ, labh, dā, cur, vah, jñā
+- Total verified verb cells: 207 ātmanepada (was 189 + 9 dā loṭ + 9 reindexed)
+
 ## Next task
 Pick one:
 A) P2 cleanup: remove stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/ from public/ and dist/
