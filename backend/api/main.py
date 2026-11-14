@@ -83,18 +83,32 @@ def legacy_sruti(sa_hz: float = 240.0):
 
 @app.post("/api/v1/pipeline")
 def legacy_pipeline(payload: dict = Body(...)):
-    """Legacy pipeline: parse + sruti in sequence."""
+    """Legacy pipeline (DEPRECATED): deterministic output, backed by _pipeline.run_pipeline."""
     text = payload.get("text", "")
+    if not text or not text.strip():
+        return {"error": "empty input"}
     try:
-        from backend.engine.adapter import EngineAdapter
-        adapter = EngineAdapter()
-        parse_result = adapter.parse(text)
+        from backend.engine._pipeline import run_pipeline
+        result = run_pipeline(text)
+        tokens = []
+        for tok in result.get("tokens", []):
+            morph = tok.get("morphology") or {}
+            tokens.append({
+                "surface": tok.get("surface"),
+                "stem": morph.get("stem"),
+                "role": morph.get("pos"),
+            })
+        chandas = result.get("chandas") or {}
+        meter_dict = chandas.get("meter") if isinstance(chandas.get("meter"), dict) else {}
+        meter = meter_dict.get("meter", "Anuṣṭubh")
         return {
             "studio_ii_verification": {"is_valid_inference": True, "mode": "Deterministic"},
-            "studio_i_analysis": {"tokens": [t.dict() for t in (parse_result.candidates[0].parse if parse_result.candidates else [])]},
-            "studio_iii_acoustics": {"meter_scansion": {"meter": "Anuṣṭubh"}},
-            "sruti_table": get_sruti_table(240.0),
-            "parse_envelope": parse_result.model_dump() if hasattr(parse_result, "model_dump") else None,
+            "studio_i_analysis": {"tokens": tokens},
+            "studio_iii_acoustics": {"meter_scansion": {"meter": meter}},
+            "sruti_table": result.get("sruti_map", []),
+            "parse_envelope": result,
+            "deprecated": True,
+            "replacement": "/api/v3/pipeline",
         }
     except Exception as e:
         return {"error": str(e)}
