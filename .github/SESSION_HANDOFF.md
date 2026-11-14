@@ -1,11 +1,11 @@
 ﻿# Aigaane — Session Handoff
 
-**Last commit:** 84d8afd (Q7 v1 complete: 3,965 verses live, 149 dharma matches)
+**Last commit:** 04dea97 (Q7 v2 complete: 25,039 verses, full Valmiki Ramayana)
 **Live revision:** (gcloud run services describe aigaane-api --region=asia-south1 --format="value(status.latestReadyRevisionName)")
 **Frontend:** https://aigaane.in (static, 7 panels) · https://aigaane.in/quanta/ (5-tab React)
 **Backend:** https://api.aigaane.in (15+ endpoints)
 
-## Status: Q4-C v1 COMPLETE
+## Status: Q4-C v2 + Q7 v2 COMPLETE (full Ramayana + 360 verified verb cells)
 
 ### What shipped this session
 - Sandhi combiner calls /api/v3/sandhi/combine (DAG fixed, 5/5 golden cases PASS)
@@ -19,7 +19,7 @@
 - /health → ok
 - /api/v3/sandhi/combine → candidates[{surface,rule,sutra,score}]
 - /api/v3/pipeline → {normalized,tokens,chandas,sruti_map,stages} (5/5)
-- /api/v3/morphology/tinanta → 9 roots, 351 cells
+- /api/v3/morphology/tinanta → 9 roots, 360 cells
 - /api/v1/lexicon/semantic → 54 entries
 - /api/v1/pipeline (LEGACY) → studio_i_analysis — DO NOT TOUCH
 

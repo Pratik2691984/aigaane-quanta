@@ -30,14 +30,14 @@ Live: https://aigaane.in (static) · https://aigaane.in/quanta/ (5-tab React) ·
 - All 6 roots fully verified: kṛ, labh, dā, cur, vah, jñā
 - Total verified verb cells: 207 ātmanepada (was 189 + 9 dā loṭ + 9 reindexed)
 
-## Q7 v1 COMPLETE (commit e876bfb)
-- Ingested Valmiki Ramayana Balakanda (2,217 verses, Sargas 1-77) into canon.db + frontend SQLite
-- Total canon.db verses: 3,965 (FTS5 rebuilt; 'dharma*' matches rose from 6 to 149)
+## Q7 v2 COMPLETE (commit e876bfb)
+- Ingested full Valmiki Ramayana (23,291 verses, all 7 kandas) into canon.db + frontend SQLite
+- Total canon.db verses: 25,039 (FTS5 rebuilt; dharma* matches rose from 6 to 807, rama* to 2,118)
 
 ## Next task
 Pick one:
 A) P2 cleanup: remove stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/ from public/ and dist/
-B) Q7 Itihāsa expansion: add Rāmāyaṇa (~20.5K) + Mahābhārata (~82K) to canon.db
+B) Q7 Mahābhārata expansion: add Mahābhārata (~82K verses) to canon.db (Ramayana already complete)
 
 ## Rules — never break
 1. Do NOT touch /api/v1/pipeline (legacy, smoke test asserts studio_i_analysis)
