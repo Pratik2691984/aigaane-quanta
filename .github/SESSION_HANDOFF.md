@@ -1,6 +1,6 @@
 ﻿# Aigaane — Session Handoff
 
-**Last commit:** c9e05a3 (chore: dist/ cleanup)
+**Last commit:** 64d94f0 (retire LLM-backed legacy pipeline)
 **Live revision:** (gcloud run services describe aigaane-api --region=asia-south1 --format="value(status.latestReadyRevisionName)")
 **Frontend:** https://aigaane.in (static, 7 panels) · https://aigaane.in/quanta/ (5-tab React)
 **Backend:** https://api.aigaane.in (15+ endpoints)
@@ -36,6 +36,14 @@
 - Removed 336 stale files (15.65 MB)
 - Deploy now 4.7× faster (~89 files vs 424)
 - Live verified: CSS, sandhi-golden.js, tinanta.js all load correctly
+
+## Zero LLM GUARANTEE COMPLETE (64d94f0)
+- Legacy /api/v1/pipeline rewritten to use _pipeline.run_pipeline
+- No production endpoint calls EngineAdapter
+- Legacy shape preserved: studio_i_analysis still present (smoke test contract)
+- parse_envelope now = full deterministic pipeline output (5 stages)
+- sruti_table now = real śruti mapping (not static)
+- meter_scansion.meter now = detected meter (not hardcoded)
 
 ## Next task options
 A) P2 cleanup: remove stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/ (30 min)

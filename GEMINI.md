@@ -17,6 +17,12 @@ Live: https://aigaane.in (static) · https://aigaane.in/quanta/ (5-tab React) ·
 - dist/: 425 → 89 files
 - Firebase deploy now uploads ~89 files instead of 424 (4.7× faster)
 
+## Zero LLM GUARANTEE — COMPLETE (commit 64d94f0)
+- /api/v1/pipeline retired: now backed by deterministic _pipeline.run_pipeline
+- No production endpoint calls EngineAdapter anymore
+- All responses include deprecated:True + replacement:/api/v3/pipeline
+- parse_envelope now contains full 5-stage deterministic output
+
 ## Next task
 Pick one:
 A) P2 cleanup: remove stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/ from public/ and dist/
