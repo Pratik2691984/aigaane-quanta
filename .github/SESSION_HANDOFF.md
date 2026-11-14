@@ -1,6 +1,6 @@
 ﻿# Aigaane — Session Handoff
 
-**Last commit:** e876bfb (Q7 v1: Ramayana Balakanda 2,217 verses)
+**Last commit:** 84d8afd (Q7 v1 complete: 3,965 verses live, 149 dharma matches)
 **Live revision:** (gcloud run services describe aigaane-api --region=asia-south1 --format="value(status.latestReadyRevisionName)")
 **Frontend:** https://aigaane.in (static, 7 panels) · https://aigaane.in/quanta/ (5-tab React)
 **Backend:** https://api.aigaane.in (15+ endpoints)
