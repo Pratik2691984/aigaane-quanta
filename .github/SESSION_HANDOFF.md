@@ -26,7 +26,7 @@
 ### Data
 - _DHATUPATHA: 15 roots
 - _tinanta_data.PARADIGMS: 360 cells (144 parasmaipada + 216 ātmanepada)
-- _semantic_index: 54 entries · canon.db: 3,965 verses (Gita + 11 Upanishads + Ramayana Balakanda) · _chhandas: 25 meters
+- _semantic_index: 54 entries · canon.db: 25,039 verses (Gita + 11 Upanishads + full Valmiki Ramayana, all 7 kandas) · _chhandas: 25 meters
 
 ### Tests
 - 166 core + 31 Q4-C ātmanepada = 197 passing
