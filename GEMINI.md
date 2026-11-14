@@ -30,6 +30,10 @@ Live: https://aigaane.in (static) · https://aigaane.in/quanta/ (5-tab React) ·
 - All 6 roots fully verified: kṛ, labh, dā, cur, vah, jñā
 - Total verified verb cells: 207 ātmanepada (was 189 + 9 dā loṭ + 9 reindexed)
 
+## Q7 v1 COMPLETE (commit e876bfb)
+- Ingested Valmiki Ramayana Balakanda (2,217 verses, Sargas 1-77) into canon.db + frontend SQLite
+- Total canon.db verses: 3,965 (FTS5 rebuilt; 'dharma*' matches rose from 6 to 149)
+
 ## Next task
 Pick one:
 A) P2 cleanup: remove stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/ from public/ and dist/
