@@ -43,3 +43,6 @@ backend/data/*.db.bak*
 # Large raw source files
 backend/data/valmiki_ramayana_shlokas.json
 
+
+# Local fix artefacts
+.fix-backups/
