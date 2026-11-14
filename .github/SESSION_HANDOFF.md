@@ -1,6 +1,6 @@
 ﻿# Aigaane — Session Handoff
 
-**Last commit:** 04dea97 (Q7 v2 complete: 25,039 verses, full Valmiki Ramayana)
+**Last commit:** bfa952c (Q3 Session 1: 22-sruti AudioWorklet player live)
 **Live revision:** (gcloud run services describe aigaane-api --region=asia-south1 --format="value(status.latestReadyRevisionName)")
 **Frontend:** https://aigaane.in (static, 7 panels) · https://aigaane.in/quanta/ (5-tab React)
 **Backend:** https://api.aigaane.in (15+ endpoints)
@@ -50,6 +50,10 @@
 - ATMANEPADA_UNVERIFIED set is now empty
 - All ātmanepada cells verified for all 6 roots
 - Note: earlier local script assertion (set() == set()) was a transient script-ordering issue, not a data problem — runtime state is correct
+
+## Q3 Session 1 COMPLETE (commit bfa952c)
+- 22-sruti AudioWorklet player in Studio III tab (/quanta/)
+- Play Full Scale + per-row playback + Stop, browser-verified audible
 
 ## Next task options
 A) P2 cleanup: remove stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/ (30 min)

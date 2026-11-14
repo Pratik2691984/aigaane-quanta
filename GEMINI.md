@@ -34,6 +34,10 @@ Live: https://aigaane.in (static) · https://aigaane.in/quanta/ (5-tab React) ·
 - Ingested full Valmiki Ramayana (23,291 verses, all 7 kandas) into canon.db + frontend SQLite
 - Total canon.db verses: 25,039 (FTS5 rebuilt; dharma* matches rose from 6 to 807, rama* to 2,118)
 
+## Q3 Session 1 COMPLETE (commit bfa952c)
+- 22-sruti AudioWorklet player in Studio III tab (/quanta/)
+- Play Full Scale + per-row playback + Stop, browser-verified audible
+
 ## Next task
 Pick one:
 A) P2 cleanup: remove stale dist/legacy/, dist/quanta/legacy/, dist/quanta/quanta/ from public/ and dist/
