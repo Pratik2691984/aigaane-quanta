@@ -1,0 +1,6 @@
+﻿User-agent: *
+Allow: /
+Disallow: /quanta/quanta/
+Disallow: /quanta/legacy/
+Disallow: /legacy/
+Sitemap: https://aigaane.in/sitemap.xml
