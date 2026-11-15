@@ -108,3 +108,21 @@ def test_align_determinism():
     j2 = [e.model_dump() for e in r2]
     assert json.dumps(j1, sort_keys=True) == json.dumps(j2, sort_keys=True)
     assert m1 == m2
+
+
+def test_rest_after_sec_propagated():
+    text = "\u0905\u0952\u0917\u094d\u0928\u093f\u092e\u0940\u0951\u0933\u0947 \u0964"
+    env = generate_vedic_contour(text, recension="rgveda_sakala")
+    rhythm, _meta = align_to_tala(env.candidates[0].contour_events, TALA_9, bpm=60)
+    assert rhythm[-1].rest_after_sec == 2.0
+    for ev in rhythm[:-1]:
+        assert ev.rest_after_sec == 0.0
+
+
+def test_rest_extends_meta_total():
+    base = "\u0905\u0952\u0917\u094d\u0928\u093f\u092e\u0940\u0951\u0933\u0947"
+    env_a = generate_vedic_contour(base, recension="rgveda_sakala")
+    env_b = generate_vedic_contour(base + " \u0964", recension="rgveda_sakala")
+    _, meta_a = align_to_tala(env_a.candidates[0].contour_events, TALA_9, bpm=60)
+    _, meta_b = align_to_tala(env_b.candidates[0].contour_events, TALA_9, bpm=60)
+    assert abs((meta_b["total_sec"] - meta_a["total_sec"]) - 2.0) < 0.01

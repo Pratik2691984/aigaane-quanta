@@ -34,6 +34,7 @@ class RhythmEvent(BaseModel):
     avarta_index: int
     akshara_in_avarta: int
     sam_accent: bool
+    rest_after_sec: float = 0.0
 
 
 class VedicAlignedCandidate(BaseModel):
@@ -102,8 +103,10 @@ def align_to_tala(
 
     for ev in contour_events:
         matra = max(1, int(round(ev.matra_duration)))
+        rest_matras = max(0, int(round(getattr(ev, "rest_after_matras", 0.0))))
         onset_sec = round((avarta * cycle + slot) * beat_sec, 4)
         duration_sec = round(matra * beat_sec, 4)
+        rest_after_sec = round(rest_matras * beat_sec, 4)
         events.append(
             RhythmEvent(
                 akshara_index=ev.akshara_index,
@@ -118,14 +121,15 @@ def align_to_tala(
                 avarta_index=avarta,
                 akshara_in_avarta=slot,
                 sam_accent=(slot == 0),
+                rest_after_sec=rest_after_sec,
             )
         )
-        slot += matra
+        slot += matra + rest_matras
         while slot >= cycle:
             slot -= cycle
             avarta += 1
 
-    total_sec = round(sum(e.duration_sec for e in events), 4)
+    total_sec = round(sum(e.duration_sec + e.rest_after_sec for e in events), 4)
     meta = {
         "name": spec.name,
         "cycle_length": cycle,

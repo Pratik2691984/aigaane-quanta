@@ -21,7 +21,7 @@ except ImportError:
 
 
 def _synth_vocal(rhythm_events, sample_rate, sa_hz):
-    total_sec = sum(e.duration_sec for e in rhythm_events) + 0.2
+    total_sec = sum(e.duration_sec + getattr(e, "rest_after_sec", 0.0) for e in rhythm_events) + 0.2
     n = int(total_sec * sample_rate)
     samples = [0.0] * n
     inv_sr = 1.0 / sample_rate

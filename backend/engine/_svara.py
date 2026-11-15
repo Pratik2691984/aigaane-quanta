@@ -56,6 +56,7 @@ class ContourEvent(BaseModel):
     recension: str
     pitch: PitchContour
     matra_duration: float
+    rest_after_matras: float = 0.0
     srutis: List[int]
     authority: SvaraAuthority
 
@@ -167,16 +168,27 @@ def _extract_mark_hint(akshara_nfc: str) -> Optional[SvaraLabel]:
 
 def segment_vedic_aksharas(text_nfc: str) -> List[Dict[str, Any]]:
     tokens: List[Dict[str, Any]] = []
-    for match in _AKSHARA_RE.finditer(text_nfc):
+    matches = list(_AKSHARA_RE.finditer(text_nfc))
+    for idx, match in enumerate(matches):
         raw = match.group(0)
         clean = strip_vedic_marks(raw)
         if not clean:
             continue
+        gap_start = match.end()
+        gap_end = matches[idx + 1].start() if idx + 1 < len(matches) else len(text_nfc)
+        gap = text_nfc[gap_start:gap_end]
+        if "\u0965" in gap:
+            rest_matras = 4.0
+        elif "\u0964" in gap:
+            rest_matras = 2.0
+        else:
+            rest_matras = 0.0
         tokens.append({
             "akshara_nfc": raw,
             "akshara_clean": clean,
             "mark_hint": _extract_mark_hint(raw),
             "is_pluta": "\u0969" in raw,
+            "rest_after_matras": rest_matras,
         })
     return tokens
 
@@ -303,6 +315,7 @@ def generate_vedic_contour(text: str, recension: str = "rgveda_sakala", sa_hz: f
                 recension=resolved_recension,
                 pitch=pitch,
                 matra_duration=matra,
+                rest_after_matras=ak.get("rest_after_matras", 0.0),
                 srutis=srutis,
                 authority=SvaraAuthority(recension=resolved_recension, pratisakhya=profile["pratisakhya"], rule=rule_note),
             ))

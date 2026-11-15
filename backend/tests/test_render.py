@@ -109,3 +109,44 @@ def test_render_kampa_affects_output():
     assert sha_rv != sha_ty, "Rgveda (kampa) must differ from Taittiriya (no kampa)"
     assert sha_rv != sha_ka, "Rgveda 5.5Hz kampa must differ from Kanva 5.0Hz kampa"
     assert sha_ka != sha_ty, "Kanva (kampa) must differ from Taittiriya (no kampa)"
+
+
+def test_pada_rest_extends_duration():
+    base = "\u0905\u0952\u0917\u094d\u0928\u093f\u092e\u0940\u0951\u0933\u0947"
+    common = {"recension": "rgveda_sakala", "bpm": 60, "sa_hz": 240, "drone_on": False, "sample_rate": 22050}
+    r_plain = client.post("/api/v3/vedic/render", json={**common, "text": base})
+    r_single = client.post("/api/v3/vedic/render", json={**common, "text": base + " \u0964"})
+    r_double = client.post("/api/v3/vedic/render", json={**common, "text": base + " \u0965"})
+    assert r_plain.status_code == 200 and r_single.status_code == 200 and r_double.status_code == 200
+    d_plain = r_plain.json()["candidates"][0]["duration_sec"]
+    d_single = r_single.json()["candidates"][0]["duration_sec"]
+    d_double = r_double.json()["candidates"][0]["duration_sec"]
+    assert abs((d_single - d_plain) - 2.0) < 0.2, f"single delta={d_single - d_plain}"
+    assert abs((d_double - d_plain) - 4.0) < 0.2, f"double delta={d_double - d_plain}"
+
+
+def test_pada_rest_spectral_silence():
+    import base64
+    import io
+    import math
+    import struct
+    import wave
+    text = "\u0905\u0952\u0917\u094d\u0928\u093f\u092e\u0940\u0951\u0933\u0947 \u0964"
+    payload = {"text": text, "recension": "rgveda_sakala", "bpm": 60, "sa_hz": 240, "drone_on": False, "sample_rate": 22050}
+    r = client.post("/api/v3/vedic/render", json=payload)
+    cand = r.json()["candidates"][0]
+    wav_bytes = base64.b64decode(cand["wav_b64"])
+    buf = io.BytesIO(wav_bytes)
+    with wave.open(buf, "rb") as wf:
+        n_frames = wf.getnframes()
+        sr = wf.getframerate()
+        raw = wf.readframes(n_frames)
+    samples = [s / 32768.0 for s in struct.unpack(f"<{n_frames}h", raw)]
+    tone_window = samples[:sr]
+    rest_window = samples[-int(1.5 * sr):]
+    def rms(xs):
+        return math.sqrt(sum(s * s for s in xs) / len(xs)) if xs else 0.0
+    tone_rms = rms(tone_window)
+    rest_rms = rms(rest_window)
+    assert tone_rms > 0.01, f"tone too quiet: {tone_rms}"
+    assert rest_rms < tone_rms * 0.1, f"rest {rest_rms:.6f} vs tone {tone_rms:.6f}"

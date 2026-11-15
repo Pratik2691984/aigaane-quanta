@@ -70,3 +70,36 @@ def test_dual_mount_api_routes():
     assert r1.status_code == 200, r1.text
     assert r3.status_code == 200, r3.text
     assert r1.json() == r3.json()
+
+
+DANDA_BASE = "\u0905\u0952\u0917\u094d\u0928\u093f\u092e\u0940\u0951\u0933\u0947"
+
+
+def test_single_danda_sets_rest_after_matras():
+    env = generate_vedic_contour(DANDA_BASE + " \u0964", recension="rgveda_sakala")
+    assert env.rejected == []
+    events = env.candidates[0].contour_events
+    assert events[-1].rest_after_matras == 2.0
+    for ev in events[:-1]:
+        assert ev.rest_after_matras == 0.0
+
+
+def test_double_danda_sets_rest_after_matras():
+    env = generate_vedic_contour(DANDA_BASE + " \u0965", recension="rgveda_sakala")
+    assert env.rejected == []
+    events = env.candidates[0].contour_events
+    assert events[-1].rest_after_matras == 4.0
+
+
+def test_no_danda_no_rest():
+    env = generate_vedic_contour(DANDA_BASE, recension="rgveda_sakala")
+    events = env.candidates[0].contour_events
+    for ev in events:
+        assert ev.rest_after_matras == 0.0
+
+
+def test_rest_fields_present_on_models():
+    from backend.engine._svara import ContourEvent
+    from backend.engine._rhythm import RhythmEvent
+    assert "rest_after_matras" in ContourEvent.model_fields
+    assert "rest_after_sec" in RhythmEvent.model_fields
