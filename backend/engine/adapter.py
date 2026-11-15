@@ -1,3 +1,14 @@
+"""
+Deterministic bridge between FastAPI routes and legacy_engine.py.
+
+This module is deterministic by design:
+  - legacy_engine.py has no network imports, no LLM SDK
+  - parse() is pure — same input -> same KernelEnvelope
+  - Verified by backend/tests/test_determinism_audit.py
+
+The name "adapter" reflects its architectural role (map legacy
+dict shape -> KernelEnvelope), not any nondeterminism.
+"""
 import sys
 from pathlib import Path
 import logging
