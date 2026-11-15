@@ -92,3 +92,20 @@ def test_render_no_svara_marks_rejected():
     data = r.json()
     assert data["candidates"] == []
     assert data["rejected"][0]["reason_code"] == "NO_SVARA_MARKS"
+
+
+def test_render_kampa_affects_output():
+    """Kampa-triggering verse (udatta -> unmarked -> udatta pattern) must
+    produce different WAV bytes across recensions whose kampa_default differs.
+    Rgveda 5.5Hz/28c vs Kanva 5.0Hz/25c vs Taittiriya/Madhyandina None."""
+    kampa_text = "\u0905\u0951\u0917\u094d\u0928\u093f\u092e\u0940\u0951\u0933\u0947"
+    base = {"text": kampa_text, "bpm": 60, "sa_hz": 240, "drone_on": False, "sample_rate": 22050}
+    r_rv = client.post("/api/v3/vedic/render", json={**base, "recension": "rgveda_sakala"})
+    r_ty = client.post("/api/v3/vedic/render", json={**base, "recension": "taittiriya"})
+    r_ka = client.post("/api/v3/vedic/render", json={**base, "recension": "kanva"})
+    sha_rv = r_rv.json()["candidates"][0]["sha256"]
+    sha_ty = r_ty.json()["candidates"][0]["sha256"]
+    sha_ka = r_ka.json()["candidates"][0]["sha256"]
+    assert sha_rv != sha_ty, "Rgveda (kampa) must differ from Taittiriya (no kampa)"
+    assert sha_rv != sha_ka, "Rgveda 5.5Hz kampa must differ from Kanva 5.0Hz kampa"
+    assert sha_ka != sha_ty, "Kanva (kampa) must differ from Taittiriya (no kampa)"

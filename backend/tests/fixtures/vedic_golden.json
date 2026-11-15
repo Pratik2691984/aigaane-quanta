@@ -146,6 +146,78 @@
       "rms_db": -20.0,
       "n_samples": 313110,
       "wav_bytes_len": 626264
+    },
+    {
+      "id": "kampa_rgveda_free_dry",
+      "input": {
+        "text": "अ॑ग्निमी॑ळे",
+        "recension": "rgveda_sakala",
+        "tala_name": null,
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": false,
+        "sample_rate": 22050
+      },
+      "sha256": "037de687752abc120f3075eea059fb5d895c200a750c194505cfdbc2e22b2657",
+      "duration_sec": 7.2,
+      "peak_db": -16.72,
+      "rms_db": -20.0,
+      "n_samples": 158760,
+      "wav_bytes_len": 317564
+    },
+    {
+      "id": "kampa_kanva_free_dry",
+      "input": {
+        "text": "अ॑ग्निमी॑ळे",
+        "recension": "kanva",
+        "tala_name": null,
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": false,
+        "sample_rate": 22050
+      },
+      "sha256": "b3b38c724839ada41c0adba564ff99e1e9ae805a94e954c87b96df004cc4aaa7",
+      "duration_sec": 7.2,
+      "peak_db": -16.72,
+      "rms_db": -20.0,
+      "n_samples": 158760,
+      "wav_bytes_len": 317564
+    },
+    {
+      "id": "kampa_taittiriya_free_dry",
+      "input": {
+        "text": "अ॑ग्निमी॑ळे",
+        "recension": "taittiriya",
+        "tala_name": null,
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": false,
+        "sample_rate": 22050
+      },
+      "sha256": "9cc7803b9ace39a40b928391f04b7e747c5f809ef23e35faa93e9c7b53743e61",
+      "duration_sec": 7.2,
+      "peak_db": -16.72,
+      "rms_db": -20.0,
+      "n_samples": 158760,
+      "wav_bytes_len": 317564
+    },
+    {
+      "id": "kampa_madhyandina_free_dry",
+      "input": {
+        "text": "अ॑ग्निमी॑ळे",
+        "recension": "madhyandina",
+        "tala_name": null,
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": false,
+        "sample_rate": 22050
+      },
+      "sha256": "9cc7803b9ace39a40b928391f04b7e747c5f809ef23e35faa93e9c7b53743e61",
+      "duration_sec": 7.2,
+      "peak_db": -16.72,
+      "rms_db": -20.0,
+      "n_samples": 158760,
+      "wav_bytes_len": 317564
     }
   ]
 }

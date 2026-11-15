@@ -20,7 +20,7 @@ except ImportError:
     from _rhythm import RhythmEvent  # type: ignore
 
 
-def _synth_vocal(rhythm_events: List[RhythmEvent], sample_rate: int, sa_hz: float) -> List[float]:
+def _synth_vocal(rhythm_events, sample_rate, sa_hz):
     total_sec = sum(e.duration_sec for e in rhythm_events) + 0.2
     n = int(total_sec * sample_rate)
     samples = [0.0] * n
@@ -36,6 +36,11 @@ def _synth_vocal(rhythm_events: List[RhythmEvent], sample_rate: int, sa_hz: floa
         gain = 0.22 if ev.sam_accent else 0.15
         phase = 0.0
 
+        kampa_hz = ev.kampa.hz if ev.kampa else 0.0
+        kampa_depth_cents = ev.kampa.depth_cents if ev.kampa else 0.0
+        kampa_depth_hz = (start_f * (2.0 ** (kampa_depth_cents / 1200.0) - 1.0)) if (kampa_hz > 0 and kampa_depth_cents > 0) else 0.0
+        kampa_phase = 0.0
+
         attack_n = max(1, int(attack_sec * sample_rate))
         release_n = max(1, int(release_sec * sample_rate))
 
@@ -44,7 +49,12 @@ def _synth_vocal(rhythm_events: List[RhythmEvent], sample_rate: int, sa_hz: floa
             if idx >= n:
                 break
             t_frac = i / dur_i
-            freq = start_f + (end_f - start_f) * t_frac
+            base_freq = start_f + (end_f - start_f) * t_frac
+            if kampa_depth_hz > 0:
+                kampa_phase = (kampa_phase + 2.0 * math.pi * kampa_hz * inv_sr) % (2.0 * math.pi)
+                freq = base_freq + kampa_depth_hz * math.sin(kampa_phase)
+            else:
+                freq = base_freq
             phase += 2.0 * math.pi * freq * inv_sr
             s = math.sin(phase) + 0.1 * math.sin(2.0 * phase)
             if i < attack_n:

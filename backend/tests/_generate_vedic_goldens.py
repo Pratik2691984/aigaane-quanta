@@ -18,7 +18,12 @@ RV_1_1_1_A = (
     "\u092a\u0941\u0952\u0930\u094b\u0939\u093f\u0951\u0924\u092e\u094d"
 )
 
+KAMPA_TEXT = (
+    "\u0905\u0951\u0917\u094d\u0928\u093f\u092e\u0940\u0951\u0933\u0947"
+)
+
 CASES = [
+
     {"id": "rv_1_1_1_rgveda_free_drone",       "text": RV_1_1_1_A, "recension": "rgveda_sakala", "tala_name": None,               "bpm": 60, "sa_hz": 240, "drone_on": True,  "sample_rate": 22050},
     {"id": "rv_1_1_1_rgveda_free_dry",         "text": RV_1_1_1_A, "recension": "rgveda_sakala", "tala_name": None,               "bpm": 60, "sa_hz": 240, "drone_on": False, "sample_rate": 22050},
     {"id": "rv_1_1_1_rgveda_trisra_drone",     "text": RV_1_1_1_A, "recension": "rgveda_sakala", "tala_name": "Tri\u015bra Dhruva", "bpm": 60, "sa_hz": 240, "drone_on": True,  "sample_rate": 22050},
@@ -27,6 +32,10 @@ CASES = [
     {"id": "rv_1_1_1_taittiriya_trisra_drone", "text": RV_1_1_1_A, "recension": "taittiriya",    "tala_name": "Tri\u015bra Dhruva", "bpm": 60, "sa_hz": 240, "drone_on": True,  "sample_rate": 22050},
     {"id": "rv_1_1_1_kanva_free_drone",        "text": RV_1_1_1_A, "recension": "kanva",         "tala_name": None,               "bpm": 60, "sa_hz": 240, "drone_on": True,  "sample_rate": 22050},
     {"id": "rv_1_1_1_madhyandina_free_drone",  "text": RV_1_1_1_A, "recension": "madhyandina",   "tala_name": None,               "bpm": 60, "sa_hz": 240, "drone_on": True,  "sample_rate": 22050},
+    {"id": "kampa_rgveda_free_dry",         "text": KAMPA_TEXT, "recension": "rgveda_sakala", "tala_name": None, "bpm": 60, "sa_hz": 240, "drone_on": False, "sample_rate": 22050},
+    {"id": "kampa_kanva_free_dry",          "text": KAMPA_TEXT, "recension": "kanva",         "tala_name": None, "bpm": 60, "sa_hz": 240, "drone_on": False, "sample_rate": 22050},
+    {"id": "kampa_taittiriya_free_dry",     "text": KAMPA_TEXT, "recension": "taittiriya",    "tala_name": None, "bpm": 60, "sa_hz": 240, "drone_on": False, "sample_rate": 22050},
+    {"id": "kampa_madhyandina_free_dry",    "text": KAMPA_TEXT, "recension": "madhyandina",   "tala_name": None, "bpm": 60, "sa_hz": 240, "drone_on": False, "sample_rate": 22050},
 ]
 
 def main():
