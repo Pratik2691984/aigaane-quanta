@@ -75,6 +75,7 @@ class VedicRejected(BaseModel):
         "SAMAVEDA_ROUTE",
         "EMPTY_INPUT",
         "SRUTI_TABLE_MISMATCH",
+        "TALA_UNKNOWN",
     ]
     detail: str
     fallback_endpoint: Optional[str] = None
