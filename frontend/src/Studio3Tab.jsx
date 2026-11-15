@@ -42,6 +42,14 @@ export default function Studio3Tab() {
   const [vedicLoading, setVedicLoading] = useState(false);
   const [vedicPlaying, setVedicPlaying] = useState(false);
   const [vedicNotice, setVedicNotice] = useState(null);
+  const [vedicAlign, setVedicAlign] = useState(false);
+  const [vedicTala, setVedicTala] = useState("");
+
+  useEffect(() => {
+    if (vedicAlign && !vedicTala && talaList.length > 0) {
+      setVedicTala(talaList[0].name);
+    }
+  }, [vedicAlign, vedicTala, talaList]);
 
   useEffect(() => {
     fetchSrutiTable().then((rows) => {
@@ -140,15 +148,25 @@ export default function Studio3Tab() {
     if (!vedicText.trim() || !workletNodeRef.current) return;
     setVedicLoading(true);
     setVedicNotice(null);
+    stopVedicChant();
+
     try {
-      const res = await fetch(`${API_URL}/api/v3/vedic/contour`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      let url = `${API_URL}/api/v3/vedic/contour`;
+      let body = { text: vedicText, recension: vedicRecension, sa_hz: 240 };
+      if (vedicAlign) {
+        url = `${API_URL}/api/v3/vedic/align`;
+        body = {
           text: vedicText,
           recension: vedicRecension,
+          tala_name: vedicTala,
+          bpm: bpm,
           sa_hz: 240,
-        }),
+        };
+      }
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (data.rejected && data.rejected.length > 0) {
@@ -159,42 +177,77 @@ export default function Studio3Tab() {
         setVedicNotice({ reason_code: "EMPTY_INPUT", detail: "No contour returned" });
         return;
       }
-      const events = data.candidates[0].contour_events;
-      stopVedicChant();
-
-      const beatSec = 60 / Math.max(30, bpm);
+      const cand = data.candidates[0];
       const saHz = 240;
-      let cumul = 0;
-      events.forEach((ev) => {
-        const delayMs = cumul * 1000;
-        const durMs = ev.matra_duration * beatSec * 1000;
-        const startFreq = ev.pitch.start_ratio * saHz;
-        const endFreq = ev.pitch.end_ratio * saHz;
-        const kampaHz = ev.pitch.kampa ? ev.pitch.kampa.hz : 0;
-        const kampaDepthCents = ev.pitch.kampa ? ev.pitch.kampa.depth_cents : 0;
-        const tid = setTimeout(() => {
-          if (!workletNodeRef.current) return;
-          workletNodeRef.current.port.postMessage({
-            type: "play",
-            freq: startFreq,
-            endFreq: endFreq,
-            durationMs: durMs,
-            gain: 0.15,
-            kampaHz: kampaHz,
-            kampaDepthCents: kampaDepthCents,
-          });
-        }, delayMs);
-        talaTimeoutsRef.current.push(tid);
-        cumul += ev.matra_duration * beatSec;
-      });
-      setVedicPlaying(true);
-      const stopTid = setTimeout(() => {
-        setVedicPlaying(false);
-        if (workletNodeRef.current) {
-          workletNodeRef.current.port.postMessage({ type: "stop" });
-        }
-      }, cumul * 1000 + 200);
-      talaTimeoutsRef.current.push(stopTid);
+
+      if (vedicAlign && cand.rhythm_events) {
+        const rhythm = cand.rhythm_events;
+        const totalSec = cand.tala_meta ? cand.tala_meta.total_sec : 0;
+        rhythm.forEach((ev) => {
+          const delayMs = ev.onset_sec * 1000;
+          const durMs = ev.duration_sec * 1000;
+          const startFreq = ev.start_ratio * saHz;
+          const endFreq = ev.end_ratio * saHz;
+          const kampaHz = ev.kampa ? ev.kampa.hz : 0;
+          const kampaDepthCents = ev.kampa ? ev.kampa.depth_cents : 0;
+          const gain = ev.sam_accent ? 0.22 : 0.15;
+          const tid = setTimeout(() => {
+            if (!workletNodeRef.current) return;
+            workletNodeRef.current.port.postMessage({
+              type: "play",
+              freq: startFreq,
+              endFreq: endFreq,
+              durationMs: durMs,
+              gain: gain,
+              kampaHz: kampaHz,
+              kampaDepthCents: kampaDepthCents,
+            });
+          }, delayMs);
+          talaTimeoutsRef.current.push(tid);
+        });
+        setVedicPlaying(true);
+        const stopTid = setTimeout(() => {
+          setVedicPlaying(false);
+          if (workletNodeRef.current) {
+            workletNodeRef.current.port.postMessage({ type: "stop" });
+          }
+        }, totalSec * 1000 + 200);
+        talaTimeoutsRef.current.push(stopTid);
+      } else {
+        const events = cand.contour_events;
+        const beatSec = 60 / Math.max(30, bpm);
+        let cumul = 0;
+        events.forEach((ev) => {
+          const delayMs = cumul * 1000;
+          const durMs = ev.matra_duration * beatSec * 1000;
+          const startFreq = ev.pitch.start_ratio * saHz;
+          const endFreq = ev.pitch.end_ratio * saHz;
+          const kampaHz = ev.pitch.kampa ? ev.pitch.kampa.hz : 0;
+          const kampaDepthCents = ev.pitch.kampa ? ev.pitch.kampa.depth_cents : 0;
+          const tid = setTimeout(() => {
+            if (!workletNodeRef.current) return;
+            workletNodeRef.current.port.postMessage({
+              type: "play",
+              freq: startFreq,
+              endFreq: endFreq,
+              durationMs: durMs,
+              gain: 0.15,
+              kampaHz: kampaHz,
+              kampaDepthCents: kampaDepthCents,
+            });
+          }, delayMs);
+          talaTimeoutsRef.current.push(tid);
+          cumul += ev.matra_duration * beatSec;
+        });
+        setVedicPlaying(true);
+        const stopTid = setTimeout(() => {
+          setVedicPlaying(false);
+          if (workletNodeRef.current) {
+            workletNodeRef.current.port.postMessage({ type: "stop" });
+          }
+        }, cumul * 1000 + 200);
+        talaTimeoutsRef.current.push(stopTid);
+      }
     } catch (err) {
       setVedicNotice({ reason_code: "FETCH_ERROR", detail: String(err) });
     } finally {
@@ -465,6 +518,12 @@ export default function Studio3Tab() {
             notice={vedicNotice}
             onPlay={playVedicChant}
             onStop={stopVedicChant}
+            align={vedicAlign}
+            setAlign={setVedicAlign}
+            talaList={talaList}
+            tala={vedicTala}
+            setTala={setVedicTala}
+            bpm={bpm}
           />
       </div>
 

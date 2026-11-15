@@ -18,7 +18,14 @@ export default function VedicPanel({
   notice,
   onPlay,
   onStop,
+  align,
+  setAlign,
+  talaList,
+  tala,
+  setTala,
+  bpm,
 }) {
+  const talaOptions = talaList || [];
   return (
     <div
       className="vedic-panel"
@@ -54,6 +61,42 @@ export default function VedicPanel({
           {playing ? "Stop Chant" : loading ? "Loading..." : "Play Vedic Chant"}
         </button>
       </div>
+
+      <div
+        style={{
+          marginTop: 10,
+          display: "flex",
+          gap: 12,
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <label style={{ cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            checked={!!align}
+            onChange={(e) => setAlign(e.target.checked)}
+          />{" "}
+          Align to Tala (grid rhythm)
+        </label>
+        {align && (
+          <>
+            <label>
+              Tala:{" "}
+              <select value={tala} onChange={(e) => setTala(e.target.value)}>
+                {talaOptions.length === 0 && <option value="">Loading...</option>}
+                {talaOptions.map((t) => (
+                  <option key={t.name} value={t.name}>
+                    {t.name} ({t.cycle_length} aksaras)
+                  </option>
+                ))}
+              </select>
+            </label>
+            <span style={{ fontSize: 12, color: "#555" }}>@ {bpm} BPM (from Tala player)</span>
+          </>
+        )}
+      </div>
+
       {notice && (
         <div
           style={{
