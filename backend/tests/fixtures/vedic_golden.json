@@ -1,0 +1,151 @@
+{
+  "version": "1.0",
+  "engine": "aigaane-vedic-render",
+  "note": "Any drift in sha256 means code changed output. Regenerate intentionally, commit.",
+  "cases": [
+    {
+      "id": "rv_1_1_1_rgveda_free_drone",
+      "input": {
+        "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तम्",
+        "recension": "rgveda_sakala",
+        "tala_name": null,
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": true,
+        "sample_rate": 22050
+      },
+      "sha256": "49438700a25ce7d6c90db655284c3cb1edcbb4e2b3b686c300322ef4d658f90a",
+      "duration_sec": 14.2,
+      "peak_db": -11.9,
+      "rms_db": -20.0,
+      "n_samples": 313110,
+      "wav_bytes_len": 626264
+    },
+    {
+      "id": "rv_1_1_1_rgveda_free_dry",
+      "input": {
+        "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तम्",
+        "recension": "rgveda_sakala",
+        "tala_name": null,
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": false,
+        "sample_rate": 22050
+      },
+      "sha256": "4d86b998094e1326ebda29507424bbbcdb84ee268ea41ceb7d312eea3da3639b",
+      "duration_sec": 14.2,
+      "peak_db": -16.78,
+      "rms_db": -20.0,
+      "n_samples": 313110,
+      "wav_bytes_len": 626264
+    },
+    {
+      "id": "rv_1_1_1_rgveda_trisra_drone",
+      "input": {
+        "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तम्",
+        "recension": "rgveda_sakala",
+        "tala_name": "Triśra Dhruva",
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": true,
+        "sample_rate": 22050
+      },
+      "sha256": "38ac56287efc3822b39fb48d7d6fdb788156551b1b18118da51be09c3d1f66eb",
+      "duration_sec": 14.2,
+      "peak_db": -10.86,
+      "rms_db": -20.0,
+      "n_samples": 313110,
+      "wav_bytes_len": 626264
+    },
+    {
+      "id": "rv_1_1_1_rgveda_trisra_dry",
+      "input": {
+        "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तम्",
+        "recension": "rgveda_sakala",
+        "tala_name": "Triśra Dhruva",
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": false,
+        "sample_rate": 22050
+      },
+      "sha256": "9951178b9b800f0d2a505656d7b6e9bc79d04f71c013bdc358c52138d2bf444c",
+      "duration_sec": 14.2,
+      "peak_db": -14.11,
+      "rms_db": -20.0,
+      "n_samples": 313110,
+      "wav_bytes_len": 626264
+    },
+    {
+      "id": "rv_1_1_1_taittiriya_free_drone",
+      "input": {
+        "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तम्",
+        "recension": "taittiriya",
+        "tala_name": null,
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": true,
+        "sample_rate": 22050
+      },
+      "sha256": "d23a12779600c0d11707732f55a348ff76bef02ee64d7ce319e4a46cd8de6a2b",
+      "duration_sec": 14.2,
+      "peak_db": -11.89,
+      "rms_db": -20.0,
+      "n_samples": 313110,
+      "wav_bytes_len": 626264
+    },
+    {
+      "id": "rv_1_1_1_taittiriya_trisra_drone",
+      "input": {
+        "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तम्",
+        "recension": "taittiriya",
+        "tala_name": "Triśra Dhruva",
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": true,
+        "sample_rate": 22050
+      },
+      "sha256": "4fc24bb3d2128ee1ca4b7f0cbbb69bae707471809f89d188ad5052d71e91f47e",
+      "duration_sec": 14.2,
+      "peak_db": -10.65,
+      "rms_db": -20.0,
+      "n_samples": 313110,
+      "wav_bytes_len": 626264
+    },
+    {
+      "id": "rv_1_1_1_kanva_free_drone",
+      "input": {
+        "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तम्",
+        "recension": "kanva",
+        "tala_name": null,
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": true,
+        "sample_rate": 22050
+      },
+      "sha256": "49438700a25ce7d6c90db655284c3cb1edcbb4e2b3b686c300322ef4d658f90a",
+      "duration_sec": 14.2,
+      "peak_db": -11.9,
+      "rms_db": -20.0,
+      "n_samples": 313110,
+      "wav_bytes_len": 626264
+    },
+    {
+      "id": "rv_1_1_1_madhyandina_free_drone",
+      "input": {
+        "text": "अ॒ग्निमी॑ळे पु॒रोहि॑तम्",
+        "recension": "madhyandina",
+        "tala_name": null,
+        "bpm": 60,
+        "sa_hz": 240,
+        "drone_on": true,
+        "sample_rate": 22050
+      },
+      "sha256": "49438700a25ce7d6c90db655284c3cb1edcbb4e2b3b686c300322ef4d658f90a",
+      "duration_sec": 14.2,
+      "peak_db": -11.9,
+      "rms_db": -20.0,
+      "n_samples": 313110,
+      "wav_bytes_len": 626264
+    }
+  ]
+}
