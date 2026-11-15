@@ -8,7 +8,7 @@ from backend.api import (
 APP_VERSION = "2.3.0-legacy-ui-bridge"
 
 app = FastAPI(
-    title="Quanta-Aigaane Neuro-Symbolic API",
+    title="Quanta-Aigaane Deterministic API",
     version=APP_VERSION,
 )
 
@@ -130,7 +130,7 @@ app.include_router(pipeline_routes.router, prefix="/api/v3/pipeline", tags=["pip
 def health():
     return {
         "status": "ok",
-        "architecture": "Neuro-Symbolic",
+        "architecture": "Deterministic",
         "version": "2.3.0-legacy-ui-bridge",
     }
 
@@ -138,7 +138,7 @@ def health():
 def root():
     return {
         "status": "online",
-        "engine": "Aigaane-Quanta Neuro-Symbolic",
+        "engine": "Aigaane-Quanta Deterministic",
         "version": APP_VERSION,
         "docs": "/docs",
     }

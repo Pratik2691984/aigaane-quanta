@@ -90,7 +90,7 @@ def test_health_endpoint_returns_canonical_shape(client):
     assert r.status_code == 200
     data = r.json()
     assert data["status"] == "ok"
-    assert data["architecture"] == "Neuro-Symbolic"
+    assert data["architecture"] == "Deterministic"
     assert "version" in data
 
 

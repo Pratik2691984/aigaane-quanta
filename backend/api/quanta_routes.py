@@ -8,5 +8,5 @@ def quanta_health():
     return {
         "status": "ok",
         "layer": "quanta",
-        "pillars": ["llm", "cloud", "security"],
+        "pillars": ["deterministic", "cloud", "security"],
     }
