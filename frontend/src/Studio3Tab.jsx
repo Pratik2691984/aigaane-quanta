@@ -1,5 +1,6 @@
 ﻿import { useState, useRef, useEffect } from "react";
 import { API_URL } from "./config";
+import VedicPanel from "./VedicPanel";
 
 // Load 22-sruti table on mount (frequencies for playback)
 async function fetchSrutiTable() {
@@ -34,6 +35,13 @@ export default function Studio3Tab() {
   const [talaPlaying, setTalaPlaying] = useState(false);
   const [currentAkshara, setCurrentAkshara] = useState(0);
   const talaTimeoutsRef = useRef([]);
+
+  // === Vedic Chant state ===
+  const [vedicText, setVedicText] = useState("");
+  const [vedicRecension, setVedicRecension] = useState("rgveda_sakala");
+  const [vedicLoading, setVedicLoading] = useState(false);
+  const [vedicPlaying, setVedicPlaying] = useState(false);
+  const [vedicNotice, setVedicNotice] = useState(null);
 
   useEffect(() => {
     fetchSrutiTable().then((rows) => {
@@ -116,6 +124,81 @@ export default function Studio3Tab() {
     setCurrentAkshara(0);
     if (workletNodeRef.current) {
       workletNodeRef.current.port.postMessage({ type: "stop" });
+    }
+  };
+
+  const stopVedicChant = () => {
+    talaTimeoutsRef.current.forEach((t) => clearTimeout(t));
+    talaTimeoutsRef.current = [];
+    if (workletNodeRef.current) {
+      workletNodeRef.current.port.postMessage({ type: "stop" });
+    }
+    setVedicPlaying(false);
+  };
+
+  const playVedicChant = async () => {
+    if (!vedicText.trim() || !workletNodeRef.current) return;
+    setVedicLoading(true);
+    setVedicNotice(null);
+    try {
+      const res = await fetch(`${API_URL}/api/v3/vedic/contour`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: vedicText,
+          recension: vedicRecension,
+          sa_hz: 240,
+        }),
+      });
+      const data = await res.json();
+      if (data.rejected && data.rejected.length > 0) {
+        setVedicNotice(data.rejected[0]);
+        return;
+      }
+      if (!data.candidates || data.candidates.length === 0) {
+        setVedicNotice({ reason_code: "EMPTY_INPUT", detail: "No contour returned" });
+        return;
+      }
+      const events = data.candidates[0].contour_events;
+      stopVedicChant();
+
+      const beatSec = 60 / Math.max(30, bpm);
+      const saHz = 240;
+      let cumul = 0;
+      events.forEach((ev) => {
+        const delayMs = cumul * 1000;
+        const durMs = ev.matra_duration * beatSec * 1000;
+        const startFreq = ev.pitch.start_ratio * saHz;
+        const endFreq = ev.pitch.end_ratio * saHz;
+        const kampaHz = ev.pitch.kampa ? ev.pitch.kampa.hz : 0;
+        const kampaDepthCents = ev.pitch.kampa ? ev.pitch.kampa.depth_cents : 0;
+        const tid = setTimeout(() => {
+          if (!workletNodeRef.current) return;
+          workletNodeRef.current.port.postMessage({
+            type: "play",
+            freq: startFreq,
+            endFreq: endFreq,
+            durationMs: durMs,
+            gain: 0.15,
+            kampaHz: kampaHz,
+            kampaDepthCents: kampaDepthCents,
+          });
+        }, delayMs);
+        talaTimeoutsRef.current.push(tid);
+        cumul += ev.matra_duration * beatSec;
+      });
+      setVedicPlaying(true);
+      const stopTid = setTimeout(() => {
+        setVedicPlaying(false);
+        if (workletNodeRef.current) {
+          workletNodeRef.current.port.postMessage({ type: "stop" });
+        }
+      }, cumul * 1000 + 200);
+      talaTimeoutsRef.current.push(stopTid);
+    } catch (err) {
+      setVedicNotice({ reason_code: "FETCH_ERROR", detail: String(err) });
+    } finally {
+      setVedicLoading(false);
     }
   };
 
@@ -371,6 +454,18 @@ export default function Studio3Tab() {
         >
           {talaPlaying ? "Stop" : "Play Tala"}
         </button>
+
+          <VedicPanel
+            text={vedicText}
+            setText={setVedicText}
+            recension={vedicRecension}
+            setRecension={setVedicRecension}
+            loading={vedicLoading}
+            playing={vedicPlaying}
+            notice={vedicNotice}
+            onPlay={playVedicChant}
+            onStop={stopVedicChant}
+          />
       </div>
 
       {talaPlaying && selectedTala && (
