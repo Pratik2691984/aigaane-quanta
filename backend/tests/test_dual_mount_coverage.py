@@ -31,7 +31,29 @@ EXPECTED_DUAL = [
 
 
 def _app_paths():
-    return {r.path for r in app.routes if isinstance(r, APIRoute)}
+    """Enumerate all registered route paths robustly across FastAPI versions.
+
+    Uses app.openapi() as primary source because in some FastAPI versions
+    (observed: CI Python 3.12.x), router-mounted routes are NOT
+    fastapi.routing.APIRoute instances in app.routes — only
+    @app.get/@app.post decorated routes are. isinstance(r, APIRoute) then
+    silently yields incomplete results (only app-level aliases).
+
+    Augmented with attribute fallback so routes marked
+    include_in_schema=False (omitted from openapi) are still counted.
+    """
+    found = set()
+    try:
+        spec = app.openapi()
+        for p in spec.get("paths", {}).keys():
+            found.add(p)
+    except Exception:
+        pass
+    for r in app.routes:
+        p = getattr(r, "path", None)
+        if isinstance(p, str) and p:
+            found.add(p)
+    return found
 
 
 def _domains(paths, prefix):
@@ -109,7 +131,7 @@ def test_v1_only_domains_actually_respond():
     own method. No guessing which subpath or verb is registered."""
     from fastapi.testclient import TestClient
     client = TestClient(app)
-    routes = [r for r in app.routes if isinstance(r, APIRoute)]
+    routes = [r for r in app.routes if getattr(r, "path", None) and hasattr(r, "methods") and r.methods]
 
     paths = _app_paths()
     v1 = _domains(paths, "/api/v1/")

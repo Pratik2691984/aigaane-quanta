@@ -2,6 +2,7 @@
 import sys
 from fastapi.routing import APIRoute
 from backend.api.main import app
+from backend.tests.test_dual_mount_coverage import _app_paths
 
 
 def test_diagnostic_route_shape():
@@ -35,5 +36,12 @@ def test_diagnostic_route_shape():
     except Exception as e:
         print(f"openapi() failed: {e}")
 
-    # Don't actually assert anything — this is diagnostic
-    assert True
+    # Guard: paths MUST be discoverable in all envs
+    paths = _app_paths()
+    assert len(paths) > 20, f"only {len(paths)} paths: {sorted(paths)[:20]}"
+    assert any(p.startswith("/api/v1/vedic") for p in paths), (
+        f"no /api/v1/vedic paths: {sorted(paths)[:10]}"
+    )
+    assert any(p.startswith("/api/v3/vedic") for p in paths), (
+        f"no /api/v3/vedic paths: {sorted(paths)[:10]}"
+    )
