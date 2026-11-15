@@ -51,3 +51,8 @@ B) Q7 Mahābhārata expansion: add Mahābhārata (~82K verses) to canon.db (Rama
 5. Use curl.exe or Python urllib for IAST verification (PS mangles UTF-8).
 6. pytest binary not on PATH — use `python -m pytest`.
 7. When editing HTML/JS anchors, quote style matters (double vs single).
+
+## Q3 Session 2 COMPLETE (Tala Rhythm Player)
+- 46 Carnatic talas in Studio III dropdown
+- BPM control + Play/Stop + visual akshara highlight
+

@@ -1,6 +1,6 @@
 ﻿# Aigaane — Session Handoff
 
-**Last commit:** bfa952c (Q3 Session 1: 22-sruti AudioWorklet player live)
+**Last commit:** (pending after push)
 **Live revision:** (gcloud run services describe aigaane-api --region=asia-south1 --format="value(status.latestReadyRevisionName)")
 **Frontend:** https://aigaane.in (static, 7 panels) · https://aigaane.in/quanta/ (5-tab React)
 **Backend:** https://api.aigaane.in (15+ endpoints)
@@ -71,3 +71,11 @@ C) P3 Q4-C v2: verify dā loṭ ātmanepada against primary source
 
 ### Resume prompt for new chat
 > Continuing Aigaane at C:\aigaane-quanta. Read .github/SESSION_HANDOFF.md. Q4-C v1 complete (189 ātmanepada cells, dā loṭ unverified). Both frontends live. Next: pick from the roadmap — P2 cleanup or Q7 Itihāsa expansion.
+
+## Q3 Session 2 COMPLETE (Tala Rhythm Player)
+- 46 Carnatic talas in Studio III dropdown
+- BPM control (30-240)
+- Play/Stop with cycle pulse + sam accent (360Hz on akshara 1, 240Hz elsewhere)
+- Visual akshara highlight tracks current beat
+- Same AudioWorklet as 22-sruti player
+
