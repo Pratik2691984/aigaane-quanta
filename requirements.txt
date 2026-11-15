@@ -13,9 +13,6 @@ mido
 # HTTP client (used by tests)
 httpx
 
-# Google AI (used somewhere in the pipeline)
-google-genai
-
 # Testing
 pytest
 
