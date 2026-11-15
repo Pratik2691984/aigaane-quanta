@@ -1,9 +1,10 @@
-﻿from fastapi import FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api import (
     quanta_routes, aigaane_routes, corpus_routes, samasa_routes,
     sandhi_routes, morphology_routes, chandas_routes, lexicon_routes,
     studio3_routes, nyaya_routes, pipeline_routes,
+    vedic_routes,
 )
 APP_VERSION = "2.3.0-legacy-ui-bridge"
 
@@ -51,6 +52,8 @@ app.include_router(lexicon_routes.router, prefix="/api/v1/lexicon", tags=["lexic
 app.include_router(lexicon_routes.router, prefix="/api/v3/lexicon", tags=["lexicon"])
 app.include_router(studio3_routes.router, prefix="/api/v1/studio3", tags=["studio3"])
 app.include_router(studio3_routes.router, prefix="/api/v3/studio3", tags=["studio3"])
+app.include_router(vedic_routes.router, prefix="/api/v1/vedic", tags=["vedic"])
+app.include_router(vedic_routes.router, prefix="/api/v3/vedic", tags=["vedic"])
 
 # ============================================================
 # LEGACY UI COMPATIBILITY LAYER (for aigaane-master frontend)
