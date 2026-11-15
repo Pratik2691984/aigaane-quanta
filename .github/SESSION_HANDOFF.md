@@ -79,3 +79,40 @@ C) P3 Q4-C v2: verify dā loṭ ātmanepada against primary source
 - Visual akshara highlight tracks current beat
 - Same AudioWorklet as 22-sruti player
 
+## LLM Retirement COMPLETE (a05968e)
+
+Two commits, both deployed, both verified via CI + smoke.
+
+- `09c64bb` — `_neural_fallback.py` no longer imports or calls `genai`; `is_llm_available()` returns False; Gemini branch removed.
+- `a05968e` — `google-genai` removed from `requirements.txt`.
+
+### What "Retire Parse" actually was
+
+The prior handoff described this as a 1-2 session build of a deterministic compound parser. That was a misdiagnosis. The real picture:
+
+- Chain: `legacy_parse` -> `EngineAdapter.parse` -> `legacy_engine.parse` -> `_neural_fallback.fallback_parse` (terminal fallback only)
+- `legacy_engine.py` (32 KB) was already deterministic pure Python
+- The LLM was a single terminal branch, not the whole parse path
+- Scope was THREE routes, not one: `/api/v1/parse`, `/api/v1/samasa/split`, `/api/v3/samasa/split` (all three mounted via `EngineAdapter`)
+- Production `GEMINI_API_KEY` was never set — the LLM branch had been dead in prod all along
+- Local testing showed the branch fired but only ever produced `heuristic-degraded-fallback` output (Gemini threw or returned unparseable JSON)
+- Net user-visible change: zero. Baseline diff before/after was byte-identical across all 5 test inputs.
+
+### Verified state after retirement
+
+- HEAD: a05968e
+- 197 passed, 15 skipped, 1.72s runtime (was 5.25s — genai import cost gone)
+- CI #139 / Deploy Backend #67 / Smoke #37 all green
+- `import google` in backend source (excl. venv): zero hits
+- Docker image no longer installs `google-genai`
+
+### Follow-ups (not this session)
+
+- `AigaaneInspector.jsx:20` fetches `/api/v1/aigaane/parse`. That route does NOT exist — grep confirms zero decorators. Inspector UI is broken in production. Fix: repoint to `/api/v1/parse`, or add the route.
+- `/health` still returns `"architecture":"Neuro-Symbolic"` — stale string; one-line change.
+- `requirements.txt` still has `# Trigger deploy` / `# Force redeploy` debris lines at the bottom.
+- `_neural_fallback.py` has unused `os`, `json` imports.
+
+### Note on prior handoff accuracy
+
+The handoff called `/api/v1/parse` the "last LLM path" and estimated 1-2 sessions. Correct on intent, wrong on mechanism and scope. The actual work was 2 small commits (~25 min). Future handoffs should verify mechanism (which file, which call site) and scope (how many routes) before estimating effort.
