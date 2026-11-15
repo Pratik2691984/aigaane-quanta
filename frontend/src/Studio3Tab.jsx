@@ -44,6 +44,9 @@ export default function Studio3Tab() {
   const [vedicNotice, setVedicNotice] = useState(null);
   const [vedicAlign, setVedicAlign] = useState(false);
   const [vedicTala, setVedicTala] = useState("");
+  const [vedicDownloading, setVedicDownloading] = useState(false);
+  const [vedicRenderInfo, setVedicRenderInfo] = useState(null);
+  const [vedicDrone, setVedicDrone] = useState(true);
 
   useEffect(() => {
     if (vedicAlign && !vedicTala && talaList.length > 0) {
@@ -142,6 +145,67 @@ export default function Studio3Tab() {
       workletNodeRef.current.port.postMessage({ type: "stop" });
     }
     setVedicPlaying(false);
+  };
+
+  const downloadVedicWav = async () => {
+    if (!vedicText.trim()) return;
+    setVedicDownloading(true);
+    setVedicNotice(null);
+    setVedicRenderInfo(null);
+    try {
+      const body = {
+        text: vedicText,
+        recension: vedicRecension,
+        bpm: bpm,
+        sa_hz: 240,
+        drone_on: vedicDrone,
+        sample_rate: 22050,
+      };
+      if (vedicAlign && vedicTala) {
+        body.tala_name = vedicTala;
+      }
+      const res = await fetch(`${API_URL}/api/v3/vedic/render`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (data.rejected && data.rejected.length > 0) {
+        setVedicNotice(data.rejected[0]);
+        return;
+      }
+      if (!data.candidates || data.candidates.length === 0) {
+        setVedicNotice({ reason_code: "EMPTY_INPUT", detail: "No render returned" });
+        return;
+      }
+      const cand = data.candidates[0];
+      const bin = atob(cand.wav_b64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const blob = new Blob([bytes], { type: "audio/wav" });
+      const url = URL.createObjectURL(blob);
+      const sha8 = cand.sha256.slice(0, 8);
+      const fname = `aigaane_vedic_${vedicRecension}_${sha8}.wav`;
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fname;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setVedicRenderInfo({
+        sha256: cand.sha256,
+        duration_sec: cand.duration_sec,
+        peak_db: cand.peak_db,
+        rms_db: cand.rms_db,
+        n_samples: cand.n_samples,
+        filename: fname,
+      });
+    } catch (err) {
+      setVedicNotice({ reason_code: "FETCH_ERROR", detail: String(err) });
+    } finally {
+      setVedicDownloading(false);
+    }
   };
 
   const playVedicChant = async () => {
@@ -524,6 +588,11 @@ export default function Studio3Tab() {
             tala={vedicTala}
             setTala={setVedicTala}
             bpm={bpm}
+            onDownload={downloadVedicWav}
+            downloading={vedicDownloading}
+            renderInfo={vedicRenderInfo}
+            drone={vedicDrone}
+            setDrone={setVedicDrone}
           />
       </div>
 
