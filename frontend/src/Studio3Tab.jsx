@@ -27,11 +27,30 @@ export default function Studio3Tab() {
   const workletNodeRef = useRef(null);
   const workletLoadedRef = useRef(false);
 
+  // Tala rhythm player state
+  const [talaList, setTalaList] = useState([]);
+  const [selectedTala, setSelectedTala] = useState("");
+  const [bpm, setBpm] = useState(60);
+  const [talaPlaying, setTalaPlaying] = useState(false);
+  const [currentAkshara, setCurrentAkshara] = useState(0);
+  const talaTimeoutsRef = useRef([]);
+
   useEffect(() => {
     fetchSrutiTable().then((rows) => {
       setSrutiTable(rows);
       setAudioReady(rows.length > 0);
     });
+  }, []);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/v3/studio3/tala/list`)
+      .then((r) => r.json())
+      .then((data) => {
+        const talas = data.talas || [];
+        setTalaList(talas);
+        if (talas.length > 0) setSelectedTala(talas[0].name);
+      })
+      .catch((e) => console.warn("Tala list fetch failed:", e));
   }, []);
 
   // Lazily initialize AudioContext + worklet on first user gesture
@@ -88,6 +107,65 @@ export default function Studio3Tab() {
       workletNodeRef.current.port.postMessage({ type: "stop" });
     }
     setNowPlaying(null);
+  };
+
+  const stopTala = () => {
+    talaTimeoutsRef.current.forEach((t) => clearTimeout(t));
+    talaTimeoutsRef.current = [];
+    setTalaPlaying(false);
+    setCurrentAkshara(0);
+    if (workletNodeRef.current) {
+      workletNodeRef.current.port.postMessage({ type: "stop" });
+    }
+  };
+
+  const playTala = async () => {
+    const node = await ensureAudio();
+    if (!node || !selectedTala) return;
+
+    const tala = talaList.find((t) => t.name === selectedTala);
+    if (!tala) return;
+
+    stopTala();
+    setTalaPlaying(true);
+
+    const cycleLength = tala.cycle_length;
+    const matraMs = (60 / bpm) * 1000;
+    const totalCycleMs = cycleLength * matraMs;
+
+    const scheduleCycle = () => {
+      for (let i = 0; i < cycleLength; i++) {
+        const isSam = i === 0;
+        const freq = isSam ? 360.0 : 240.0;
+        const gain = isSam ? 0.22 : 0.10;
+        const delayMs = i * matraMs;
+
+        const t = setTimeout(() => {
+          setCurrentAkshara(i + 1);
+          if (workletNodeRef.current) {
+            workletNodeRef.current.port.postMessage({ type: "stop" });
+            setTimeout(() => {
+              if (workletNodeRef.current) {
+                workletNodeRef.current.port.postMessage({
+                  type: "play",
+                  freq,
+                  durationMs: Math.min(matraMs * 0.6, 400),
+                  gain,
+                });
+              }
+            }, 5);
+          }
+        }, delayMs);
+        talaTimeoutsRef.current.push(t);
+      }
+
+      const loopTimeout = setTimeout(() => {
+        if (talaPlaying) scheduleCycle();
+      }, totalCycleMs);
+      talaTimeoutsRef.current.push(loopTimeout);
+    };
+
+    scheduleCycle();
   };
 
   const verify = async () => {
@@ -252,6 +330,66 @@ export default function Studio3Tab() {
             })}
           </tbody>
         </table>
+      )}
+
+      <h2 style={{ color: "#a78bfa", fontSize: "16px", marginTop: "40px" }}>Tala Rhythm Player</h2>
+      <p style={{ color: "#64748b", fontSize: "13px" }}>
+        Ticks on each akshara at the cycle length, accent on sam (akshara 1)
+      </p>
+
+      <div style={{ display: "flex", gap: "10px", alignItems: "flex-end", marginBottom: "15px", flexWrap: "wrap" }}>
+        <div>
+          <label style={{ display: "block", fontSize: "12px", color: "#94a3b8", marginBottom: "4px" }}>Tala</label>
+          <select
+            value={selectedTala}
+            onChange={(e) => { stopTala(); setSelectedTala(e.target.value); }}
+            style={{ padding: "8px", background: "#1e293b", color: "#e2e8f0", border: "1px solid #334155", borderRadius: "4px", minWidth: "220px" }}
+          >
+            {talaList.length === 0 && <option>Loading...</option>}
+            {talaList.map((t) => (
+              <option key={t.name} value={t.name}>
+                {t.name} - {t.cycle_length} aksharas
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label style={{ display: "block", fontSize: "12px", color: "#94a3b8", marginBottom: "4px" }}>BPM</label>
+          <input
+            type="number"
+            min={30}
+            max={240}
+            value={bpm}
+            onChange={(e) => { stopTala(); setBpm(parseInt(e.target.value) || 60); }}
+            style={{ width: "80px", padding: "8px", background: "#1e293b", color: "#e2e8f0", border: "1px solid #334155", borderRadius: "4px" }}
+          />
+        </div>
+        <button
+          onClick={talaPlaying ? stopTala : playTala}
+          disabled={!audioReady || talaList.length === 0}
+          style={{ padding: "10px 20px", background: talaPlaying ? "#64748b" : "#a78bfa", border: "none", borderRadius: "6px", fontWeight: "bold", cursor: audioReady ? "pointer" : "wait", color: "white" }}
+        >
+          {talaPlaying ? "Stop" : "Play Tala"}
+        </button>
+      </div>
+
+      {talaPlaying && selectedTala && (
+        <div style={{ padding: "12px", background: "#0f172a", borderRadius: "6px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
+          {Array.from({ length: (talaList.find((t) => t.name === selectedTala) || {}).cycle_length || 0 }).map((_, i) => (
+            <div
+              key={i}
+              style={{
+                width: "32px", height: "32px",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: currentAkshara === i + 1 ? "#fbbf24" : (i === 0 ? "#7c2d12" : "#334155"),
+                color: currentAkshara === i + 1 ? "#0f172a" : "#e2e8f0",
+                borderRadius: "4px", fontWeight: "bold", fontSize: "12px",
+              }}
+            >
+              {i + 1}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
