@@ -17,7 +17,7 @@ export default function AigaaneInspector() {
   const parse = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/v1/aigaane/parse`, {
+      const res = await fetch(`${API_URL}/api/v1/parse`, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({ text }),
