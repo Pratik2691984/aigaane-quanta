@@ -152,6 +152,8 @@ def post_vedic_render(req: VedicRenderRequest) -> RenderEnvelope:
         beat_sec = 60.0 / max(30.0, req.bpm)
         for ev in base.contour_events:
             dur = ev.matra_duration * beat_sec
+            rest_matras = max(0, int(round(getattr(ev, "rest_after_matras", 0.0))))
+            rest_sec = round(rest_matras * beat_sec, 4)
             rhythm_events.append(RhythmEvent(
                 akshara_index=ev.akshara_index,
                 svara=ev.svara,
@@ -165,8 +167,9 @@ def post_vedic_render(req: VedicRenderRequest) -> RenderEnvelope:
                 avarta_index=0,
                 akshara_in_avarta=ev.akshara_index,
                 sam_accent=False,
+                rest_after_sec=rest_sec,
             ))
-            cumul += dur
+            cumul += dur + rest_sec
         tala_meta = None
 
     wav_bytes, sha, duration_sec, stats = render_wav(
