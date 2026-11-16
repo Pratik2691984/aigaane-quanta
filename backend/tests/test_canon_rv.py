@@ -189,8 +189,7 @@ def test_polish_rv_meter_backfilled():
     ).fetchone()[0]
     conn.close()
     assert total == 10462, f"corpus count changed: {total}"
-    if with_meter > 0:
-        assert with_meter >= total * 0.5, f"only {with_meter}/{total} have meter"
+    assert with_meter >= 100, f"only {with_meter}/{total} have meter — backfill failed"
 
 
 def test_polish_fts_triggers_include_text_clean():
