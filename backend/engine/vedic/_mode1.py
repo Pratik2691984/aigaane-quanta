@@ -1,21 +1,17 @@
 ﻿"""
 Mode 1 — Vedic Oral Recitation Orchestrator.
 Strictly isolated from musical tuning (_sruti) and Carnatic rhythm (_tala / _rhythm).
+Uses _vedic_unicode.segment_vedic_nuclei for P0-2 vowel-nucleus accent binding.
 """
 from __future__ import annotations
 
-import unicodedata
 from typing import Any, Dict, List
 
-from backend.engine._svara import (
-    _compute_matra,
-    derive_svara_sequence,
-    segment_vedic_aksharas,
-)
+from backend.engine._svara import _compute_matra, derive_svara_sequence
 from backend.engine.vedic._events import F0Sample, OralContourEvent, OralRenderResult
 from backend.engine.vedic._render_oral import render_wav_oral
+from backend.engine.vedic._vedic_unicode import segment_vedic_nuclei
 
-# Recension-specific acoustic contour policies (Hz offsets relative to baseline_hz)
 ORAL_RECENSION_POLICIES: Dict[str, Dict[str, Any]] = {
     "rgveda_sakala": {
         "udatta_mult": 1.0,
@@ -75,8 +71,7 @@ def render_oral_recitation(
     policy = ORAL_RECENSION_POLICIES.get(recension, ORAL_RECENSION_POLICIES["rgveda_sakala"])
     resolved_recension = recension if recension in ORAL_RECENSION_POLICIES else "rgveda_sakala"
 
-    nfc = unicodedata.normalize("NFC", (text or "").strip())
-    aksharas = segment_vedic_aksharas(nfc)
+    _, aksharas = segment_vedic_nuclei(text)
     if not aksharas or not any(a["mark_hint"] is not None for a in aksharas):
         raise ValueError("Input lacks Vedic svara marks required for Mode 1 recitation.")
 
@@ -87,12 +82,12 @@ def render_oral_recitation(
     for idx, ak in enumerate(aksharas):
         svara, source, rule_note = derived[idx]
         next_svara = derived[idx + 1][0] if idx + 1 < len(derived) else None
-        next_clean = aksharas[idx + 1]["akshara_clean"] if idx + 1 < len(aksharas) else None
+        next_clean = str(aksharas[idx + 1]["akshara_clean"]) if idx + 1 < len(aksharas) else None
+        clean_str = str(ak["akshara_clean"])
+        is_pluta = bool(ak["is_pluta"])
 
-        matra_val = _compute_matra(
-            ak["akshara_clean"], next_clean, ak["is_pluta"], float(policy["pluta_mult"])
-        )
-        weight = "Pluta" if ak["is_pluta"] else ("G" if matra_val >= 2.0 else "L")
+        matra_val = _compute_matra(clean_str, next_clean, is_pluta, float(policy["pluta_mult"]))
+        weight = "Pluta" if is_pluta else ("G" if matra_val >= 2.0 else "L")
         dur_ms = round(matra_val * matra_ms, 2)
         rest_ms = round(float(ak.get("rest_after_matras", 0.0)) * matra_ms, 2)
 
@@ -112,8 +107,10 @@ def render_oral_recitation(
         events.append(
             OralContourEvent(
                 akshara_index=idx,
-                akshara_nfc=ak["akshara_nfc"],
-                akshara_clean=ak["akshara_clean"],
+                akshara_nfc=str(ak["akshara_nfc"]),
+                akshara_clean=clean_str,
+                vowel_nucleus=ak["vowel_nucleus"] if isinstance(ak["vowel_nucleus"], str) else None,
+                unicode_marks=list(ak["unicode_marks"]),  # type: ignore[arg-type]
                 svara=svara,
                 svara_source=source,
                 recension=resolved_recension,

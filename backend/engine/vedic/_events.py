@@ -1,7 +1,7 @@
 ﻿"""
 Decoupled Mode 1 (Vedic Oral Recitation) Event Contracts.
-Carries time-indexed Hz trajectories and phonetic durations without musical
-sruti indices or Carnatic tala fields.
+Carries vowel-nucleus accent attachment, Unicode mark provenance, time-indexed
+Hz trajectories, and phonetic durations without musical sruti or tala fields.
 """
 from __future__ import annotations
 
@@ -19,6 +19,8 @@ class OralContourEvent(BaseModel):
     akshara_index: int
     akshara_nfc: str
     akshara_clean: str
+    vowel_nucleus: Optional[str] = None
+    unicode_marks: List[str] = Field(default_factory=list)
     svara: Literal["udatta", "anudatta", "svarita", "svarita_double", "pracaya", "pluta"]
     svara_source: Literal["marked", "derived", "default"]
     recension: str
