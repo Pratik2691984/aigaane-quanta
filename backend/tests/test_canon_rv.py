@@ -99,3 +99,46 @@ def test_rv_corpus_in_fts():
     n_fts = conn.execute("SELECT COUNT(*) FROM verses_fts").fetchone()[0]
     conn.close()
     assert n_fts >= n_verses
+
+
+def test_rv_searchable_in_fts_iast():
+    """Rigveda verses must be findable via IAST in FTS5."""
+    conn = _db()
+    n = conn.execute(
+        "SELECT COUNT(*) FROM verses_fts WHERE verses_fts MATCH ?",
+        ("agnimīḻe",)
+    ).fetchone()[0]
+    conn.close()
+    assert n > 0, "RV 1.1.1 iast not searchable in FTS"
+
+
+def test_rv_searchable_in_fts_prefix():
+    """Prefix search 'agni*' must return Rigveda verses."""
+    conn = _db()
+    n = conn.execute(
+        "SELECT COUNT(*) FROM verses_fts WHERE verses_fts MATCH ?",
+        ("agni*",)
+    ).fetchone()[0]
+    conn.close()
+    assert n > 10, f"expected >10 Rigveda matches for agni*, got {n}"
+
+
+def test_rv_searchable_in_fts_devanagari_accented():
+    """Accented Devanagari must match itself in FTS."""
+    conn = _db()
+    n = conn.execute(
+        "SELECT COUNT(*) FROM verses_fts WHERE verses_fts MATCH ?",
+        ("\u0905\u0952\u0917\u094d\u0928\u093f\u092e\u0940\u0951\u0933\u0947",)
+    ).fetchone()[0]
+    conn.close()
+    assert n > 0, "Accented Devanagari not searchable in FTS"
+
+
+def test_fts_triggers_exist():
+    """After fix, verses table should have ai/ad/au triggers for auto-sync."""
+    conn = _db()
+    triggers = {r[0] for r in conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='trigger' AND tbl_name='verses'"
+    ).fetchall()}
+    conn.close()
+    assert triggers, "no sync triggers on verses — future inserts will desync FTS"
