@@ -1,0 +1,115 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigaane.in/schemas/vedic/vedic_phonetic_event.schema.json",
+  "title": "VedicPhoneticEvent",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "execution_mode",
+    "orthography",
+    "linguistics",
+    "svara",
+    "prosody",
+    "acoustics",
+    "musical_overlay",
+    "provenance",
+    "validation"
+  ],
+  "properties": {
+    "schema_version": { "const": "3.1.0" },
+    "event_id": { "type": "string", "minLength": 1 },
+    "execution_mode": {
+      "enum": ["vedic_oral_recitation", "classical_metrical_chanting", "musical_sanskrit_rendering"]
+    },
+    "orthography": {
+      "type": "object",
+      "required": ["akshara_index", "original_nfc", "clean_text", "codepoints", "normalization"],
+      "properties": {
+        "akshara_index": { "type": "integer", "minimum": 0 },
+        "original_nfc": { "type": "string" },
+        "clean_text": { "type": "string" },
+        "codepoints": { "type": "array", "items": { "type": "string" } },
+        "normalization": { "const": "NFC" }
+      }
+    },
+    "linguistics": {
+      "type": "object",
+      "required": ["vowel_nucleus", "is_pluta"],
+      "properties": {
+        "vowel_nucleus": { "type": ["string", "null"] },
+        "is_pluta": { "type": "boolean" }
+      }
+    },
+    "svara": {
+      "type": "object",
+      "required": ["label", "source", "unicode_marks", "recension", "authority_rule"],
+      "properties": {
+        "label": { "enum": ["udatta", "anudatta", "svarita", "svarita_double", "pracaya", "pluta"] },
+        "source": { "enum": ["marked", "derived", "default"] },
+        "unicode_marks": { "type": "array", "items": { "type": "string" } },
+        "recension": { "type": "string" },
+        "authority_rule": { "type": "string" }
+      }
+    },
+    "prosody": {
+      "type": "object",
+      "required": ["metrical_weight", "phonetic_duration_ms", "pause_after_ms", "timing_policy"],
+      "properties": {
+        "metrical_weight": { "enum": ["L", "G", "Pluta"] },
+        "phonetic_duration_ms": { "type": "number", "minimum": 0 },
+        "pause_after_ms": { "type": "number", "minimum": 0 },
+        "timing_policy": { "type": "string" }
+      }
+    },
+    "acoustics": {
+      "type": "object",
+      "required": ["f0_contour", "kampa_hz", "kampa_depth_cents"],
+      "properties": {
+        "f0_contour": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["t_ms", "hz", "voiced"],
+            "properties": {
+              "t_ms": { "type": "number", "minimum": 0 },
+              "hz": { "type": "number", "minimum": 0 },
+              "voiced": { "type": "boolean" }
+            }
+          }
+        },
+        "kampa_hz": { "type": "number", "minimum": 0 },
+        "kampa_depth_cents": { "type": "number", "minimum": 0 }
+      }
+    },
+    "musical_overlay": {
+      "type": ["object", "null"]
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["ruleset_version", "renderer_id"],
+      "properties": {
+        "text_source": { "type": ["string", "null"] },
+        "ruleset_version": { "type": "string" },
+        "renderer_id": { "type": "string" }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["symbolic_deterministic", "linguistic_status", "acoustic_status", "expert_reviewed"],
+      "properties": {
+        "symbolic_deterministic": { "type": "boolean" },
+        "linguistic_status": { "enum": ["verified", "rule_derived", "unverified"] },
+        "acoustic_status": { "enum": ["placeholder_policy", "reference_aligned", "expert_certified"] },
+        "expert_reviewed": { "type": "boolean" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "execution_mode": { "const": "vedic_oral_recitation" } } },
+      "then": { "properties": { "musical_overlay": { "const": null } } }
+    }
+  ]
+}
