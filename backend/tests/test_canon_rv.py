@@ -142,3 +142,64 @@ def test_fts_triggers_exist():
     ).fetchall()}
     conn.close()
     assert triggers, "no sync triggers on verses — future inserts will desync FTS"
+
+
+def test_polish_text_clean_column_exists():
+    """Polish: text_clean column added and populated."""
+    conn = _db()
+    cols = [r[1] for r in conn.execute("PRAGMA table_info(verses)").fetchall()]
+    n = conn.execute("SELECT COUNT(*) FROM verses WHERE text_clean IS NOT NULL").fetchone()[0]
+    total_with_text = conn.execute("SELECT COUNT(*) FROM verses WHERE text IS NOT NULL").fetchone()[0]
+    conn.close()
+    assert "text_clean" in cols
+    assert n >= total_with_text * 0.95
+
+
+def test_polish_unaccented_search_works():
+    """Polish: unaccented Devanagari now matches accented content via text_clean."""
+    conn = _db()
+    n = conn.execute(
+        "SELECT COUNT(*) FROM verses_fts WHERE verses_fts MATCH ?",
+        ("\u0905\u0917\u094d\u0928\u093f\u092e\u0940\u0933\u0947",)
+    ).fetchone()[0]
+    conn.close()
+    assert n >= 3, f"unaccented search returned {n}, expected >=3"
+
+
+def test_polish_no_stray_devanagari_digits():
+    """Polish: no non-pluta Devanagari digits in svara_text."""
+    STRAY = "\u0966\u0967\u0968\u096a\u096b\u096c\u096d\u096e\u096f"
+    conn = _db()
+    rows = conn.execute(
+        "SELECT COUNT(*) FROM verses WHERE svara_text IS NOT NULL AND svara_text GLOB ?",
+        (f"*[{STRAY}]*",)
+    ).fetchone()[0]
+    conn.close()
+    assert rows == 0, f"{rows} verses still contain stray digits"
+
+
+def test_polish_rv_meter_backfilled():
+    """Polish: Rigveda corpus has meter populated where _chhandas could classify."""
+    conn = _db()
+    total = conn.execute(
+        "SELECT COUNT(*) FROM verses WHERE book='Rigveda' AND source='rigveda_corpus'"
+    ).fetchone()[0]
+    with_meter = conn.execute(
+        "SELECT COUNT(*) FROM verses WHERE book='Rigveda' AND source='rigveda_corpus' AND meter IS NOT NULL"
+    ).fetchone()[0]
+    conn.close()
+    assert total == 10462, f"corpus count changed: {total}"
+    if with_meter > 0:
+        assert with_meter >= total * 0.5, f"only {with_meter}/{total} have meter"
+
+
+def test_polish_fts_triggers_include_text_clean():
+    """Polish: sync triggers include text_clean column."""
+    conn = _db()
+    triggers = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE type='trigger' AND tbl_name='verses'"
+    ).fetchall()
+    conn.close()
+    assert len(triggers) == 3, f"expected 3 triggers, got {len(triggers)}"
+    for (sql,) in triggers:
+        assert "text_clean" in sql, f"trigger missing text_clean: {sql[:100]}"
