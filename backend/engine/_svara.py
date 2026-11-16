@@ -13,9 +13,8 @@ from typing import Any, Dict, List, Literal, Optional, Tuple
 from pydantic import BaseModel, Field
 
 try:
-    from backend.engine import _sruti, _script
+    from backend.engine import _script
 except ImportError:
-    import _sruti  # type: ignore
     import _script  # type: ignore
 
 
@@ -292,6 +291,10 @@ def generate_vedic_contour(text: str, recension: str = "rgveda_sakala", sa_hz: f
         )
 
     derived = derive_svara_sequence(aksharas)
+    try:
+        from backend.engine import _sruti
+    except ImportError:
+        import _sruti  # type: ignore
     sruti_table = _sruti.get_sruti_table(sa_hz=sa_hz)
 
     events: List[ContourEvent] = []
