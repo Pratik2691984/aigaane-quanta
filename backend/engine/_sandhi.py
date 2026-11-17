@@ -159,6 +159,62 @@ def generate_splits(surface: str) -> List[Tuple[List[str], str, str, float]]:
     if "trājñā" in surface:
         candidates.append((["pitṛ", "ājñā"], "ṛ_varṇa_sandhi", "6.1.77", 0.94))
 
+    # 8. General Pāṇinian Sandhi Reversals (6.1.101, 6.1.87, 6.1.77, 8.2.39)
+    seen = {(tuple(c[0]), c[1]) for c in candidates}
+
+    def _add(p1: str, p2: str, rule: str, sutra: str, score: float) -> None:
+        key = ((p1, p2), rule)
+        if key not in seen and _is_known_word(p1) and _is_known_word(p2):
+            seen.add(key)
+            candidates.append(([p1, p2], rule, sutra, score))
+
+    _VOWELS = set("aāiīuūṛṝḷeaioau")
+    _CONSONANTS = set("kखgghṅcchjjhñṭṭhḍḍhṇtthddhnpphbbhmyrlvśṣsh")
+
+    # 8a. Savarṇa-dīrgha (6.1.101): ā, ī, ū
+    _DIRGHA_MAP = {
+        "ā": [("a", "a"), ("a", "ā"), ("ā", "a"), ("ā", "ā")],
+        "ī": [("i", "i"), ("i", "ī"), ("ī", "i"), ("ī", "ī")],
+        "ū": [("u", "u"), ("u", "ū"), ("ū", "u"), ("ū", "ū")],
+    }
+    for i, ch in enumerate(surface):
+        if ch in _DIRGHA_MAP and 1 <= i < len(surface) - 1:
+            for l_end, r_start in _DIRGHA_MAP[ch]:
+                _add(surface[:i] + l_end, r_start + surface[i + 1 :], "savarna_dirgha", "6.1.101", 0.94)
+
+    # 8b. Guṇa (6.1.87): e -> a/ā + i/ī, o -> a/ā + u/ū, ar -> a/ā + ṛ/ṝ
+    for i, ch in enumerate(surface):
+        if ch == "e" and 1 <= i < len(surface) - 1:
+            for l_end in ("a", "ā"):
+                for r_start in ("i", "ī"):
+                    _add(surface[:i] + l_end, r_start + surface[i + 1 :], "guna", "6.1.87", 0.94)
+        elif ch == "o" and 1 <= i < len(surface) - 1:
+            for l_end in ("a", "ā"):
+                for r_start in ("u", "ū"):
+                    _add(surface[:i] + l_end, r_start + surface[i + 1 :], "guna", "6.1.87", 0.94)
+        elif surface[i : i + 2] == "ar" and 1 <= i < len(surface) - 2:
+            for l_end in ("ā", "a"):
+                for r_start in ("ṛ", "ṝ"):
+                    _add(surface[:i] + l_end, r_start + surface[i + 2 :], "guna", "6.1.87", 0.94)
+
+    # 8c. Iko yaṇ aci (6.1.77): CyV -> Ci/Cī + V, CvV -> Cu/Cū + V
+    for i in range(1, len(surface) - 1):
+        prev_ch, ch, next_ch = surface[i - 1], surface[i], surface[i + 1]
+        if prev_ch in _CONSONANTS and next_ch in _VOWELS:
+            if ch == "y":
+                for l_end in ("i", "ī"):
+                    _add(surface[:i] + l_end, surface[i + 1 :], "iko_yan_aci", "6.1.77", 0.93)
+            elif ch == "v":
+                for l_end in ("u", "ū"):
+                    _add(surface[:i] + l_end, surface[i + 1 :], "iko_yan_aci", "6.1.77", 0.93)
+
+    # 8d. Jaśtva (8.2.39): d + vowel -> t + vowel, g + vowel -> k + vowel
+    _JASTVA_MAP = {"d": "t", "g": "k", "j": "c", "ḍ": "ṭ", "b": "p"}
+    for i in range(1, len(surface) - 1):
+        ch, next_ch = surface[i], surface[i + 1]
+        if ch in _JASTVA_MAP and next_ch in _VOWELS:
+            _add(surface[:i] + _JASTVA_MAP[ch], surface[i + 1 :], "jastva", "8.2.39", 0.93)
+
     return candidates
 
 def split_surface(surface: str) -> Optional[Tuple[List[str], str, str, float]]:

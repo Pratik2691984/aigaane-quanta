@@ -20,7 +20,8 @@ _KNOWN_STEMS = {
     "saḥ", "ayam", "api", "na", "asti", "rāma", "rāmaḥ",
     "gacchati", "tat", "tvam", "nara", "īśa", "īśaḥ", "sarva",
     "īśvara", "īśvaraḥ", "sā", "te", "pitṛ", "ājñā", "sat",
-    "jana", "janaḥ", "rāmāya", "gaṇa"
+    "jana", "janaḥ", "rāmāya", "gaṇa",
+    "nadī", "vadhu", "vadhū", "uttama", "uttamaḥ"
 }
 
 def _is_valid_stem(pada: str) -> bool:
@@ -114,10 +115,11 @@ def _invert_guna(surface: str) -> List[Candidate]:
         elif surface[i:i+2] == "ar":
             left_base = surface[:i]
             right_base = surface[i+2:]
-            p1 = left_base + "a"
-            p2 = "ṛ" + right_base
-            if _is_valid_stem(p1) and _is_valid_stem(p2):
-                cands.append(([p1, p2], "guna", "6.1.87", 0.93))
+            for l_end in ["a", "ā"]:
+                p1 = left_base + l_end
+                p2 = "ṛ" + right_base
+                if _is_valid_stem(p1) and _is_valid_stem(p2):
+                    cands.append(([p1, p2], "guna", "6.1.87", 0.93))
     return cands
 
 def _invert_yan(surface: str) -> List[Candidate]:
@@ -133,7 +135,7 @@ def _invert_yan(surface: str) -> List[Candidate]:
                 p2 = right_base
                 if _is_valid_stem(p1) and _is_valid_stem(p2):
                     cands.append(([p1, p2], "iko_yan_aci", "6.1.77", 0.93))
-        elif surface[i] == "v" and surface[i+1] in set("aāiīeo"):
+        elif surface[i] == "v" and surface[i+1] in set("aāiīuūeo"):
             left_base = surface[:i]
             right_base = surface[i+1:]
             for l_end in ["u", "ū"]:
@@ -196,6 +198,20 @@ def _invert_purvarupa(surface: str) -> List[Candidate]:
             cands.append(([p1, p2], "pūrvarūpa", "6.1.109", 0.95))
     return cands
 
+def _invert_jastva(surface: str) -> List[Candidate]:
+    cands: List[Candidate] = []
+    vowels = set("aāiīuūṛṝḷeaiou")
+    jastva_rev = {"d": "t", "g": "k", "j": "c", "ḍ": "ṭ", "b": "p"}
+    for i in range(1, len(surface) - 1):
+        ch, nxt = surface[i], surface[i + 1]
+        if ch in jastva_rev and nxt in vowels:
+            p1 = surface[:i] + jastva_rev[ch]
+            p2 = surface[i + 1 :]
+            if _is_valid_stem(p1) and _is_valid_stem(p2):
+                cands.append(([p1, p2], "jastva", "8.2.39", 0.95))
+    return cands
+
+
 def invert_sandhi(surface: str) -> Tuple[List[Candidate], Optional[str]]:
     raw = surface.strip()
     if len(raw) < 2:
@@ -206,6 +222,7 @@ def invert_sandhi(surface: str) -> Tuple[List[Candidate], Optional[str]]:
     raw_candidates.extend(_invert_guna(raw))
     raw_candidates.extend(_invert_yan(raw))
     raw_candidates.extend(_invert_scutva(raw))
+    raw_candidates.extend(_invert_jastva(raw))
     raw_candidates.extend(_invert_visarga_o(raw))
     raw_candidates.extend(_invert_purvarupa(raw))
 
