@@ -3,55 +3,250 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Mantra Sanctuary — Gapless Japa Loop">
-  <meta name="theme-color" content="#0f172a">
-  <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' blob: https://aigaane-engine-977695793163.asia-south1.run.app; media-src 'self' blob: https://aigaane-engine-977695793163.asia-south1.run.app; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
-  <title>Mantra Sanctuary · Japa Loop</title>
+  <meta name="description" content="Aigaane Mantra Sanctuary — client-side Vedic synthesis & Japa loop">
+  <meta name="theme-color" content="#0b0f19">
+  <title>Mantra Sanctuary · Aigaane</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ॐ</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+Devanagari:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #0f172a; --panel: #1e293b; --text: #f8fafc; --accent: #fbbf24; --border: #334155; --green: #34d399; }
+    :root {
+      --bg: #0b0f19; --panel: #121826; --panel-2: #1a2032;
+      --text: #e2e8f0; --text-muted: #94a3b8; --dim: #64748b;
+      --accent: #fbbf24; --accent-2: #38bdf8; --green: #34d399; --red: #ef4444;
+      --border: #1e293b; --border-2: #334155;
+    }
     * { box-sizing: border-box; }
-    body { margin: 0; padding: 2rem; font-family: 'Noto Serif', serif; background: var(--bg); color: var(--text); }
-    .container { max-width: 800px; margin: 0 auto; }
-    h1 { color: var(--accent); font-size: 2rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; }
-    .panel { background: var(--panel); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid var(--border); }
-    label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--accent); }
-    textarea { width: 100%; padding: 0.75rem; font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; resize: vertical; }
-    select { width: 100%; padding: 0.75rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; font-family: inherit; margin-top: 0.5rem; }
-    button { background: var(--accent); color: var(--bg); border: none; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 1rem; border-radius: 4px; cursor: pointer; margin-top: 1rem; transition: opacity 0.2s; }
-    button:hover { opacity: 0.9; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    button.stop { background: #ef4444; color: white; }
-    .repetition-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
-    .repetition-grid button { background: var(--bg); color: var(--accent); border: 1px solid var(--border); padding: 0.5rem; font-size: 0.9rem; }
+    body {
+      margin: 0; padding: 2rem 1rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh;
+    }
+    .container { max-width: 880px; margin: 0 auto; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+    }
+    .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit; }
+    .om { font-size: 2.2rem; color: var(--accent); font-family: 'Noto Serif Devanagari', serif; }
+    h1 { margin: 0; font-size: 1.4rem; font-weight: 600; color: var(--accent); }
+    .subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.15rem; }
+    nav a {
+      color: var(--text-muted); text-decoration: none; font-size: 0.9rem;
+      margin-left: 1.2rem; transition: color 0.15s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+
+    .panel {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+    }
+    .panel h2 {
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted); margin: 0 0 1rem 0; font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    textarea {
+      width: 100%; padding: 0.85rem; font-family: 'Noto Serif Devanagari', 'Cormorant Garamond', serif;
+      font-size: 1.15rem; line-height: 1.7;
+      background: var(--bg); color: var(--text);
+      border: 1px solid var(--border-2); border-radius: 6px;
+      resize: vertical; min-height: 70px;
+    }
+    textarea:focus { outline: none; border-color: var(--accent-2); }
+
+    .prosody {
+      margin-top: 1rem; padding: 1rem; background: var(--panel-2);
+      border-radius: 6px; border: 1px solid var(--border);
+      display: flex; flex-wrap: wrap; gap: 4px; min-height: 60px;
+      align-items: flex-end;
+    }
+    .syl {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      transition: all 0.15s;
+    }
+    .syl-bar {
+      width: 14px; border-radius: 2px;
+      background: var(--dim); transition: all 0.2s;
+    }
+    .syl-bar.L { height: 16px; }
+    .syl-bar.G { height: 32px; background: var(--accent); }
+    .syl-bar.active { background: var(--accent-2); box-shadow: 0 0 10px var(--accent-2); }
+    .syl-label {
+      font-size: 0.65rem; color: var(--dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    label.field { display: block; font-size: 0.75rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem;
+      font-family: 'JetBrains Mono', monospace; }
+    select {
+      width: 100%; padding: 0.65rem; background: var(--bg); color: var(--text);
+      border: 1px solid var(--border-2); border-radius: 6px;
+      font-family: inherit; font-size: 0.95rem; cursor: pointer;
+    }
+    select:focus { outline: none; border-color: var(--accent-2); }
+
+    .repetition-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .repetition-grid button {
+      padding: 0.65rem; background: var(--bg); color: var(--accent);
+      border: 1px solid var(--border-2); border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .repetition-grid button:hover { border-color: var(--accent); }
     .repetition-grid button.active { background: var(--accent); color: var(--bg); }
-    .counter { font-size: 4rem; font-weight: 600; color: var(--accent); text-align: center; font-family: 'JetBrains Mono', monospace; margin: 1rem 0; }
-    .progress-bar { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin-top: 1rem; }
-    .progress-fill { height: 100%; background: var(--green); width: 0%; transition: width 0.3s; }
-    .status { text-align: center; color: var(--text-dim); font-size: 0.9rem; }
+
+    .toggles {
+      display: flex; gap: 1.5rem; align-items: center;
+      margin-top: 1rem; flex-wrap: wrap;
+    }
+    .toggles label {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.9rem; color: var(--text-muted); cursor: pointer;
+    }
+    .toggles input[type=range] { width: 100px; accent-color: var(--accent); }
+
+    .buttons { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+    button.primary, button.stop {
+      flex: 1; padding: 0.85rem 1.5rem;
+      font-size: 1rem; font-weight: 600; border-radius: 6px;
+      cursor: pointer; transition: all 0.15s; border: none;
+      font-family: inherit;
+    }
+    button.primary { background: var(--accent); color: var(--bg); }
+    button.primary:hover:not(:disabled) { background: #f59e0b; }
+    button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.stop { background: var(--red); color: white; }
+
+    .counter {
+      font-size: 3rem; font-weight: 600; color: var(--accent);
+      text-align: center; font-family: 'JetBrains Mono', monospace;
+      margin: 0.5rem 0 1rem;
+    }
+    .progress { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--green), var(--accent));
+      width: 0%; transition: width 0.3s ease;
+    }
+    .tala-dots {
+      display: flex; gap: 6px; justify-content: center; margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .tala-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--border-2); transition: all 0.15s;
+    }
+    .tala-dot.sam { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+    .tala-dot.tali { background: var(--accent-2); }
+    .tala-dot.khali { background: var(--dim); }
+    .tala-dot.active { background: var(--green); box-shadow: 0 0 12px var(--green); transform: scale(1.3); }
+
+    .status {
+      text-align: center; color: var(--text-muted); font-size: 0.9rem;
+      margin-top: 1rem; font-family: 'JetBrains Mono', monospace;
+    }
     .error { color: #f87171; }
+
+    .transit { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    .transit-slider {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .transit-slider input[type=range] { width: 120px; accent-color: var(--accent-2); }
+    .transit-slider span { color: var(--text); min-width: 2.5rem; }
+    .prastara-display {
+      font-family: 'JetBrains Mono', monospace; font-size: 1.1rem;
+      padding: 0.5rem 1rem; background: var(--panel-2);
+      border-radius: 6px; border: 1px solid var(--border-2);
+      color: var(--accent); font-weight: 600;
+    }
+
+    .stars { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .stars button {
+      background: transparent; border: 1px solid var(--border-2);
+      color: var(--dim); font-size: 1.4rem; padding: 0.4rem 0.8rem;
+      border-radius: 6px; cursor: pointer; transition: all 0.15s;
+    }
+    .stars button:hover, .stars button.selected {
+      color: var(--accent); border-color: var(--accent); background: rgba(251,191,36,0.1);
+    }
+    .feedback-complete { color: var(--green); font-size: 0.9rem; margin-top: 0.5rem; }
+
+    .export-row {
+      display: flex; gap: 1rem; align-items: center; margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .export-btn {
+      padding: 0.6rem 1.2rem; background: var(--panel-2); color: var(--accent);
+      border: 1px solid var(--border-2); border-radius: 6px;
+      cursor: pointer; font-size: 0.9rem; font-weight: 500;
+      transition: all 0.15s; font-family: inherit;
+    }
+    .export-btn:hover { border-color: var(--accent); }
+    .export-count {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Mantra Sanctuary · Japa Loop</h1>
-    <p style="color: #94a3b8; margin-bottom: 2rem;">Gapless repetition using Just Intonation synthesis and Web Audio API.</p>
+    <header>
+      <a href="/" class="brand">
+        <span class="om">ॐ</span>
+        <div>
+          <h1>Mantra Sanctuary</h1>
+          <div class="subtitle">Client-side Vedic synthesis & Japa loop</div>
+        </div>
+      </a>
+      <nav>
+        <a href="/">Engine</a>
+        <a href="/gandharva.html">Gāndharva</a>
+        <a href="/mantra.html" class="active">Mantra</a>
+        <a href="/canon.html">Canon</a>
+      </nav>
+    </header>
 
-    <div class="panel">
-      <label for="mantra-text">Sanskrit Mantra (IAST)</label>
-      <textarea id="mantra-text" rows="2">dharmakṣetre kurukṣetre</textarea>
+    <!-- Input panel -->
+    <section class="panel">
+      <h2>Mantra Input</h2>
+      <textarea id="mantra-text" placeholder="असतो मा सद्गमय । तमसो मा ज्योतिर्गमय । मृत्योर्मा अमृतं गमय ॥">असतो मा सद्गमय । तमसो मा ज्योतिर्गमय । मृत्योर्मा अमृतं गमय ॥</textarea>
+      <div class="prosody" id="prosody"></div>
 
-      <label for="raga-select" style="margin-top: 1rem;">Rāga</label>
-      <select id="raga-select">
-        <option value="mayamalavagowla">Mayamalavagowla (Morning)</option>
-        <option value="todi">Tōḍī (Late Morning)</option>
-        <option value="kalyani">Kalyāṇi (Evening)</option>
-        <option value="bhairavi">Bhairavī (Any)</option>
-      </select>
+      <div class="grid-2">
+        <div>
+          <label class="field" for="raga-select">Rāga (Just Intonation)</label>
+          <select id="raga-select">
+            <option value="bhairav">Bhairav — Dawn, komal Re &amp; Dha</option>
+            <option value="bhairavi">Bhairavī — Deep, all komal</option>
+            <option value="yaman">Yaman — Evening, tivra Ma</option>
+            <option value="malkauns">Malkauns — Meditative, pentatonic</option>
+            <option value="todi">Todī — Late morning, komal Re/Ga/Dha</option>
+          </select>
+        </div>
+        <div>
+          <label class="field" for="tala-select">Tāla (Rhythmic cycle)</label>
+          <select id="tala-select">
+            <option value="teental">Teental — 16 mātrās (4+4+4+4)</option>
+            <option value="keherwa">Keherwa — 8 mātrās (4+4)</option>
+            <option value="dadra">Dadra — 6 mātrās (3+3)</option>
+            <option value="jhaptal">Jhaptal — 10 mātrās (2+3+2+3)</option>
+            <option value="rupak">Rupak — 7 mātrās (3+2+2)</option>
+            <option value="ektaal">Ektaal — 12 mātrās (2+2+2+2+2+2)</option>
+          </select>
+        </div>
+      </div>
 
-      <label style="margin-top: 1rem;">Repetitions (Japa Count)</label>
+      <label class="field" style="margin-top:1rem;">Japa Count</label>
       <div class="repetition-grid" id="repetition-grid">
         <button data-count="1" class="active">1</button>
         <button data-count="3">3</button>
@@ -60,133 +255,690 @@
         <button data-count="108">108</button>
       </div>
 
-      <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-        <button id="play-btn" onclick="startLoop()" style="flex: 1;">▶ Play Japa Loop</button>
-        <button id="stop-btn" class="stop" onclick="stopLoop()" style="display: none; flex: 1;">■ Stop</button>
+      <div class="toggles">
+        <label>BPM <input type="range" id="bpm" min="60" max="120" value="96" step="2"> <span id="bpm-val" style="color:var(--accent);font-family:'JetBrains Mono',monospace;">96</span></label>
+        <label><input type="checkbox" id="drone" checked> Tanpura drone</label>
       </div>
-    </div>
 
-    <div class="panel">
+      <div class="buttons">
+        <button id="play-btn" class="primary">▶ Begin Japa</button>
+        <button id="stop-btn" class="stop" style="display:none;">■ Stop</button>
+      </div>
+    </section>
+
+    <!-- Progress panel -->
+    <section class="panel">
       <div class="counter" id="counter">0 / 108</div>
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-      <div class="status" id="status" style="margin-top: 1rem;">Awaiting input...</div>
-    </div>
+      <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="tala-dots" id="tala-dots"></div>
+      <div class="status" id="status">Ready. Click Begin Japa to start.</div>
+    </section>
+
+    <!-- Transit context + feedback -->
+    <section class="panel">
+      <h2>Prastāra Context</h2>
+      <div class="transit">
+        <div class="transit-slider">I: <input type="range" id="sli" min="0" max="1" step="0.1" value="0.5"> <span id="vli">0.5</span></div>
+        <div class="transit-slider">S: <input type="range" id="sls" min="0" max="1" step="0.1" value="0.5"> <span id="vls">0.5</span></div>
+        <div class="transit-slider">D: <input type="range" id="sld" min="0" max="1" step="0.1" value="0.5"> <span id="vld">0.5</span></div>
+        <div class="prastara-display">Index: <span id="prastara-index">1280</span></div>
+      </div>
+
+      <h2 style="margin-top:1.5rem;">Session Feedback</h2>
+      <div id="feedback-container" style="display:none;">
+        <div style="font-size:0.9rem;color:var(--text-muted);">How did this session feel? (1 = restless, 5 = deep focus)</div>
+        <div class="stars" id="stars">
+          <button data-rating="1">★</button>
+          <button data-rating="2">★</button>
+          <button data-rating="3">★</button>
+          <button data-rating="4">★</button>
+          <button data-rating="5">★</button>
+        </div>
+      </div>
+
+      <div class="export-row">
+        <button class="export-btn" id="export-btn">↓ Export Training Data (JSON)</button>
+        <span class="export-count" id="export-count">0 sessions recorded</span>
+        <button class="export-btn" id="clear-btn" style="margin-left:auto;color:var(--red);">Clear data</button>
+      </div>
+    </section>
   </div>
 
   <script>
-    const API_BASE = 'https://aigaane-engine-977695793163.asia-south1.run.app';
-    let audioContext = null;
-    let currentSource = null;
-    let selectedCount = 1;
-    let currentRepetition = 0;
-    let isPlaying = false;
+  (function() {
+    'use strict';
 
-    // Repetition grid click handler
-    document.querySelectorAll('#repetition-grid button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('#repetition-grid button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedCount = parseInt(btn.dataset.count);
-        document.getElementById('counter').textContent = `0 / ${selectedCount}`;
+    // =========================================================
+    // CONSTANTS
+    // =========================================================
+
+    // 22-śruti JI ratios (Ahobala 5-limit) — as fractions
+    const RATIOS = {
+      'S': 1,
+      'r': 256/243,   // komal Re
+      'R': 10/9,      // śuddha Re
+      'g': 32/27,     // komal Ga
+      'G': 5/4,       // śuddha Ga
+      'M': 4/3,       // śuddha Ma
+      'm': 45/32,     // tivra Ma
+      'P': 3/2,
+      'd': 128/81,    // komal Dha
+      'D': 5/3,       // śuddha Dha
+      'n': 16/9,      // komal Ni
+      'N': 15/8,      // śuddha Ni
+      "S'": 2,
+    };
+
+    const BASE_HZ = 240; // Ṣaḍja reference
+
+    // Rāga scales — cycle through these for the melody
+    const RAGAS = {
+      bhairav:   ['S', 'r', 'G', 'M', 'P', 'd', 'N'],
+      bhairavi:  ['S', 'r', 'g', 'M', 'P', 'd', 'n'],
+      yaman:     ['S', 'R', 'G', 'm', 'P', 'D', 'N'],
+      malkauns:  ['S', 'g', 'M', 'd', 'n'],
+      todi:      ['S', 'r', 'g', 'm', 'P', 'd', 'N'],
+    };
+
+    // Tāla definitions — vibhāg groupings
+    const TALAS = {
+      teental: { name: 'Teental', matras: 16, vibhags: [4,4,4,4], khali_at: [8] },
+      keherwa: { name: 'Keherwa', matras: 8,  vibhags: [4,4],     khali_at: [] },
+      dadra:   { name: 'Dadra',   matras: 6,  vibhags: [3,3],     khali_at: [3] },
+      jhaptal: { name: 'Jhaptal', matras: 10, vibhags: [2,3,2,3], khali_at: [2] },
+      rupak:   { name: 'Rupak',   matras: 7,  vibhags: [3,2,2],   khali_at: [0] },
+      ektaal:  { name: 'Ektaal',  matras: 12, vibhags: [2,2,2,2,2,2], khali_at: [4] },
+    };
+
+    // =========================================================
+    // KARPLUS-STRONG AUDIOWORKLET (inline)
+    // =========================================================
+    const KS_WORKLET = `
+      class KSString extends AudioWorkletProcessor {
+        constructor() {
+          super();
+          this.BUF = 8192;
+          this.buf = new Float32Array(this.BUF);
+          this.writeIdx = 0;
+          this.delay = 183;
+          this.frac = 0.0;
+          this.feedback = 0.99;
+          this.damping = 0.2;
+          this.lastOut = 0;
+          this.active = false;
+          this.port.onmessage = (e) => {
+            const d = e.data;
+            if (d.type === 'trigger') {
+              const period = sampleRate / Math.max(20, d.freq);
+              this.delay = Math.floor(period);
+              this.frac = period - this.delay;
+              this.feedback = d.feedback ?? 0.99;
+              this.damping = d.damping ?? 0.2;
+              const fillLen = Math.min(this.BUF - 1, this.delay + 1);
+              for (let i = 0; i < fillLen; i++) {
+                this.buf[i] = (Math.random() * 2 - 1) * (d.velocity ?? 0.8);
+              }
+              for (let i = fillLen; i < Math.min(this.BUF, fillLen + 4096); i++) {
+                this.buf[i] = 0;
+              }
+              this.writeIdx = fillLen;
+              this.lastOut = 0;
+              this.active = true;
+            } else if (d.type === 'stop') {
+              this.active = false;
+            }
+          };
+        }
+        process(inputs, outputs) {
+          const ch = outputs[0][0];
+          if (!ch) return true;
+          if (!this.active) { ch.fill(0); return true; }
+          for (let i = 0; i < ch.length; i++) {
+            const rIdx = (this.writeIdx - this.delay + this.BUF) % this.BUF;
+            const rIdx1 = (rIdx + 1) % this.BUF;
+            const s0 = this.buf[rIdx];
+            const s1 = this.buf[rIdx1];
+            const delayed = s0 * (1 - this.frac) + s1 * this.frac;
+            const filtered = (1 - this.damping) * delayed + this.damping * this.lastOut;
+            this.lastOut = filtered;
+            this.buf[this.writeIdx] = filtered * this.feedback;
+            this.writeIdx = (this.writeIdx + 1) % this.BUF;
+            ch[i] = filtered;
+          }
+          return true;
+        }
+      }
+      registerProcessor('ks-string', KSString);
+    `;
+
+    // =========================================================
+    // AUDIO ENGINE
+    // =========================================================
+    class MantraAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.voicePool = [];
+        this.voiceIdx = 0;
+        this.masterGain = null;
+        this.droneNodes = null;
+        this.ready = false;
+      }
+
+      async init() {
+        if (this.ready) return;
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        try { this.ctx = new Ctx({ sampleRate: 44100 }); }
+        catch { this.ctx = new Ctx(); }
+        if (this.ctx.state === 'suspended') await this.ctx.resume();
+
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.setValueAtTime(0.85, this.ctx.currentTime);
+        this.masterGain.connect(this.ctx.destination);
+
+        const blob = new Blob([KS_WORKLET], { type: 'application/javascript' });
+        const url = URL.createObjectURL(blob);
+        await this.ctx.audioWorklet.addModule(url);
+        URL.revokeObjectURL(url);
+
+        for (let i = 0; i < 4; i++) {
+          const node = new AudioWorkletNode(this.ctx, 'ks-string');
+          node.connect(this.masterGain);
+          this.voicePool.push(node);
+        }
+        this.ready = true;
+      }
+
+      hzFor(swara) {
+        const ratio = RATIOS[swara] || 1;
+        return BASE_HZ * ratio;
+      }
+
+      pluck(swara, atTime, velocity = 0.8, feedback = 0.993, damping = 0.22) {
+        if (!this.ready) return;
+        const freq = this.hzFor(swara);
+        const voice = this.voicePool[this.voiceIdx];
+        this.voiceIdx = (this.voiceIdx + 1) % this.voicePool.length;
+        const delay = Math.max(0, atTime - this.ctx.currentTime);
+        setTimeout(() => {
+          voice.port.postMessage({
+            type: 'trigger', freq, velocity, feedback, damping
+          });
+        }, delay * 1000);
+      }
+
+      startDrone() {
+        if (!this.ready || this.droneNodes) return;
+        const saNode = new AudioWorkletNode(this.ctx, 'ks-string');
+        const paNode = new AudioWorkletNode(this.ctx, 'ks-string');
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.25, this.ctx.currentTime + 2.0);
+        saNode.connect(gain);
+        paNode.connect(gain);
+        gain.connect(this.masterGain);
+
+        const pluckDrone = (node, freq) => {
+          node.port.postMessage({
+            type: 'trigger', freq, velocity: 0.3,
+            damping: 0.05, feedback: 0.9990
+          });
+        };
+        pluckDrone(saNode, BASE_HZ);
+        setTimeout(() => this.droneNodes && pluckDrone(paNode, BASE_HZ * 1.5), 1200);
+
+        const interval = setInterval(() => {
+          if (!this.droneNodes) { clearInterval(interval); return; }
+          pluckDrone(saNode, BASE_HZ);
+          setTimeout(() => this.droneNodes && pluckDrone(paNode, BASE_HZ * 1.5), 1200);
+        }, 4800);
+
+        this.droneNodes = { saNode, paNode, gain, interval };
+      }
+
+      stopDrone() {
+        if (!this.droneNodes) return;
+        clearInterval(this.droneNodes.interval);
+        const now = this.ctx.currentTime;
+        this.droneNodes.gain.gain.linearRampToValueAtTime(0.0001, now + 0.8);
+        const nodes = this.droneNodes;
+        this.droneNodes = null;
+        setTimeout(() => {
+          nodes.saNode.port.postMessage({ type: 'stop' });
+          nodes.paNode.port.postMessage({ type: 'stop' });
+          nodes.saNode.disconnect();
+          nodes.paNode.disconnect();
+        }, 900);
+      }
+
+      stopAll() {
+        this.stopDrone();
+        if (this.voicePool.length) {
+          this.voicePool.forEach(v => v.port.postMessage({ type: 'stop' }));
+        }
+      }
+    }
+
+    // =========================================================
+    // PROSODY SCANNER (heuristic)
+    // =========================================================
+    function scanProsody(text) {
+      const trimmed = (text || '').trim();
+      if (!trimmed) return [];
+
+      const isDeva = /[\u0900-\u097F]/.test(trimmed);
+      const aksharas = [];
+
+      if (isDeva) {
+        // Devanagari — consonant cluster + matra + optional yogavaha
+        const re = /[\u0915-\u0939\u0958-\u095F](?:\u094D[\u0915-\u0939\u0958-\u095F])*[\u093E-\u094C\u0962\u0963]?[\u0900-\u0903\u093D\u0950]?/g;
+        let m;
+        while ((m = re.exec(trimmed)) !== null) {
+          const syl = m[0];
+          let w = 'L';
+          if (/[\u093E\u0940\u0942\u0944\u0947\u0948\u094B\u094C]/.test(syl)) w = 'G';
+          if (/[\u0901\u0902\u0903]/.test(syl)) w = 'G';
+          if (/\u094D/.test(syl)) w = 'G';
+          aksharas.push({ text: syl, weight: w });
+        }
+      } else {
+        // IAST — approximate tokenizer
+        const words = trimmed.replace(/[।॥\n]/g, ' ').trim().split(/\s+/);
+        const LONG_VOWELS = ['ā','ī','ū','ṝ','ḹ','e','ai','o','au'];
+        for (const word of words) {
+          const syls = word.match(/[^aeiouāīūṛṝḷḹeo]+[aeiouāīūṛṝḷḹeo]?|[aeiouāīūṛṝḷḹeo]+/gi) || [];
+          for (const syl of syls) {
+            let w = 'L';
+            const vowel = (syl.match(/[aeiouāīūṛṝḷḹeo]+/i) || [''])[0].toLowerCase();
+            if (LONG_VOWELS.includes(vowel)) w = 'G';
+            if (/[ṃḥ]/i.test(syl)) w = 'G';
+            aksharas.push({ text: syl, weight: w });
+          }
+        }
+      }
+      return aksharas;
+    }
+
+    // =========================================================
+    // RENDER PROSODY BARS
+    // =========================================================
+    function renderProsody(aksharas) {
+      const container = document.getElementById('prosody');
+      container.innerHTML = '';
+      if (!aksharas.length) {
+        container.innerHTML = '<span style="color:var(--dim);font-size:0.85rem;">No syllables detected.</span>';
+        return;
+      }
+      aksharas.forEach((a, i) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'syl';
+        const bar = document.createElement('div');
+        bar.className = 'syl-bar ' + a.weight;
+        bar.dataset.idx = i;
+        const lbl = document.createElement('div');
+        lbl.className = 'syl-label';
+        lbl.textContent = a.weight;
+        wrap.appendChild(bar);
+        wrap.appendChild(lbl);
+        container.appendChild(wrap);
+      });
+    }
+
+    // =========================================================
+    // BUILD SCORE (prosody → swara sequence)
+    // =========================================================
+    function buildScore(aksharas, ragaKey) {
+      const scale = RAGAS[ragaKey] || RAGAS.bhairav;
+      const score = [];
+      let swaraIdx = 0;
+      for (const ak of aksharas) {
+        score.push({
+          swara: scale[swaraIdx % scale.length],
+          duration: ak.weight === 'G' ? 2 : 1,
+        });
+        swaraIdx++;
+      }
+      return score;
+    }
+
+    // =========================================================
+    // JAPA SCHEDULER
+    // =========================================================
+    class JapaScheduler {
+      constructor(engine) {
+        this.engine = engine;
+        this.score = [];
+        this.bpm = 96;
+        this.repeatCount = 108;
+        this.currentRepeat = 0;
+        this.currentNoteIdx = 0;
+        this.nextNoteTime = 0;
+        this.isPlaying = false;
+        this.timerId = null;
+        this.LOOKAHEAD_MS = 120;
+        this.INTERVAL_MS = 25;
+        this.cumulativeBeats = 0; // for tāla dot tracking
+        this.onNote = null;
+        this.onCycleComplete = null;
+        this.onAllComplete = null;
+      }
+
+      setScore(score, bpm, repeatCount) {
+        this.score = score;
+        this.bpm = bpm;
+        this.repeatCount = repeatCount;
+      }
+
+      start() {
+        if (this.isPlaying || !this.score.length) return;
+        this.isPlaying = true;
+        this.currentRepeat = 0;
+        this.currentNoteIdx = 0;
+        this.cumulativeBeats = 0;
+        this.nextNoteTime = this.engine.ctx.currentTime + 0.15;
+        this.engine.startDrone();
+        this.tick();
+      }
+
+      tick() {
+        if (!this.isPlaying) return;
+        const now = this.engine.ctx.currentTime;
+        while (this.nextNoteTime < now + this.LOOKAHEAD_MS / 1000) {
+          this.dispatch();
+          this.advance();
+          if (!this.isPlaying) break;
+        }
+        this.timerId = setTimeout(() => this.tick(), this.INTERVAL_MS);
+      }
+
+      dispatch() {
+        const ev = this.score[this.currentNoteIdx];
+        const secondsPerBeat = 60 / this.bpm;
+        const durationSec = ev.duration * secondsPerBeat;
+
+        this.engine.pluck(ev.swara, this.nextNoteTime, 0.85, 0.993, 0.22);
+
+        if (this.onNote) {
+          this.onNote({
+            noteIdx: this.currentNoteIdx,
+            swara: ev.swara,
+            duration: durationSec,
+            iteration: this.currentRepeat + 1,
+            cumulativeBeats: this.cumulativeBeats,
+            time: this.nextNoteTime,
+          });
+        }
+      }
+
+      advance() {
+        const ev = this.score[this.currentNoteIdx];
+        const secondsPerBeat = 60 / this.bpm;
+        this.nextNoteTime += ev.duration * secondsPerBeat;
+        this.cumulativeBeats += ev.duration;
+        this.currentNoteIdx++;
+
+        if (this.currentNoteIdx >= this.score.length) {
+          this.currentNoteIdx = 0;
+          this.currentRepeat++;
+          if (this.onCycleComplete) this.onCycleComplete(this.currentRepeat);
+          if (this.currentRepeat >= this.repeatCount) {
+            this.stop();
+            if (this.onAllComplete) this.onAllComplete();
+          }
+        }
+      }
+
+      stop() {
+        this.isPlaying = false;
+        if (this.timerId) { clearTimeout(this.timerId); this.timerId = null; }
+      }
+    }
+
+    // =========================================================
+    // STATE + UI BINDINGS
+    // =========================================================
+    const state = {
+      selectedCount: 1,
+      aksharas: [],
+      score: [],
+      lastFeedback: null,
+      startedAt: null,
+    };
+
+    const engine = new MantraAudioEngine();
+    const scheduler = new JapaScheduler(engine);
+
+    const $ = id => document.getElementById(id);
+    const mantraEl = $('mantra-text');
+    const ragaEl = $('raga-select');
+    const talaEl = $('tala-select');
+    const bpmEl = $('bpm');
+    const droneEl = $('drone');
+    const playBtn = $('play-btn');
+    const stopBtn = $('stop-btn');
+    const counter = $('counter');
+    const progressFill = $('progress-fill');
+    const talaDots = $('tala-dots');
+    const status = $('status');
+    const feedbackContainer = $('feedback-container');
+    const stars = $('stars');
+    const exportCount = $('export-count');
+
+    // --- Prosody refresh ---
+    function refreshProsody() {
+      state.aksharas = scanProsody(mantraEl.value);
+      renderProsody(state.aksharas);
+      const totalMatras = state.aksharas.reduce((s, a) => s + (a.weight === 'G' ? 2 : 1), 0);
+      status.textContent = `${state.aksharas.length} syllables · ${totalMatras} mātrās`;
+    }
+    mantraEl.addEventListener('input', refreshProsody);
+
+    // --- Repetition grid ---
+    document.querySelectorAll('#repetition-grid button').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#repetition-grid button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        state.selectedCount = parseInt(b.dataset.count, 10);
+        counter.textContent = `0 / ${state.selectedCount}`;
       });
     });
 
-    async function startLoop() {
-      const text = document.getElementById('mantra-text').value;
-      const raga = document.getElementById('raga-select').value;
-      const status = document.getElementById('status');
-      const playBtn = document.getElementById('play-btn');
-      const stopBtn = document.getElementById('stop-btn');
+    // --- BPM slider ---
+    bpmEl.addEventListener('input', () => {
+      $('bpm-val').textContent = bpmEl.value;
+    });
 
-      if (!text.trim()) {
-        status.innerHTML = '<span class="error">Please enter a mantra.</span>';
-        return;
+    // --- Drone toggle ---
+    droneEl.addEventListener('change', () => {
+      if (!engine.ready) return;
+      if (droneEl.checked && scheduler.isPlaying) engine.startDrone();
+      else engine.stopDrone();
+    });
+
+    // --- Tāla dots ---
+    function renderTalaDots() {
+      const tala = TALAS[talaEl.value] || TALAS.teental;
+      talaDots.innerHTML = '';
+      let vibhagBoundaries = new Set();
+      let cum = 0;
+      for (let i = 0; i < tala.vibhags.length; i++) {
+        vibhagBoundaries.add(cum);
+        cum += tala.vibhags[i];
       }
-
-      playBtn.disabled = true;
-      status.textContent = 'Synthesizing audio from Cloud Run...';
-
-      try {
-        // Fetch the audio from Cloud Run
-        const res = await fetch(`${API_BASE}/api/v1/gandharva/render`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: text, raga: raga })
-        });
-        const data = await res.json();
-        if (data.status !== 'success') throw new Error(data.detail || 'Synthesis failed');
-
-        const audioRes = await fetch(`${API_BASE}/api/v1/gandharva/audio/${data.file}`);
-        const blob = await audioRes.blob();
-
-        // Decode into AudioBuffer
-        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const arrayBuffer = await blob.arrayBuffer();
-        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-
-        // Setup looping
-        currentRepetition = 0;
-        isPlaying = true;
-        playBtn.style.display = 'none';
-        stopBtn.style.display = 'block';
-        document.getElementById('counter').textContent = `0 / ${selectedCount}`;
-        document.getElementById('progress-fill').style.width = '0%';
-        status.textContent = `Playing 0 / ${selectedCount} (Rāga: ${raga})`;
-
-        playLoop(audioBuffer);
-      } catch (err) {
-        status.innerHTML = `<span class="error">Error: ${err.message}</span>`;
-        playBtn.disabled = false;
-        playBtn.style.display = 'block';
-        stopBtn.style.display = 'none';
+      const khalis = new Set(tala.khali_at);
+      for (let i = 0; i < tala.matras; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'tala-dot';
+        dot.dataset.idx = i;
+        if (i === 0) dot.classList.add('sam');
+        else if (khalis.has(i)) dot.classList.add('khali');
+        else if (vibhagBoundaries.has(i)) dot.classList.add('tali');
+        talaDots.appendChild(dot);
       }
     }
+    talaEl.addEventListener('change', renderTalaDots);
+    renderTalaDots();
 
-    function playLoop(audioBuffer) {
-      if (!isPlaying || currentRepetition >= selectedCount) {
-        finishLoop();
+    // --- Prastāra index ---
+    function updatePrastara() {
+      const I = parseFloat($('sli').value);
+      const S = parseFloat($('sls').value);
+      const D = parseFloat($('sld').value);
+      $('vli').textContent = I.toFixed(1);
+      $('vls').textContent = S.toFixed(1);
+      $('vld').textContent = D.toFixed(1);
+      const idx = Math.round(512 + (I * 256) - (S * 128) + (D * 64));
+      $('prastara-index').textContent = idx;
+    }
+    ['sli','sls','sld'].forEach(id => $(id).addEventListener('input', updatePrastara));
+    updatePrastara();
+
+    // --- Scheduler callbacks ---
+    scheduler.onNote = ({ noteIdx, cumulativeBeats }) => {
+      // Highlight syllable bar
+      document.querySelectorAll('.syl-bar').forEach(b => b.classList.remove('active'));
+      const bar = document.querySelector(`.syl-bar[data-idx="${noteIdx}"]`);
+      if (bar) bar.classList.add('active');
+
+      // Highlight tāla dot
+      const tala = TALAS[talaEl.value] || TALAS.teental;
+      const beat = Math.floor(cumulativeBeats) % tala.matras;
+      document.querySelectorAll('.tala-dot').forEach(d => d.classList.remove('active'));
+      const dot = document.querySelector(`.tala-dot[data-idx="${beat}"]`);
+      if (dot) dot.classList.add('active');
+    };
+
+    scheduler.onCycleComplete = (n) => {
+      counter.textContent = `${n} / ${state.selectedCount}`;
+      progressFill.style.width = `${(n / state.selectedCount) * 100}%`;
+    };
+
+    scheduler.onAllComplete = () => {
+      playBtn.disabled = false;
+      playBtn.style.display = 'block';
+      stopBtn.style.display = 'none';
+      status.textContent = `Complete: ${state.selectedCount} repetitions.`;
+      document.querySelectorAll('.syl-bar').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tala-dot').forEach(d => d.classList.remove('active'));
+      // Reveal feedback
+      feedbackContainer.style.display = 'block';
+      document.querySelectorAll('.stars button').forEach(b => b.classList.remove('selected'));
+      state.lastFeedback = null;
+    };
+
+    // --- Play / Stop ---
+    playBtn.addEventListener('click', async () => {
+      refreshProsody();
+      if (!state.aksharas.length) {
+        status.innerHTML = '<span class="error">No syllables detected. Enter a mantra.</span>';
         return;
       }
 
-      currentSource = audioContext.createBufferSource();
-      currentSource.buffer = audioBuffer;
-      currentSource.connect(audioContext.destination);
-
-      currentSource.onended = () => {
-        currentRepetition++;
-        document.getElementById('counter').textContent = `${currentRepetition} / ${selectedCount}`;
-        document.getElementById('progress-fill').style.width = `${(currentRepetition / selectedCount) * 100}%`;
-
-        if (currentRepetition >= selectedCount) {
-          finishLoop();
-        } else {
-          playLoop(audioBuffer);
+      if (!engine.ready) {
+        status.textContent = 'Initializing audio engine...';
+        try { await engine.init(); }
+        catch (e) {
+          status.innerHTML = `<span class="error">Audio engine failed: ${e.message}</span>`;
+          return;
         }
-      };
-
-      currentSource.start(0);
-    }
-
-    function finishLoop() {
-      isPlaying = false;
-      document.getElementById('status').textContent = `Japa complete: ${currentRepetition} repetitions.`;
-      document.getElementById('play-btn').disabled = false;
-      document.getElementById('play-btn').style.display = 'block';
-      document.getElementById('stop-btn').style.display = 'none';
-      currentSource = null;
-    }
-
-    function stopLoop() {
-      isPlaying = false;
-      if (currentSource) {
-        try { currentSource.stop(); } catch (e) {}
-        currentSource = null;
       }
-      document.getElementById('status').textContent = 'Stopped.';
-      document.getElementById('play-btn').disabled = false;
-      document.getElementById('play-btn').style.display = 'block';
-      document.getElementById('stop-btn').style.display = 'none';
+
+      state.score = buildScore(state.aksharas, ragaEl.value);
+      const bpm = parseInt(bpmEl.value, 10);
+      scheduler.setScore(state.score, bpm, state.selectedCount);
+
+      // Reset UI
+      state.startedAt = Date.now();
+      counter.textContent = `0 / ${state.selectedCount}`;
+      progressFill.style.width = '0%';
+      playBtn.disabled = true;
+      playBtn.style.display = 'none';
+      stopBtn.style.display = 'block';
+      feedbackContainer.style.display = 'none';
+      status.textContent = `Playing (Rāga: ${ragaEl.options[ragaEl.selectedIndex].text.split(' — ')[0]})`;
+
+      if (droneEl.checked) engine.startDrone();
+      scheduler.start();
+    });
+
+    stopBtn.addEventListener('click', () => {
+      scheduler.stop();
+      engine.stopAll();
+      playBtn.disabled = false;
+      playBtn.style.display = 'block';
+      stopBtn.style.display = 'none';
+      status.textContent = 'Stopped.';
+      document.querySelectorAll('.syl-bar').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tala-dot').forEach(d => d.classList.remove('active'));
+    });
+
+    // --- Feedback ---
+    const FB_KEY = 'aigaane_mantra_feedback';
+
+    function loadFeedback() {
+      try { return JSON.parse(localStorage.getItem(FB_KEY) || '[]'); }
+      catch { return []; }
     }
+    function saveFeedback(list) {
+      localStorage.setItem(FB_KEY, JSON.stringify(list));
+      exportCount.textContent = `${list.length} session${list.length === 1 ? '' : 's'} recorded`;
+    }
+
+    stars.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-rating]');
+      if (!btn) return;
+      const rating = parseInt(btn.dataset.rating, 10);
+      state.lastFeedback = rating;
+      document.querySelectorAll('.stars button').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+
+      const entry = {
+        id: 'fb_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+        mantra: mantraEl.value.trim(),
+        syllables: state.aksharas.length,
+        raga: ragaEl.value,
+        tala: talaEl.value,
+        repeats: state.selectedCount,
+        bpm: parseInt(bpmEl.value, 10),
+        prastara_index: parseInt($('prastara-index').textContent, 10),
+        rating,
+        timestamp: new Date().toISOString(),
+        duration_ms: state.startedAt ? (Date.now() - state.startedAt) : null,
+      };
+      const list = loadFeedback();
+      list.push(entry);
+      saveFeedback(list);
+      feedbackContainer.insertAdjacentHTML('beforeend',
+        '<div class="feedback-complete">✓ Feedback saved (' + rating + '/5).</div>');
+    });
+
+    $('export-btn').addEventListener('click', () => {
+      const data = {
+        exported_at: new Date().toISOString(),
+        source: 'mantra.html',
+        entry_count: loadFeedback().length,
+        entries: loadFeedback(),
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `aigaane_mantra_feedback_${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    $('clear-btn').addEventListener('click', () => {
+      if (!confirm('Delete all local feedback? This cannot be undone.')) return;
+      localStorage.removeItem(FB_KEY);
+      saveFeedback([]);
+    });
+
+    // --- Init ---
+    exportCount.textContent = `${loadFeedback().length} sessions recorded`;
+    refreshProsody();
+  })();
   </script>
 </body>
 </html>
