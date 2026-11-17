@@ -5,9 +5,10 @@ Uses _vedic_unicode.segment_vedic_nuclei for P0-2 vowel-nucleus accent binding.
 """
 from __future__ import annotations
 
+import unicodedata
 from typing import Any, Dict, List
 
-from backend.engine._svara import _compute_matra, derive_svara_sequence
+from backend.engine._svara import _compute_matra
 from backend.engine.vedic._events import F0Sample, OralContourEvent, OralRenderResult
 from backend.engine.vedic._render_oral import render_wav_oral
 from backend.engine.vedic._vedic_unicode import segment_vedic_nuclei
@@ -59,6 +60,36 @@ ORAL_RECENSION_POLICIES: Dict[str, Dict[str, Any]] = {
     },
 }
 
+def derive_oral_svara_sequence(aksharas: List[Dict[str, Any]]) -> List[tuple]:
+    """Paninian Mode 1 svara derivation:
+      - Explicit tone mark                         → marked svara
+      - Unmarked after udatta                      → derived svarita (8.4.66)
+      - Unmarked after svarita/pracaya,
+        and before udatta/svarita                  → derived pracaya (1.2.39)
+      - Unmarked before udatta/svarita             → default anudatta (1.2.40)
+      - Other unmarked baseline                    → default anudatta (never udatta)
+    """
+    n = len(aksharas)
+    resolved: List[tuple] = []
+    for i, item in enumerate(aksharas):
+        hint = item["mark_hint"]
+        prev_svara = resolved[i - 1][0] if i > 0 else None
+        next_hint = aksharas[i + 1]["mark_hint"] if i + 1 < n else None
+        if hint is not None:
+            resolved.append((hint, "marked", "Explicit Vedic tone mark"))
+            continue
+        if prev_svara == "udatta":
+            resolved.append(("svarita", "derived", "Panini 8.4.66"))
+            continue
+        if prev_svara in ("svarita", "svarita_double", "pracaya") \
+           and next_hint not in ("udatta", "svarita", "svarita_double"):
+            resolved.append(("pracaya", "derived", "Panini 1.2.39"))
+            continue
+        if next_hint in ("udatta", "svarita", "svarita_double"):
+            resolved.append(("anudatta", "default", "Panini 1.2.40"))
+            continue
+        resolved.append(("anudatta", "default", "Paninian unmarked anudatta"))
+    return resolved
 
 def render_oral_recitation(
     text: str,
@@ -75,7 +106,7 @@ def render_oral_recitation(
     if not aksharas or not any(a["mark_hint"] is not None for a in aksharas):
         raise ValueError("Input lacks Vedic svara marks required for Mode 1 recitation.")
 
-    derived = derive_svara_sequence(aksharas)
+    derived = derive_oral_svara_sequence(aksharas)
     events: List[OralContourEvent] = []
     matra_ms = float(policy["matra_ms"])
 
