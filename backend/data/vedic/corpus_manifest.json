@@ -1,0 +1,20 @@
+﻿{
+  "schema_version": "1.0.0",
+  "target_tradition": "rgveda_sakala",
+  "entries": [
+    {
+      "record_id": "rv_1_1_1",
+      "mandala": 1,
+      "sukta": 1,
+      "rc": 1,
+      "shakha": "rgveda_sakala",
+      "text_devanagari": "अ॒ग्निमी॑ळे पु॒रोहि॑तं य॒ज्ञस्य॑ दे॒वमृ॒त्विज॑म् । होता॑रं रत्न॒धात॑मम् ॥",
+      "audio_ref": null,
+      "textgrid_ref": null,
+      "alignment_status": "none",
+      "license": "unknown",
+      "verified_by": null,
+      "expert_reviewed": false
+    }
+  ]
+}
