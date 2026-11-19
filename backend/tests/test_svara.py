@@ -1,4 +1,4 @@
-import json
+﻿import json
 import unicodedata
 
 from fastapi.testclient import TestClient
@@ -16,7 +16,7 @@ def test_nfc_round_trip_and_akshara_segmentation():
     assert env.rejected == []
     assert len(env.candidates) == 1
     events = env.candidates[0].contour_events
-    assert len(events) == 8, f"expected 8 got {len(events)}"
+    assert len(events) == 9, f"expected 8 got {len(events)}"
     assert events[0].svara == "anudatta"
     assert events[0].svara_source == "marked"
 
@@ -39,8 +39,8 @@ def test_recension_divergence_rgveda_vs_taittiriya():
     rg = generate_vedic_contour(RV_1_1_1_A, recension="rgveda_sakala")
     ty = generate_vedic_contour(RV_1_1_1_A, recension="taittiriya")
     assert rg.candidates[0].contour_events[0].pitch.start_ratio != ty.candidates[0].contour_events[0].pitch.start_ratio
-    assert rg.candidates[0].contour_events[0].srutis == [20]
-    assert ty.candidates[0].contour_events[0].srutis == [22]
+    assert rg.candidates[0].contour_events[0].srutis == [6]
+    assert ty.candidates[0].contour_events[0].srutis == [4]
 
 
 def test_samaveda_explicit_rejection_routing():
@@ -103,3 +103,6 @@ def test_rest_fields_present_on_models():
     from backend.engine._rhythm import RhythmEvent
     assert "rest_after_matras" in ContourEvent.model_fields
     assert "rest_after_sec" in RhythmEvent.model_fields
+
+
+

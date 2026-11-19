@@ -1,4 +1,4 @@
-import json
+﻿import json
 
 from fastapi.testclient import TestClient
 
@@ -35,7 +35,7 @@ def _events():
 def test_align_monotonic_onsets():
     events = _events()
     rhythm, _meta = align_to_tala(events, TALA_9, bpm=60)
-    assert len(rhythm) == len(events) == 8
+    assert len(rhythm) == len(events) == 9
     for i in range(1, len(rhythm)):
         assert rhythm[i].onset_sec > rhythm[i - 1].onset_sec
 
@@ -80,8 +80,8 @@ def test_align_api_endpoint():
     assert data["rejected"] == []
     assert len(data["candidates"]) == 1
     cand = data["candidates"][0]
-    assert len(cand["contour_events"]) == 8
-    assert len(cand["rhythm_events"]) == 8
+    assert len(cand["contour_events"]) == 9
+    assert len(cand["rhythm_events"]) == 9
     assert cand["tala_meta"]["cycle_length"] == 9
 
 

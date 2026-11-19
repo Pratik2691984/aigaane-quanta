@@ -1,4 +1,4 @@
-"""
+﻿"""
 Deterministic mixing + post-processing for Vedic chant WAV renders.
 Pure stdlib. No external audio deps.
 """
@@ -90,3 +90,10 @@ def mix(vocal: List[float], drone: List[float]) -> List[float]:
         d = drone[i] if i < len(drone) else 0.0
         out[i] = v + d
     return out
+
+
+def compute_rms(samples: list[float]) -> float:
+    if not samples:
+        return 0.0
+    return (sum(s * s for s in samples) / len(samples)) ** 0.5
+

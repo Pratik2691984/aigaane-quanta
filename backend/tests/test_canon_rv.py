@@ -1,4 +1,4 @@
-"""Tests for Rigveda corpus in canon.db (Q7-RV extension)."""
+﻿"""Tests for Rigveda corpus in canon.db (Q7-RV extension)."""
 import sqlite3
 import unicodedata
 from pathlib import Path
@@ -202,3 +202,4 @@ def test_polish_fts_triggers_include_text_clean():
     assert len(triggers) == 3, f"expected 3 triggers, got {len(triggers)}"
     for (sql,) in triggers:
         assert "text_clean" in sql, f"trigger missing text_clean: {sql[:100]}"
+

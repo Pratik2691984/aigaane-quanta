@@ -1,4 +1,4 @@
-"""Vedic Svara & Recension Contour API Routes."""
+﻿"""Vedic Svara & Recension Contour API Routes."""
 from fastapi import APIRouter
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
@@ -172,8 +172,7 @@ def post_vedic_render(req: VedicRenderRequest) -> RenderEnvelope:
             cumul += dur + rest_sec
         tala_meta = None
 
-    wav_bytes, sha, duration_sec, stats = render_wav(
-        rhythm_events,
+    wav_bytes, sha, duration_sec, stats = render_wav(base.contour_events, rhythm_events,
         sa_hz=req.sa_hz,
         sample_rate=req.sample_rate,
         drone_on=req.drone_on,
@@ -194,3 +193,4 @@ def post_vedic_render(req: VedicRenderRequest) -> RenderEnvelope:
             tala_meta=tala_meta,
         )],
     )
+

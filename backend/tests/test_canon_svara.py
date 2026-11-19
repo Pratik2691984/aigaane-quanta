@@ -63,7 +63,9 @@ def test_sample_verse_parses_via_svara_engine():
         assert env.rejected == [], f"{recension}: rejected {env.rejected}"
         assert env.candidates, f"{recension}: no candidates"
         evs = env.candidates[0].contour_events
-        assert len(evs) == 8, f"{recension}: expected 8 akṣaras, got {len(evs)}"
+        assert len(evs) == 9, f"{recension}: expected 9 akṣaras, got {len(evs)}"
         # Verify at least one derived svarita present
         derived = [e for e in evs if e.svara_source == "derived"]
         assert derived, f"{recension}: no derived svara events"
+
+

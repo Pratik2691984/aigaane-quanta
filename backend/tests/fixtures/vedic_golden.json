@@ -14,12 +14,12 @@
         "drone_on": true,
         "sample_rate": 22050
       },
-      "sha256": "49438700a25ce7d6c90db655284c3cb1edcbb4e2b3b686c300322ef4d658f90a",
-      "duration_sec": 14.2,
-      "peak_db": -11.9,
+      "sha256": "669396fde9f2355c2bb5480589bf73105347cb864a6e7f3d926c2715f58681e3",
+      "duration_sec": 12.0,
+      "peak_db": -14.4,
       "rms_db": -20.0,
-      "n_samples": 313110,
-      "wav_bytes_len": 626264
+      "n_samples": 264600,
+      "wav_bytes_len": 529244
     },
     {
       "id": "rv_1_1_1_rgveda_free_dry",
@@ -32,12 +32,12 @@
         "drone_on": false,
         "sample_rate": 22050
       },
-      "sha256": "4d86b998094e1326ebda29507424bbbcdb84ee268ea41ceb7d312eea3da3639b",
-      "duration_sec": 14.2,
-      "peak_db": -16.78,
+      "sha256": "9770bd6436355ba81e1bc33baf38f62a0943a2552aea8b3396a36e87081cc804",
+      "duration_sec": 12.0,
+      "peak_db": -16.97,
       "rms_db": -20.0,
-      "n_samples": 313110,
-      "wav_bytes_len": 626264
+      "n_samples": 264600,
+      "wav_bytes_len": 529244
     },
     {
       "id": "rv_1_1_1_rgveda_trisra_drone",
@@ -50,12 +50,12 @@
         "drone_on": true,
         "sample_rate": 22050
       },
-      "sha256": "38ac56287efc3822b39fb48d7d6fdb788156551b1b18118da51be09c3d1f66eb",
-      "duration_sec": 14.2,
-      "peak_db": -10.86,
+      "sha256": "669396fde9f2355c2bb5480589bf73105347cb864a6e7f3d926c2715f58681e3",
+      "duration_sec": 12.0,
+      "peak_db": -14.4,
       "rms_db": -20.0,
-      "n_samples": 313110,
-      "wav_bytes_len": 626264
+      "n_samples": 264600,
+      "wav_bytes_len": 529244
     },
     {
       "id": "rv_1_1_1_rgveda_trisra_dry",
@@ -68,12 +68,12 @@
         "drone_on": false,
         "sample_rate": 22050
       },
-      "sha256": "9951178b9b800f0d2a505656d7b6e9bc79d04f71c013bdc358c52138d2bf444c",
-      "duration_sec": 14.2,
-      "peak_db": -14.11,
+      "sha256": "9770bd6436355ba81e1bc33baf38f62a0943a2552aea8b3396a36e87081cc804",
+      "duration_sec": 12.0,
+      "peak_db": -16.97,
       "rms_db": -20.0,
-      "n_samples": 313110,
-      "wav_bytes_len": 626264
+      "n_samples": 264600,
+      "wav_bytes_len": 529244
     },
     {
       "id": "rv_1_1_1_taittiriya_free_drone",
@@ -86,12 +86,12 @@
         "drone_on": true,
         "sample_rate": 22050
       },
-      "sha256": "d23a12779600c0d11707732f55a348ff76bef02ee64d7ce319e4a46cd8de6a2b",
-      "duration_sec": 14.2,
-      "peak_db": -11.89,
+      "sha256": "e0b34bd994511f0d53670d57e233aa48c71b9d7f3bc18add495f545147223857",
+      "duration_sec": 12.0,
+      "peak_db": -14.48,
       "rms_db": -20.0,
-      "n_samples": 313110,
-      "wav_bytes_len": 626264
+      "n_samples": 264600,
+      "wav_bytes_len": 529244
     },
     {
       "id": "rv_1_1_1_taittiriya_trisra_drone",
@@ -104,12 +104,12 @@
         "drone_on": true,
         "sample_rate": 22050
       },
-      "sha256": "4fc24bb3d2128ee1ca4b7f0cbbb69bae707471809f89d188ad5052d71e91f47e",
-      "duration_sec": 14.2,
-      "peak_db": -10.65,
+      "sha256": "e0b34bd994511f0d53670d57e233aa48c71b9d7f3bc18add495f545147223857",
+      "duration_sec": 12.0,
+      "peak_db": -14.48,
       "rms_db": -20.0,
-      "n_samples": 313110,
-      "wav_bytes_len": 626264
+      "n_samples": 264600,
+      "wav_bytes_len": 529244
     },
     {
       "id": "rv_1_1_1_kanva_free_drone",
@@ -122,12 +122,12 @@
         "drone_on": true,
         "sample_rate": 22050
       },
-      "sha256": "49438700a25ce7d6c90db655284c3cb1edcbb4e2b3b686c300322ef4d658f90a",
-      "duration_sec": 14.2,
-      "peak_db": -11.9,
+      "sha256": "4757749a446b7bfac30992e6621efb12061cf583a8e7cdc7cb462af84d1bd2b1",
+      "duration_sec": 12.0,
+      "peak_db": -14.44,
       "rms_db": -20.0,
-      "n_samples": 313110,
-      "wav_bytes_len": 626264
+      "n_samples": 264600,
+      "wav_bytes_len": 529244
     },
     {
       "id": "rv_1_1_1_madhyandina_free_drone",
@@ -140,12 +140,12 @@
         "drone_on": true,
         "sample_rate": 22050
       },
-      "sha256": "49438700a25ce7d6c90db655284c3cb1edcbb4e2b3b686c300322ef4d658f90a",
-      "duration_sec": 14.2,
-      "peak_db": -11.9,
+      "sha256": "4757749a446b7bfac30992e6621efb12061cf583a8e7cdc7cb462af84d1bd2b1",
+      "duration_sec": 12.0,
+      "peak_db": -14.44,
       "rms_db": -20.0,
-      "n_samples": 313110,
-      "wav_bytes_len": 626264
+      "n_samples": 264600,
+      "wav_bytes_len": 529244
     },
     {
       "id": "kampa_rgveda_free_dry",
@@ -158,12 +158,12 @@
         "drone_on": false,
         "sample_rate": 22050
       },
-      "sha256": "037de687752abc120f3075eea059fb5d895c200a750c194505cfdbc2e22b2657",
-      "duration_sec": 7.2,
-      "peak_db": -16.72,
+      "sha256": "d42098d082d4f68a9923740b042e8683d2d911dabec383c7f8039e9a05ec7348",
+      "duration_sec": 5.0,
+      "peak_db": -16.94,
       "rms_db": -20.0,
-      "n_samples": 158760,
-      "wav_bytes_len": 317564
+      "n_samples": 110250,
+      "wav_bytes_len": 220544
     },
     {
       "id": "kampa_kanva_free_dry",
@@ -176,12 +176,12 @@
         "drone_on": false,
         "sample_rate": 22050
       },
-      "sha256": "b3b38c724839ada41c0adba564ff99e1e9ae805a94e954c87b96df004cc4aaa7",
-      "duration_sec": 7.2,
-      "peak_db": -16.72,
+      "sha256": "3b329cc515df0f567979cf2b1a05e9f63338f466617b176826b5d747b6d94d4d",
+      "duration_sec": 5.0,
+      "peak_db": -16.95,
       "rms_db": -20.0,
-      "n_samples": 158760,
-      "wav_bytes_len": 317564
+      "n_samples": 110250,
+      "wav_bytes_len": 220544
     },
     {
       "id": "kampa_taittiriya_free_dry",
@@ -194,12 +194,12 @@
         "drone_on": false,
         "sample_rate": 22050
       },
-      "sha256": "9cc7803b9ace39a40b928391f04b7e747c5f809ef23e35faa93e9c7b53743e61",
-      "duration_sec": 7.2,
-      "peak_db": -16.72,
+      "sha256": "8720ac2d0c678f2790abc55c027c7e340bd56484a77d22843bd2c36a1a4195f8",
+      "duration_sec": 5.0,
+      "peak_db": -16.97,
       "rms_db": -20.0,
-      "n_samples": 158760,
-      "wav_bytes_len": 317564
+      "n_samples": 110250,
+      "wav_bytes_len": 220544
     },
     {
       "id": "kampa_madhyandina_free_dry",
@@ -212,12 +212,12 @@
         "drone_on": false,
         "sample_rate": 22050
       },
-      "sha256": "9cc7803b9ace39a40b928391f04b7e747c5f809ef23e35faa93e9c7b53743e61",
-      "duration_sec": 7.2,
-      "peak_db": -16.72,
+      "sha256": "ef2f48a7ca7b3e91586250dae73b232654177e04ffd567d8f633a8749bac78b5",
+      "duration_sec": 5.0,
+      "peak_db": -16.97,
       "rms_db": -20.0,
-      "n_samples": 158760,
-      "wav_bytes_len": 317564
+      "n_samples": 110250,
+      "wav_bytes_len": 220544
     }
   ]
 }

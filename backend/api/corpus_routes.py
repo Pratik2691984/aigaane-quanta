@@ -1,4 +1,4 @@
-﻿"""
+"""
 Corpus Search API — searches verses from Gita + 11 Upanishads via FTS5.
 
 Backed by `canon.db` (1,748 verses, IAST + Devanagari + meter).
@@ -29,6 +29,19 @@ def search_verses(q: str = Query(..., min_length=2), limit: int = 10):
     try:
         conn = sqlite3.connect(str(CANON_DB_PATH))
         cur = conn.cursor()
+        from backend.api.search_normalizer import build_fts5_match_query
+
+        match_expr = build_fts5_match_query(q)
+        if not match_expr:
+            conn.close()
+            return {
+                "query": q,
+                "count": 0,
+                "verses": [],
+                "results": [],
+                "total": 0,
+            }
+
         # Fetch MORE than needed (limit * 10) so we can diversify across sources.
         # Without this, FTS5 returns matches in rowid order — always Gita first.
         cur.execute(
@@ -37,7 +50,7 @@ def search_verses(q: str = Query(..., min_length=2), limit: int = 10):
             "WHERE verses_fts MATCH ? "
             "ORDER BY f.rank "
             "LIMIT ?",
-            (f"{q}*", limit * 10)
+            (match_expr, limit * 10)
         )
         all_rows = cur.fetchall()
         conn.close()

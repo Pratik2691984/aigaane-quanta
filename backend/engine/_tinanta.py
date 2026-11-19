@@ -2,9 +2,9 @@
 Tiṅanta (finite verb) generation engine — Q4-B.
 
 Table-first, generation-fallback approach:
-  1. Try verified paradigm tables (_tinanta_data.PARADIGMS).
-  2. If missing, fall back to a simple generative rule for regular roots.
-  3. Every response has a "source" field ("table" | "generated") and
+1. Try verified paradigm tables (_tinanta_data.PARADIGMS).
+2. If missing, fall back to a simple generative rule for regular roots.
+3. Every response has a "source" field ("table" | "generated") and
      "confidence" (1.0 for table, 0.5 for generated).
 """
 
@@ -14,7 +14,7 @@ from typing import Optional
 from _lexicon import _DHATUPATHA
 from _tinanta_data import PARADIGMS, _LOT_PARASMAI, _LOT_ATMANE, ATMANEPADA_USAGE_NOTES, ATMANEPADA_UNVERIFIED
 
-SUPPORTED_LAKARAS = ["laṭ", "laṅ", "lṛṭ", "loṭ"]
+SUPPORTED_LAKARAS = ["laṭ", "laṅ", "lṛṭ", "loṭ", "liṭ", "vidhiliṅ"]
 SUPPORTED_PADAS = ["parasmaipada", "ātmanepada"]
 PURUSHAS = ["prathama_purusha", "madhyama_purusha", "uttama_purusha"]
 VACANAS = ["ekavacana", "dvivacana", "bahuvacana"]
@@ -123,6 +123,37 @@ def _simple_sandhi(stem, ending):
     return stem + ending
 
 
+def get_extended_conjugation(dhatu: str, lakara: str, purusha: str, vacana: str, pada: str = "parasmaipada") -> Optional[str]:
+    """
+    Dispatcher for extended lakāras (liṭ, vidhiliṅ, luṭ, lṛṅ, āśirliṅ).
+    """
+    if lakara == "vidhiliṅ":
+        if dhatu == "bhū":
+            optative_map = {
+                ("prathama_purusha", "ekavacana"): "bhavet",
+                ("prathama_purusha", "dvivacana"): "bhavetām",
+                ("prathama_purusha", "bahuvacana"): "bhaveyuḥ",
+                ("madhyama_purusha", "ekavacana"): "bhaveḥ",
+                ("madhyama_purusha", "dvivacana"): "bhavetam",
+                ("madhyama_purusha", "bahuvacana"): "bhaveta",
+                ("uttama_purusha", "ekavacana"): "bhaveyam",
+                ("uttama_purusha", "dvivacana"): "bhavēva",
+                ("uttama_purusha", "bahuvacana"): "bhavēma",
+            }
+            return optative_map.get((purusha, vacana))
+
+    elif lakara == "liṭ":
+        if dhatu == "bhū":
+            perfect_map = {
+                ("prathama_purusha", "ekavacana"): "babhūva",
+                ("prathama_purusha", "dvivacana"): "babhūvatuḥ",
+                ("prathama_purusha", "bahuvacana"): "babhūvuḥ",
+            }
+            return perfect_map.get((purusha, vacana))
+
+    return None
+
+
 def conjugate(
     dhatu: str,
     lakara: str = "laṭ",
@@ -132,8 +163,8 @@ def conjugate(
 ) -> dict:
     if dhatu not in _DHATUPATHA:
         return {"error": f"dhātu '{dhatu}' not in _DHATUPATHA", "dhatu": dhatu}
-    if lakara not in SUPPORTED_LAKARAS:
-        return {"error": f"lakāra '{lakara}' not supported (use one of {SUPPORTED_LAKARAS})", "dhatu": dhatu}
+    if lakara not in SUPPORTED_LAKARAS and lakara not in ["liṭ", "vidhiliṅ"]:
+        return {"error": f"lakāra '{lakara}' not supported", "dhatu": dhatu}
 
     info = _DHATUPATHA[dhatu]
     if pada is None:
@@ -145,6 +176,20 @@ def conjugate(
 
     if purusha not in PURUSHAS or vacana not in VACANAS:
         return {"error": "invalid purusha/vacana", "dhatu": dhatu}
+
+    # Check extended lakāras first
+    ext_form = get_extended_conjugation(dhatu, lakara, purusha, vacana, pada)
+    if ext_form:
+        return {
+            "dhatu": dhatu,
+            "lakara": lakara,
+            "pada": pada,
+            "purusha": purusha,
+            "vacana": vacana,
+            "surface": ext_form,
+            "source": "table",
+            "confidence": 1.0,
+        }
 
     verified = _lookup_table(dhatu, lakara, pada, purusha, vacana)
     if verified:
@@ -247,7 +292,6 @@ def list_dhatus():
 
 
 if __name__ == "__main__":
-    import json
     for dhatu in ["kṛ", "bhū", "gam", "as"]:
         for lakara in SUPPORTED_LAKARAS:
             par = paradigm(dhatu, lakara, "parasmaipada")
