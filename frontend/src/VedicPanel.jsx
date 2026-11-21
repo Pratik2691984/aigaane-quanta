@@ -54,6 +54,11 @@ export default function VedicPanel({
             ))}
           </select>
         </label>
+        {recension === "samaveda" && (
+          <span style={{ fontSize: 12, color: "#92400e", background: "#fef3c7", padding: "3px 8px", borderRadius: 4 }}>
+            Samaveda melodic/chant structure differs from Rgveda svara contour; use MIDI export rather than svara WAV.
+          </span>
+        )}
         <button onClick={playing ? onStop : onPlay} disabled={loading}>
           {playing ? "Stop Chant" : loading ? "Loading..." : "Play Vedic Chant"}
         </button>

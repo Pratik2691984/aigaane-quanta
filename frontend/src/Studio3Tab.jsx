@@ -209,7 +209,9 @@ export default function Studio3Tab() {
   };
 
   const playVedicChant = async () => {
-    if (!vedicText.trim() || !workletNodeRef.current) return;
+    if (!vedicText.trim()) return;
+    const node = await ensureAudio();
+    if (!node) return;
     setVedicLoading(true);
     setVedicNotice(null);
     stopVedicChant();
