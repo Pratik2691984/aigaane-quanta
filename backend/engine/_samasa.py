@@ -371,23 +371,6 @@ def recursive_split_compound(word: str, depth: int = 1) -> Optional[Dict[str, An
 
     return None
 
-    left = split_res.get("left", split_res.get("components", ["", ""])[0])
-    right = split_res.get("right", split_res.get("components", ["", ""])[1] if len(split_res.get("components", [])) > 1 else "")
-    ctype = split_res.get("compound_type", "tatpurusha")
-
-    sub_right = recursive_split_compound(right, depth + 1) if len(right) > 3 else None
-
-    return {
-        "surface": word,
-        "compound_type": ctype,
-        "components": [left, right],
-        "left_stem": left,
-        "right_stem": right,
-        "depth": depth,
-        "sub_tree": sub_right,
-        "confidence": split_res.get("confidence", 0.85)
-    }
-
 
 
 def is_compound(word: str) -> bool:
