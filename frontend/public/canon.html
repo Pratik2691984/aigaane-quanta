@@ -15,6 +15,17 @@
     button { background: #fbbf24; color: #0f172a; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: bold; transition: opacity 0.2s; }
     button:hover { opacity: 0.8; }
     .chapter-header { color: #fbbf24; margin-top: 3rem; margin-bottom: 1rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; }
+
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; align-items: center; }
+    .filter-btn { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; padding: 0.45rem 0.9rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+    .filter-btn.active { background: #fbbf24; color: #0f172a; border-color: #fbbf24; }
+    .gloss-line { color: #cbd5e1; font-size: 0.9rem; margin: 0.4rem 0 0.75rem; }
+    .theme-pill { display: inline-block; background: rgba(251, 191, 36, 0.14); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); border-radius: 999px; padding: 0.1rem 0.55rem; font-size: 0.75rem; margin-right: 0.35rem; }
+    .theme-pill.vedic { background: rgba(56, 189, 248, 0.14); color: #7dd3fc; border-color: rgba(56, 189, 248, 0.38); }
+    .provenance-tag { color: #94a3b8; font-size: 0.8rem; }
+    .card-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+    .handoff-link { color: #fbbf24; font-size: 0.85rem; border: 1px solid #475569; padding: 0.42rem 0.75rem; border-radius: 4px; background: #0f172a; }
+    .handoff-link.restrained { color: #64748b; border-color: #334155; background: #1e293b; opacity: 0.65; cursor: not-allowed; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -35,6 +46,14 @@
   </div>
   <a href="index.html">← Aigaane</a>
   <h1>Bhagavad Gītā · Complete Canon (700 Verses)</h1>
+  <div class="filter-bar" id="canon-filter-bar">
+    <button type="button" class="filter-btn active" data-filter="all">All</button>
+    <button type="button" class="filter-btn" data-filter="gita">Gītā</button>
+    <button type="button" class="filter-btn" data-filter="ramayana">Rāmāyaṇa</button>
+    <button type="button" class="filter-btn" data-filter="samaveda">Sāmaveda (AIGAANE-SV-K-%)</button>
+    <button type="button" class="filter-btn" data-filter="parisista">Pariśiṣṭas (AIGAANE-AVP-%)</button>
+    <button type="button" class="filter-btn" data-filter="music">Music-tagged</button>
+  </div>
   <div id="canon-list"></div>
 
   <script>
@@ -46,9 +65,12 @@
         id: "RM_01_04_08",
         collection: "ramayana",
         sourceLabel: "Vālmīki Rāmāyaṇa (1.4.8)",
+        provenance: "github.com/Ashutosh-Vijay/Valmiki_Ramayan_Dataset",
         chapter: 4,
         verse: 8,
         themes: ["music", "gandharva"],
+        vedicThemes: [],
+        allowGandharva: true,
         gloss: "Melodic & rhythmic rendering (pāṭhye geye ca madhuraṃ ... tantrīlayasamanvitam)",
         dev: "पाठ्ये गेये च मधुरं प्रमाणैस्त्रिभिरन्वितम्। जातिभिस्सप्तभिर्बद्धं तन्त्रीलयसमन्वितम्।।1.4.8।।",
         iast: "pāṭhye geye ca madhuraṃ pramāṇaistribhiranvitam| jātibhissaptabhirbaddhaṃ tantrīlayasamanvitam"
@@ -57,9 +79,12 @@
         id: "RM_01_04_10",
         collection: "ramayana",
         sourceLabel: "Vālmīki Rāmāyaṇa (1.4.10)",
+        provenance: "github.com/Ashutosh-Vijay/Valmiki_Ramayan_Dataset",
         chapter: 4,
         verse: 10,
         themes: ["music", "gandharva"],
+        vedicThemes: [],
+        allowGandharva: true,
         gloss: "Gāndharva mastery & mūrchanā-sthāna awareness (gāndharvatattvajñau mūrchanāsthānakovidau)",
         dev: "तौ तु गान्धर्वतत्त्वज्ञौ मूर्छनास्थानकोविदौ। भ्रातरौ स्वरसम्पन्नौ गन्धर्वाविव रूपिणौ।।1.4.10।।",
         iast: "tau tu gāndharvatattvajñau mūrchanāsthānakovidau| bhrātarau svarasampannau gandharvāviva rūpiṇau"
@@ -68,12 +93,71 @@
         id: "RM_01_05_18",
         collection: "ramayana",
         sourceLabel: "Vālmīki Rāmāyaṇa (1.5.18)",
+        provenance: "github.com/Ashutosh-Vijay/Valmiki_Ramayan_Dataset",
         chapter: 5,
         verse: 18,
         themes: ["music", "instrument"],
+        vedicThemes: [],
+        allowGandharva: true,
         gloss: "Classical & ceremonial instruments including vīṇā, mṛdaṅga, dundubhi, and paṇava",
         dev: "दुन्दुभीभिर्मृदङ्गैश्च वीणाभि: पणवैस्तथा । नादितां भृशमत्यर्थं पृथिव्यां तामनुत्तमाम् ।।1.5.18।।",
         iast: "dundubhībhirmṛdaṅgaiśca vīṇābhi: paṇavaistathā | nāditāṃ bhṛśamatyarthaṃ pṛthivyāṃ tāmanuttamām"
+      },
+      {
+        id: "SV_K_01_02_01_05_005A",
+        collection: "samaveda",
+        sourceLabel: "Sāmaveda Kauthuma (AIGAANE-SV-K-01-02-01-05.005-a)",
+        provenance: "gretil.org/samaveda_kauthuma",
+        chapter: 2,
+        verse: 5,
+        themes: [],
+        vedicThemes: ["sāman", "svara", "vocal", "recitation"],
+        allowGandharva: false,
+        gloss: "Vedic svara invocation (somānāṃ svaraṇaṃ kṛṇuhi brahmaṇaspate) — oral/sāman layer",
+        dev: "",
+        iast: "somānāṃ svaraṇaṃ kṛṇuhi brahmaṇaspate"
+      },
+      {
+        id: "SV_K_01_04_02_10_008A",
+        collection: "samaveda",
+        sourceLabel: "Sāmaveda Kauthuma (AIGAANE-SV-K-01-04-02-10.008-a)",
+        provenance: "gretil.org/samaveda_kauthuma",
+        chapter: 4,
+        verse: 8,
+        themes: [],
+        vedicThemes: ["sāman", "vocal", "recitation"],
+        allowGandharva: false,
+        gloss: "Vedic sāman chanting to Indra (indrāya sāma gāyata viprāya bṛhate bṛhat) — oral/recitation layer",
+        dev: "",
+        iast: "indrāya sāma gāyata viprāya bṛhate bṛhat"
+      },
+      {
+        id: "AVP_01_39_004",
+        collection: "parisista",
+        sourceLabel: "Atharvaveda Pariśiṣṭas (AIGAANE-AVP-01-39.004)",
+        provenance: "gretil.org/atharvaveda_parisistas",
+        chapter: 1,
+        verse: 39,
+        themes: [],
+        vedicThemes: ["sāman", "recitation"],
+        allowGandharva: false,
+        gloss: "Pariśiṣṭa reference to three savanas and sāmagau chanters — Vedic recitation layer",
+        dev: "",
+        iast: "yāv īḍitāv ātmavidbhir maṇīṣibhiḥ sahitau [yau] trīṇi savanāni sāmagau"
+      },
+      {
+        id: "AVP_03_03_005",
+        collection: "parisista",
+        sourceLabel: "Atharvaveda Pariśiṣṭas (AIGAANE-AVP-03-03.005)",
+        provenance: "gretil.org/atharvaveda_parisistas",
+        chapter: 3,
+        verse: 3,
+        themes: [],
+        vedicThemes: ["sāman", "vocal", "recitation"],
+        allowGandharva: false,
+        gloss: "Pariśiṣṭa observance note on sāmaga practitioner — Vedic recitation layer",
+        dev: "",
+        iast: "vadhabandhaparikleśaṃ kośavāhanasaṃkṣayaḥ | karoty etānvaye 'vasthās tapoyukto 'pi sāmagaḥ"
       }
     ];
 
@@ -85,9 +169,12 @@
           ...v,
           collection: "gita",
           sourceLabel: `Bhagavad Gītā (AIGAANE-BGM-${v.id})`,
+          provenance: "bhagavad-gita / canon.db",
           themes: isMusic ? ["music"] : ["dharma"],
+          vedicThemes: [],
+          allowGandharva: true,
           gloss: isMusic
-            ? "Sāman / gāndharva / śaṅkha sonic reference in Bhagavad Gītā"
+            ? "Sāman / gāndharva / śaṅkha reference in Bhagavad Gītā"
             : "Bhagavad Gītā canonical verse"
         };
       })
@@ -107,9 +194,13 @@
 
       let currentGroup = '';
       filtered.forEach(v => {
-        const groupTitle = v.collection === 'ramayana'
-          ? `Rāmāyaṇa · Chapter ${v.chapter}`
-          : `Bhagavad Gītā · Chapter ${v.chapter}`;
+        const groupMap = {
+          ramayana: `Rāmāyaṇa · Chapter ${v.chapter}`,
+          samaveda: `Sāmaveda Kauthuma · ${v.sourceLabel}`,
+          parisista: `Atharvaveda Pariśiṣṭas · ${v.sourceLabel}`,
+          gita: `Bhagavad Gītā · Chapter ${v.chapter}`
+        };
+        const groupTitle = groupMap[v.collection] || `Chapter ${v.chapter}`;
         if (groupTitle !== currentGroup) {
           currentGroup = groupTitle;
           const header = document.createElement('h2');
@@ -118,19 +209,24 @@
           container.appendChild(header);
         }
 
-        const safeIast = (v.iast || '').replace(/'/g, "\'");
+        const safeIast = (v.iast || '').replace(/'/g, "\\'");
         const encodedText = encodeURIComponent(v.iast || v.dev || '');
-        const themeHtml = (v.themes || []).map(t => `<span class="theme-pill">${t}</span>`).join('');
+        const musicalPills = (v.themes || []).map(t => `<span class="theme-pill">${t}</span>`).join('');
+        const vedicPills = (v.vedicThemes || []).map(t => `<span class="theme-pill vedic">${t}</span>`).join('');
+        const gandharvaLink = v.allowGandharva
+          ? `<a class="handoff-link" href="gandharva.html?text=${encodedText}">Send to Gāndharva 22-śruti</a>`
+          : `<span class="handoff-link restrained" aria-disabled="true" title="Vedic recitation/sāman entry kept separate from 22-śruti synthesis">Gāndharva 22-śruti (Vedic boundary)</span>`;
+
         const card = document.createElement('div');
         card.className = 'verse-card';
         card.innerHTML = `
-          <div class="dev">${v.dev}</div>
+          ${v.dev ? `<div class="dev">${v.dev}</div>` : ''}
           <div class="iast">${v.iast}</div>
-          <div class="gloss-line">${themeHtml}${v.gloss || ''}</div>
-          <div class="meta"><span>${v.sourceLabel || v.id}</span><span>Chapter ${v.chapter} · Verse ${v.verse}</span></div>
+          <div class="gloss-line">${musicalPills}${vedicPills}${v.gloss || ''}</div>
+          <div class="meta"><span>${v.sourceLabel || v.id}</span><span class="provenance-tag">Provenance: ${v.provenance || 'canon.db'}</span></div>
           <div class="card-actions">
             <button onclick="playAudio('${safeIast}', '${v.id}')">🎵 Play Just Intonation</button>
-            <a class="handoff-link" href="gandharva.html?text=${encodedText}">Open in Gāndharva</a>
+            ${gandharvaLink}
             <a class="handoff-link" href="mantra.html?text=${encodedText}">Open in Mantra Studio</a>
           </div>
           <div id="audio-out-${v.id}" style="margin-top:1rem;"></div>
