@@ -4,6 +4,8 @@ import { API_URL } from "./config";
 export default function NyayaTab() {
   const [candidateId, setCandidateId] = useState("cand_01");
   const [sutraChain, setSutraChain] = useState("1.1.1, 1.1.2");
+  const [vigraha, setVigraha] = useState("");
+  const [samasaType, setSamasaType] = useState("");
   const [proof, setProof] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -16,6 +18,8 @@ export default function NyayaTab() {
         body: JSON.stringify({
           candidate_id: candidateId,
           sutra_chain: sutraChain.split(",").map((s) => s.trim()).filter(Boolean),
+          vigraha: vigraha.trim() || null,
+          samasa_type: samasaType.trim() || null,
         }),
       });
       setProof(await res.json());
@@ -60,6 +64,27 @@ export default function NyayaTab() {
         >
           {loading ? "Verifying..." : "Verify"}
         </button>
+      </div>
+
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
+        <input
+          value={vigraha}
+          onChange={(e) => setVigraha(e.target.value)}
+          placeholder="Optional vigraha (e.g., rājñaḥ putraḥ)"
+          style={{
+            padding: "10px", flex: 1, minWidth: "200px", borderRadius: "6px",
+            border: "1px solid #334155", background: "#1e293b", color: "white",
+          }}
+        />
+        <input
+          value={samasaType}
+          onChange={(e) => setSamasaType(e.target.value)}
+          placeholder="Optional samāsa type (e.g., tatpuruṣa)"
+          style={{
+            padding: "10px", width: "220px", borderRadius: "6px",
+            border: "1px solid #334155", background: "#1e293b", color: "white",
+          }}
+        />
       </div>
 
       {proof && (
