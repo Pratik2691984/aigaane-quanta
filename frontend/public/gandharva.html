@@ -475,6 +475,12 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const handedOffText = (params.get("text") || params.get("mantra") || "").trim();
+      const inputEl = document.getElementById("mantra-input");
+      if (handedOffText && inputEl) {
+        inputEl.value = handedOffText;
+      }
       refreshMatrix();
     });
   </script>

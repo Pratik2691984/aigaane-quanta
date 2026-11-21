@@ -709,6 +709,11 @@
 
     const $ = id => document.getElementById(id);
     const mantraEl = $('mantra-text');
+    const urlParams = new URLSearchParams(window.location.search);
+    const incomingMantraText = (urlParams.get('text') || urlParams.get('mantra') || '').trim();
+    if (incomingMantraText && mantraEl) {
+      mantraEl.value = incomingMantraText;
+    }
     const ragaEl = $('raga-select');
     const talaEl = $('tala-select');
     const bpmEl = $('bpm');
@@ -731,6 +736,9 @@
       status.textContent = `${state.aksharas.length} syllables · ${totalMatras} mātrās`;
     }
     mantraEl.addEventListener('input', refreshProsody);
+    if (incomingMantraText && typeof refreshProsody === 'function') {
+      refreshProsody();
+    }
 
     // --- Repetition grid ---
     document.querySelectorAll('#repetition-grid button').forEach(b => {
