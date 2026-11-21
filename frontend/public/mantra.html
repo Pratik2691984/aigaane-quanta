@@ -1096,6 +1096,14 @@
       if (metaEl) metaEl.textContent = "Vocal preview stopped.";
     }
 
+    function stopMantraVocal() {
+      const metaEl = document.getElementById("wav-meta");
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (metaEl) metaEl.textContent = "Vocal preview stopped.";
+    }
+
     function speakMantraVocal() {
       const textEl = document.getElementById("mantra-text");
       const metaEl = document.getElementById("wav-meta");
@@ -1144,6 +1152,10 @@
     const speakVocalBtn = document.getElementById("speak-vocal-btn");
     if (speakVocalBtn) {
       speakVocalBtn.addEventListener("click", speakMantraVocal);
+    }
+    const stopVocalBtn = document.getElementById("stop-vocal-btn");
+    if (stopVocalBtn) {
+      stopVocalBtn.addEventListener("click", stopMantraVocal);
     }
     const stopVocalBtn = document.getElementById("stop-vocal-btn");
     if (stopVocalBtn) {
