@@ -280,6 +280,7 @@
         </label>
         <button type="button" class="export-btn" id="render-wav-btn">↓ Download Vedic .wav</button>
         <button type="button" class="export-btn" id="speak-vocal-btn">🔊 Vocal Preview (TTS)</button>
+        <button type="button" class="export-btn" id="stop-vocal-btn">⏹ Stop Vocal</button>
       </div>
       <div id="wav-meta" class="wav-meta">Deterministic pitch/drone synthesis (not a human voice recording).</div>
       <audio id="vedic-wav-player" controls style="display:none;width:100%;margin-top:0.6rem;"></audio>
@@ -1087,6 +1088,14 @@
       renderWavBtn.addEventListener("click", downloadVedicWav);
     }
 
+    function stopMantraVocal() {
+      const metaEl = document.getElementById("wav-meta");
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (metaEl) metaEl.textContent = "Vocal preview stopped.";
+    }
+
     function speakMantraVocal() {
       const textEl = document.getElementById("mantra-text");
       const metaEl = document.getElementById("wav-meta");
@@ -1100,31 +1109,45 @@
         return;
       }
       window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(txt);
+      const segments = txt
+        .split(/[\r\n।॥]+/)
+        .map(s => s.trim())
+        .filter(Boolean);
+      const queue = segments.length ? segments : [txt];
       const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
       const indicVoice = voices.find(v => /^(sa|hi|mr|bn|gu|kn|ml|ta|te)/i.test(v.lang || ""));
-      if (indicVoice) {
-        utter.voice = indicVoice;
-        utter.lang = indicVoice.lang;
-      }
-      utter.rate = 0.85;
-      utter.onend = () => {
-        if (metaEl) metaEl.textContent = "Vocal preview finished (browser TTS; deterministic WAV remains pitch/drone synthesis).";
-      };
-      utter.onerror = () => {
-        if (metaEl) metaEl.textContent = "Browser TTS could not speak this text; deterministic WAV remains pitch/drone synthesis.";
-      };
+      const voiceLabel = indicVoice ? `${indicVoice.name} (${indicVoice.lang})` : "default system voice";
+
       if (metaEl) {
-        metaEl.textContent = indicVoice
-          ? `Playing browser vocal preview using voice: ${indicVoice.name} (${indicVoice.lang})...`
-          : "Playing browser vocal preview (default system voice; deterministic WAV remains pitch/drone synthesis)...";
+        metaEl.textContent = `Speaking ${queue.length} segment(s) via ${voiceLabel}...`;
       }
-      window.speechSynthesis.speak(utter);
+
+      queue.forEach((seg, idx) => {
+        const utter = new SpeechSynthesisUtterance(seg);
+        if (indicVoice) {
+          utter.voice = indicVoice;
+          utter.lang = indicVoice.lang;
+        }
+        utter.rate = 0.84;
+        if (idx === queue.length - 1) {
+          utter.onend = () => {
+            if (metaEl) metaEl.textContent = `Vocal preview finished (${voiceLabel}).`;
+          };
+        }
+        utter.onerror = () => {
+          if (metaEl) metaEl.textContent = "Browser TTS could not speak this segment.";
+        };
+        window.speechSynthesis.speak(utter);
+      });
     }
 
     const speakVocalBtn = document.getElementById("speak-vocal-btn");
     if (speakVocalBtn) {
       speakVocalBtn.addEventListener("click", speakMantraVocal);
+    }
+    const stopVocalBtn = document.getElementById("stop-vocal-btn");
+    if (stopVocalBtn) {
+      stopVocalBtn.addEventListener("click", stopMantraVocal);
     }
 
   })();

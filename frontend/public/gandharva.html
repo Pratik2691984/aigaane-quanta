@@ -175,6 +175,8 @@
         </label>
         <button type="button" class="btn" id="gandharva-export-wav" onclick="downloadGandharvaWav()" style="padding:6px 12px;font-size:0.85rem;">↓ Download .wav</button>
         <button type="button" class="btn" id="gandharva-export-mp3" onclick="downloadGandharvaMp3()" style="padding:6px 12px;font-size:0.85rem;">↓ Download .mp3</button>
+        <button type="button" class="btn" id="gandharva-speak-vocal" onclick="speakGandharvaVocal()" style="padding:6px 12px;font-size:0.85rem;">🔊 Vocal Preview</button>
+        <button type="button" class="btn" id="gandharva-stop-vocal" onclick="stopGandharvaVocal()" style="padding:6px 12px;font-size:0.85rem;">⏹ Stop Vocal</button>
       </div>
       <div class="inputs">
         <textarea id="mantra-input" rows="2" placeholder="Enter Ārati, Bhajan, or verse text...">dharmakṣetre kurukṣetre samavetā yuyutsavaḥ</textarea>
@@ -440,6 +442,55 @@
       a.click();
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 60000);
+    }
+
+    function stopGandharvaVocal() {
+      const status = document.getElementById("mantra-status");
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (status) {
+        status.innerHTML = '<span class="hint">Vocal preview stopped.</span>';
+      }
+    }
+
+    function speakGandharvaVocal() {
+      const text = (document.getElementById("mantra-input")?.value || "").trim();
+      const compType = document.getElementById("gandharva-composition-type")?.value || "bhajan_arati";
+      const status = document.getElementById("mantra-status");
+      if (!text) {
+        if (status) status.innerHTML = '<span class="warn">Enter Ārati, Bhajan, or verse text first for vocal preview.</span>';
+        return;
+      }
+      if (!("speechSynthesis" in window)) {
+        if (status) status.innerHTML = '<span class="warn">Browser speechSynthesis unavailable here.</span>';
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const lines = text.split(/[\r\n।॥]+/).map(s => s.trim()).filter(Boolean);
+      const queue = lines.length ? lines : [text];
+      const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+      const indicVoice = voices.find(v => /^(hi|sa|mr|gu|bn|kn|ml|ta|te)/i.test(v.lang || ""));
+      const voiceLabel = indicVoice ? `${indicVoice.name} (${indicVoice.lang})` : "default system voice";
+
+      if (status) {
+        status.innerHTML = `<span class="ok">Playing ${compType} vocal preview (${queue.length} line(s), ${voiceLabel})...</span>`;
+      }
+
+      queue.forEach((line, idx) => {
+        const utter = new SpeechSynthesisUtterance(line);
+        if (indicVoice) {
+          utter.voice = indicVoice;
+          utter.lang = indicVoice.lang;
+        }
+        utter.rate = 0.88;
+        if (idx === queue.length - 1) {
+          utter.onend = () => {
+            if (status) status.innerHTML = `<span class="hint">Vocal preview finished (${voiceLabel}).</span>`;
+          };
+        }
+        window.speechSynthesis.speak(utter);
+      });
     }
 
     function downloadGandharvaWav() {
