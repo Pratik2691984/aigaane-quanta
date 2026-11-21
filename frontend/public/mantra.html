@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -196,7 +196,12 @@
       font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
       color: var(--text-muted);
     }
-  </style>
+  
+    .recension-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 0.85rem; }
+    .recension-row label { font-size: 0.85rem; color: var(--text-muted, #94a3b8); display: flex; align-items: center; gap: 0.4rem; }
+    .recension-row select { background: #0f172a; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; padding: 0.35rem 0.6rem; font-size: 0.85rem; }
+    .wav-meta { font-size: 0.8rem; color: var(--text-muted, #94a3b8); font-family: monospace; margin-top: 0.5rem; word-break: break-all; }
+</style>
 </head>
 <body>
   <div class="container">
@@ -264,6 +269,19 @@
         <button id="play-btn" class="primary">▶ Begin Japa</button>
         <button id="stop-btn" class="stop" style="display:none;">■ Stop</button>
       </div>
+      <div class="recension-row">
+        <label>Recension
+          <select id="vedic-recension">
+            <option value="rgveda_sakala">Ṛgveda Śākala</option>
+            <option value="taittiriya">Taittirīya</option>
+            <option value="kanva">Kāṇva</option>
+            <option value="madhyandina">Mādhyandina</option>
+          </select>
+        </label>
+        <button type="button" class="export-btn" id="render-wav-btn">↓ Download Vedic .wav</button>
+      </div>
+      <div id="wav-meta" class="wav-meta"></div>
+      <audio id="vedic-wav-player" controls style="display:none;width:100%;margin-top:0.6rem;"></audio>
     </section>
 
     <!-- Progress panel -->
@@ -946,6 +964,120 @@
     // --- Init ---
     exportCount.textContent = `${loadFeedback().length} sessions recorded`;
     refreshProsody();
+
+    function getVedicApiBases() {
+      const bases = [];
+      if (window.location.protocol.startsWith("http")) {
+        bases.push(window.location.origin);
+      }
+      bases.push("https://api.aigaane.in");
+      return [...new Set(bases)];
+    }
+
+    function triggerWavBlobDownload(b64, filename) {
+      const binStr = atob(b64);
+      const bytes = new Uint8Array(binStr.length);
+      for (let i = 0; i < binStr.length; i++) {
+        bytes[i] = binStr.charCodeAt(i);
+      }
+      const blob = new Blob([bytes], { type: "audio/wav" });
+      const url = URL.createObjectURL(blob);
+      const player = document.getElementById("vedic-wav-player");
+      if (player) {
+        player.src = url;
+        player.style.display = "block";
+      }
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    }
+
+    async function downloadVedicWav() {
+      const textEl = document.getElementById("mantra-text");
+      const recEl = document.getElementById("vedic-recension");
+      const bpmEl = document.getElementById("bpm");
+      const droneEl = document.getElementById("drone");
+      const metaEl = document.getElementById("wav-meta");
+      const statusEl = document.getElementById("status");
+      const btn = document.getElementById("render-wav-btn");
+
+      const rawText = (textEl ? textEl.value : "").trim();
+      if (!rawText) {
+        if (metaEl) metaEl.textContent = "Enter mantra text first before rendering .wav.";
+        return;
+      }
+
+      const payload = {
+        text: rawText.normalize("NFC"),
+        recension: recEl ? recEl.value : "rgveda_sakala",
+        bpm: bpmEl ? (parseFloat(bpmEl.value) || 60.0) : 60.0,
+        sa_hz: 240.0,
+        drone_on: droneEl ? Boolean(droneEl.checked) : true,
+        sample_rate: 22050
+      };
+
+      if (btn) btn.disabled = true;
+      if (metaEl) metaEl.textContent = "Rendering deterministic Vedic WAV...";
+
+      const endpoints = [];
+      for (const base of getVedicApiBases()) {
+        endpoints.push(`${base}/api/v3/vedic/render`);
+        endpoints.push(`${base}/api/v1/vedic/render`);
+      }
+
+      let lastErr = "No reachable Vedic render endpoint";
+      for (const ep of endpoints) {
+        try {
+          const resp = await fetch(ep, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          if (!resp.ok) {
+            lastErr = `HTTP ${resp.status} from ${ep}`;
+            continue;
+          }
+          const data = await resp.json();
+          if (data.rejected && data.rejected.length > 0) {
+            const reasons = data.rejected.map(r => r.detail || r.reason_code).join("; ");
+            if (metaEl) metaEl.textContent = `Vedic render rejected: ${reasons}`;
+            if (statusEl) statusEl.textContent = `Rejected: ${reasons}`;
+            if (btn) btn.disabled = false;
+            return;
+          }
+          const cand = data.candidates && data.candidates[0];
+          if (!cand || !cand.wav_b64) {
+            lastErr = "Missing wav_b64 in render response";
+            continue;
+          }
+          const fname = `aigaane_vedic_${payload.recension}_${Date.now()}.wav`;
+          triggerWavBlobDownload(cand.wav_b64, fname);
+          const shaShort = (cand.sha256 || "").slice(0, 16);
+          if (metaEl) {
+            metaEl.textContent = `Exported ${fname} · ${Number(cand.duration_sec || 0).toFixed(2)}s · ${cand.sample_rate || 22050} Hz · sha256:${shaShort}`;
+          }
+          if (statusEl) statusEl.textContent = `Downloaded ${fname} (${payload.recension}).`;
+          if (btn) btn.disabled = false;
+          return;
+        } catch (err) {
+          lastErr = err && err.message ? err.message : String(err);
+        }
+      }
+
+      if (metaEl) {
+        metaEl.textContent = `WAV render unavailable (${lastErr}). Ensure backend /api/v3/vedic/render is reachable and text carries Vedic svara marks.`;
+      }
+      if (btn) btn.disabled = false;
+    }
+
+    const renderWavBtn = document.getElementById("render-wav-btn");
+    if (renderWavBtn) {
+      renderWavBtn.addEventListener("click", downloadVedicWav);
+    }
   })();
   </script>
 </body>
