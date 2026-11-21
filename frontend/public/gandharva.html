@@ -245,17 +245,37 @@
       const grid = document.getElementById("swara-grid");
       const badge = document.getElementById("status-badge");
 
-      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px;">Fetching ratios...</div>';
-      
-      const intervals = await engine.loadSrutiMatrix(saHz);
-      if (intervals && intervals.length > 0) {
+      if (grid) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;">Loading 22-śruti ratios for Sa = ${saHz.toFixed(1)} Hz...</div>`;
+      }
+      if (badge) {
+        badge.textContent = "Loading Śruti Matrix...";
+        badge.className = "badge warn";
+      }
+
+      let intervals = [];
+      try {
+        intervals = await engine.loadSrutiMatrix(saHz);
+      } catch (err) {
+        intervals = [];
+      }
+
+      if (Array.isArray(intervals) && intervals.length > 0) {
         currentMatrix = intervals;
-        badge.textContent = `22-Śruti Loaded (${intervals.length} intervals)`;
-        badge.className = "badge ok";
+        if (badge) {
+          badge.textContent = `22-Śruti Loaded (${intervals.length} intervals)`;
+          badge.className = "badge ok";
+        }
         renderGrid(intervals);
       } else {
-        badge.textContent = "Offline / Local Matrix";
-        badge.className = "badge warn";
+        currentMatrix = [];
+        if (badge) {
+          badge.textContent = "Offline / Local Matrix";
+          badge.className = "badge warn";
+        }
+        if (grid) {
+          grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;">Śruti ratios unavailable for ${saHz.toFixed(1)} Hz. Adjust Sa Hz or retry.</div>`;
+        }
       }
     }
 

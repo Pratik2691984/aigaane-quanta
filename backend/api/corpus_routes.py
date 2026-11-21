@@ -69,18 +69,25 @@ def search_verses(q: str = Query(..., min_length=2), limit: int = 10):
             if by_source[src] and len(selected) < limit:
                 selected.append(by_source[src].pop(0))
 
-    verses = [
-        {
-            "chapter": r[0],
-            "verse": r[1],
-            "text": r[2],
-            "iast": r[3],
-            "transliteration": r[3],  # frontend-compat alias
-            "meter": r[4],
-            "source": r[5],
-        }
-        for r in selected
-    ]
+    from backend.api.search_normalizer import build_verse_gloss, detect_themes
+
+    verses = []
+    for r in selected:
+        themes = detect_themes(q, text=r[2] or "", iast=r[3] or "", source=r[5] or "")
+        gloss = build_verse_gloss(themes, source=r[5] or "", meter=r[4] or "")
+        verses.append(
+            {
+                "chapter": r[0],
+                "verse": r[1],
+                "text": r[2],
+                "iast": r[3],
+                "transliteration": r[3],  # frontend-compat alias
+                "meter": r[4],
+                "source": r[5],
+                "matched_themes": themes,
+                "gloss": gloss,
+            }
+        )
 
     return {
         "query": q,

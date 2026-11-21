@@ -48,3 +48,12 @@ def test_canon_db_ingested_sources_and_fts_count():
         assert sv_cnt == 2247
     finally:
         conn.close()
+def test_corpus_search_returns_matched_themes_and_gloss():
+    r = client.get("/api/v3/corpus/search", params={"q": "music", "limit": 5})
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["count"] >= 1
+    first = body["verses"][0]
+    assert "matched_themes" in first and isinstance(first["matched_themes"], list)
+    assert "music" in first["matched_themes"]
+    assert isinstance(first.get("gloss"), str) and len(first["gloss"]) > 0

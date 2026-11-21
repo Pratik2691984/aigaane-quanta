@@ -1,4 +1,4 @@
-﻿import re
+import re
 import unicodedata
 from pathlib import Path
 from typing import List
@@ -52,3 +52,64 @@ def build_fts5_match_query(raw_query: str) -> str:
         cleaned = re.sub(r"[^\w\u0900-\u097f]+", "", raw_query or "")
         return f'"{cleaned}"*' if cleaned else ""
     return " OR ".join(f'"{tok}"*' for tok in tokens)
+THEME_KEYWORDS = {
+    "music": [
+        "music", "sangita", "sangeeta", "sangeet", "svara", "swara",
+        "gita", "gana", "sama", "samaveda", "gandharva", "vina", "venu",
+        "mridanga", "shankha", "raga", "tala", "sruti",
+    ],
+    "gandharva": ["gandharva", "sangita", "sangeeta", "raga", "sruti", "tala"],
+    "instrument": ["vina", "venu", "mridanga", "shankha", "dundubhi", "bheri", "vadya"],
+    "chant": ["mantra", "veda", "svara", "stotra", "sama", "rc", "yajus"],
+    "fire": ["agni", "vaishvanara", "hutashana", "havya"],
+    "duty": ["dharma", "karma", "vrata", "svadharma"],
+}
+
+THEME_GLOSSES = {
+    "music": "Musical / melodic resonance (svara, gāna, or sāman context)",
+    "gandharva": "Gāndharva / melodic-rhythmic art context",
+    "instrument": "Sacred or classical sound instrument (vīṇā, veṇu, śaṅkha, or percussion) context",
+    "chant": "Vedic recitation, mantra, or stotra context",
+    "fire": "Agni / ritual fire offering context",
+    "duty": "Dharma, karma, or vowed observance context",
+}
+
+
+def detect_themes(query: str, text: str = "", iast: str = "", source: str = "") -> list[str]:
+    """Deterministically infer matching theme tags from query and verse fields."""
+    combined = " ".join(
+        part for part in (
+            fold_diacritics_and_phonetics(query),
+            fold_diacritics_and_phonetics(iast),
+            fold_diacritics_and_phonetics(text),
+            fold_diacritics_and_phonetics(source),
+        )
+        if part
+    )
+    tokens = set(combined.split())
+    matched: list[str] = []
+    for theme, keywords in THEME_KEYWORDS.items():
+        if any(
+            kw in tokens
+            or any(tok.startswith(kw) for tok in tokens if len(kw) >= 4)
+            for kw in keywords
+        ):
+            matched.append(theme)
+    if "samaveda" in combined and "music" not in matched:
+        matched.append("music")
+    return matched
+
+
+def build_verse_gloss(themes: list[str], source: str = "", meter: str = "") -> str:
+    """Return a concise, deterministic English gloss/context note for a verse."""
+    if themes:
+        primary = themes[0]
+        base = THEME_GLOSSES.get(primary, f"Thematic match: {primary}")
+    else:
+        base = "Lexical / transliteration match in canonical corpus"
+    extras: list[str] = []
+    if source:
+        extras.append(f"source: {source}")
+    if meter:
+        extras.append(f"meter: {meter}")
+    return f"{base} ({'; '.join(extras)})" if extras else base
