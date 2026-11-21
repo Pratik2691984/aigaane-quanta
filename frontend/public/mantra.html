@@ -279,8 +279,9 @@
           </select>
         </label>
         <button type="button" class="export-btn" id="render-wav-btn">↓ Download Vedic .wav</button>
+        <button type="button" class="export-btn" id="speak-vocal-btn">🔊 Vocal Preview (TTS)</button>
       </div>
-      <div id="wav-meta" class="wav-meta"></div>
+      <div id="wav-meta" class="wav-meta">Deterministic pitch/drone synthesis (not a human voice recording).</div>
       <audio id="vedic-wav-player" controls style="display:none;width:100%;margin-top:0.6rem;"></audio>
     </section>
 
@@ -969,6 +970,13 @@
       const bases = [];
       if (window.location.protocol.startsWith("http")) {
         bases.push(window.location.origin);
+        const host = window.location.hostname;
+        if (host === "127.0.0.1" || host === "localhost") {
+          bases.push("http://127.0.0.1:8000");
+          bases.push("http://localhost:8000");
+        }
+      } else {
+        bases.push("http://127.0.0.1:8000");
       }
       bases.push("https://api.aigaane.in");
       return [...new Set(bases)];
@@ -1078,6 +1086,47 @@
     if (renderWavBtn) {
       renderWavBtn.addEventListener("click", downloadVedicWav);
     }
+
+    function speakMantraVocal() {
+      const textEl = document.getElementById("mantra-text");
+      const metaEl = document.getElementById("wav-meta");
+      const txt = (textEl ? textEl.value : "").trim();
+      if (!txt) {
+        if (metaEl) metaEl.textContent = "Enter mantra text first for vocal preview.";
+        return;
+      }
+      if (!("speechSynthesis" in window)) {
+        if (metaEl) metaEl.textContent = "Browser speechSynthesis is unavailable here; Japa uses deterministic pitch/drone synthesis.";
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(txt);
+      const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+      const indicVoice = voices.find(v => /^(sa|hi|mr|bn|gu|kn|ml|ta|te)/i.test(v.lang || ""));
+      if (indicVoice) {
+        utter.voice = indicVoice;
+        utter.lang = indicVoice.lang;
+      }
+      utter.rate = 0.85;
+      utter.onend = () => {
+        if (metaEl) metaEl.textContent = "Vocal preview finished (browser TTS; deterministic WAV remains pitch/drone synthesis).";
+      };
+      utter.onerror = () => {
+        if (metaEl) metaEl.textContent = "Browser TTS could not speak this text; deterministic WAV remains pitch/drone synthesis.";
+      };
+      if (metaEl) {
+        metaEl.textContent = indicVoice
+          ? `Playing browser vocal preview using voice: ${indicVoice.name} (${indicVoice.lang})...`
+          : "Playing browser vocal preview (default system voice; deterministic WAV remains pitch/drone synthesis)...";
+      }
+      window.speechSynthesis.speak(utter);
+    }
+
+    const speakVocalBtn = document.getElementById("speak-vocal-btn");
+    if (speakVocalBtn) {
+      speakVocalBtn.addEventListener("click", speakMantraVocal);
+    }
+
   })();
   </script>
 </body>
