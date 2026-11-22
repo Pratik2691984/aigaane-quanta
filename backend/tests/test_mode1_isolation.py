@@ -1,4 +1,4 @@
-﻿"""
+"""
 P0-1 Architectural Gate: Strict Mode 1 (Vedic Oral Recitation) Isolation.
 Verifies that Mode 1 recitation has zero direct or transitive dependencies on
 musical tuning (_sruti) or Carnatic rhythm (_tala / _rhythm), both statically
@@ -71,3 +71,13 @@ def test_mode1_runtime_never_calls_sruti_or_tala(monkeypatch):
     rv_1_1_1 = "\u0905\u0952\u0917\u094d\u0928\u093f\u092e\u0940\u0951\u0933\u0947 \u092a\u0941\u0952\u0930\u094b\u0939\u093f\u0951\u0924\u092e\u094d"
     result = mode1.render_oral_recitation(rv_1_1_1, recension="rgveda_sakala")
     assert result.wav_bytes[:4] == b"RIFF"
+
+
+def test_mode1_rejects_samaveda_and_unverified_recensions():
+    import pytest
+    from backend.engine.vedic._mode1 import render_oral_recitation
+
+    sample = "\u0905\u0952\u0917\u094d\u0928\u093f"
+    for recension in ("samaveda", "samaveda_kauthuma", "parishishta_tei", "unknown_recension"):
+        with pytest.raises(ValueError):
+            render_oral_recitation(sample, recension=recension)
