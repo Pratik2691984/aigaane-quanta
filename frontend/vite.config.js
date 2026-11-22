@@ -1,4 +1,4 @@
-﻿import { defineConfig } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 
@@ -8,7 +8,7 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       input: {
-        quanta: resolve(__dirname, 'quanta.html'),
+        quanta: resolve(import.meta.dirname, 'quanta.html'),
       },
     },
   },

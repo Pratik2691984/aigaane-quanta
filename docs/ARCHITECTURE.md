@@ -1,33 +1,21 @@
-# Aigaane-Quanta: System Architecture
+# Aigaane-Quanta Architecture & Audio Boundaries
 
-**Version:** 2.0.4 (Nyāya Verified)
-**Baseline Commit:** `v2.0.4-nyaya`
+## Three-Tier Audio & Synthesis Boundaries
 
-## 1. The Dual-Environment Reality
-To ensure sub-second test iteration while maintaining production scale, Aigaane-Quanta operates in two distinct states:
+Aigaane separates deterministic Vedic recitation, deterministic musical/rhythmic synthesis, and opt-in modern neural spoken pronunciation into distinct layers so they are never conflated in code, UI, or recension handling:
 
-*   **Local Development (Speed-First):** Uses the hardcoded `backend/engine/_lexicon.py` (thousands of high-frequency Pāṇinian stems) for instant lookups. It does *not* require the 1.5M record database to boot or pass tests.
-*   **Production (Scale-First):** Cloud Run containers mount the pre-compiled 1.5M headword FTS5 SQLite index (`kosha_1.5m.db`). The API contract (`KernelEnvelope`) is identical in both environments.
+### Tier 1 — Deterministic Vedic Recitation (Mode 1)
+- **Role:** Deterministic Vedic recitation / accent (*svara*) and recension rendering.
+- **Guardrails:** Fail closed on Sāmaveda variants (`samaveda`, `samaveda_*`) and unverified/unsupported recensions rather than silently falling back to a default recension such as `rgveda_sakala`.
 
-## 2. The Three Architectural Pillars
+### Tier 2 — Deterministic Musical, Śruti, Tāla, Japa & MIDI Synthesis
+- **Role:** Deterministic musical pitch/tuning (including 22-śruti / just-intonation intervals, *rāga*, *tāla*, drone, Japa loops, and MIDI synthesis).
+- **Guardrails:** Musical tuning and rhythmic/drone synthesis are distinct from Vedic *svara* accent rules and modern spoken prose pronunciation.
 
-### Pillar 1: Pāṇinian Grammar & Morphology
-*   **Location:** `backend/engine/`
-*   **Core Files:** `legacy_engine.py`, `_sandhi.py`, `_samasa.py`, `_morphology.py`
-*   **Invariant:** Deterministic rule application. Zero neural hallucination in core symbolic parsing.
-
-### Pillar 2: CEGAR Envelope & Nyāya Verification
-*   **Location:** `backend/critic/` and `backend/nyaya/`
-*   **Core Files:** `gatekeeper.py` (Attestation), `adapter.py` (Envelope reshaper), `nyaya/verifier.py` (5-step syllogism).
-*   **Invariant:** Candidates must be lexically attested (Gatekeeper) and logically verified (Nyāya) before being returned to the client.
-
-### Pillar 3: Upaveda Studios & Acoustics
-*   **Location:** `backend/audio/`
-*   **Core Files:** `_chhandas.py` (Piṅgala binary meter), `_sruti.py` (22-śruti JI), `_tala.py` (Diophantine congruence).
-*   **Invariant:** Audio math is mathematically pure and independently testable.
-
-## 3. API Transport (Dual-Mount)
-*   **Location:** `backend/api/main.py`
-*   **Canonical Routes:** `/api/v3/*` (e.g., `/api/v3/nyaya/verify`, `/api/v3/lexicon/lookup`)
-*   **Deprecated Aliases:** `/api/v1/*` (kept for backward compatibility)
-*   **Safety:** CORS policies explicitly allow `localhost:5173` and `aigaane.in`.
+### Tier 3 — Opt-In Neural Spoken Sanskrit Preview (`ninada`)
+- **Implementation:** `frontend/public/js/spoken_preview.js` dynamically importing `./vendor/ninada.bundle.mjs` (built into `frontend/public/js/vendor/` via `frontend/scripts/build-vendor.mjs` during `npm run build`).
+- **Scope & Labeling:** Modern spoken Sanskrit pronunciation preview only—explicitly labeled in the UI as distinct from Vedic *svara* recitations and from 22-śruti / *tāla* / MIDI synthesis.
+- **Lazy Loading & Artifact Hygiene:**
+  - Never load `ninada` or fetch `.onnx` model weights (`sa.onnx`, `sa_female.onnx`) on initial page load; initialize only on explicit user interaction.
+  - Map voice selection cleanly (`female` -> `sa_female` model with `voice: "female"`, `male` -> `sa` model with `voice: "male"`).
+  - Fetch `.onnx` weights on demand (with browser `CacheStorage` reuse when warm) and keep both `*.onnx` weights and `frontend/public/js/vendor/` out of Git via `.gitignore`.
