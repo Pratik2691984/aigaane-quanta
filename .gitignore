@@ -48,3 +48,5 @@ backend/data/valmiki_ramayana_shlokas.json
 .fix-backups/
 *.onnx
 frontend/public/js/vendor/
+backend/data/canon.db
+frontend/public/sqlite/canon.db
