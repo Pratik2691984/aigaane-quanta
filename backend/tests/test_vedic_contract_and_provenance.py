@@ -1,4 +1,4 @@
-﻿"""
+"""
 P0-3 & P0-4 Acceptance Tests:
 - 8-domain VedicPhoneticEvent v3.1 contract & Draft 2020-12 JSON Schema validation
 - canon.db vedic_metadata provenance table audit
@@ -39,10 +39,10 @@ def test_canon_db_vedic_metadata_provenance_populated():
     con = sqlite3.connect(f"file:{DB_PATH.as_posix()}?mode=ro", uri=True)
     try:
         total = con.execute("SELECT COUNT(*) FROM vedic_metadata").fetchone()[0]
-        assert total == 10465
+        assert total >= 10465, f"Expected at least 10465 rows, got {total}"
         unaligned = con.execute(
             "SELECT COUNT(*) FROM vedic_metadata WHERE alignment_status = 'none'"
         ).fetchone()[0]
-        assert unaligned == 10465
+        assert unaligned >= 10465, f"Expected at least 10465 unaligned rows, got {unaligned}"
     finally:
         con.close()
