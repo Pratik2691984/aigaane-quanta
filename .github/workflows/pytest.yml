@@ -26,20 +26,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: aigaane-engine-2026
 
       - name: Fetch canon.db from GCS if missing
-        env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          if [ ! -f backend/data/canon.db ] && [ -n "$GCP_SA_KEY" ]; then
-            KEY_FILE="$(mktemp)"
-            printf '%s' "$GCP_SA_KEY" > "$KEY_FILE"
-            gcloud auth activate-service-account --key-file="$KEY_FILE" --quiet
-            rm -f "$KEY_FILE"
+          if [ ! -f backend/data/canon.db ]; then
             mkdir -p backend/data
             gcloud storage cp gs://aigaane-kosha-storage-2026/canon/canon.db backend/data/canon.db --project=aigaane-engine-2026
           fi
