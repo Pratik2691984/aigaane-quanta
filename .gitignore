@@ -1,4 +1,4 @@
-﻿__pycache__/
+__pycache__/
 *.pyc
 *.pyo
 venv/
@@ -46,3 +46,5 @@ backend/data/valmiki_ramayana_shlokas.json
 
 # Local fix artefacts
 .fix-backups/
+*.onnx
+frontend/public/js/vendor/

@@ -196,12 +196,20 @@
       font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
       color: var(--text-muted);
     }
-  
+
     .recension-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 0.85rem; }
     .recension-row label { font-size: 0.85rem; color: var(--text-muted, #94a3b8); display: flex; align-items: center; gap: 0.4rem; }
     .recension-row select { background: #0f172a; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; padding: 0.35rem 0.6rem; font-size: 0.85rem; }
     .wav-meta { font-size: 0.8rem; color: var(--text-muted, #94a3b8); font-family: monospace; margin-top: 0.5rem; word-break: break-all; }
-</style>
+    .spoken-preview-box {
+      margin-top: 0.85rem; padding: 0.75rem 0.9rem;
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .spoken-preview-controls {
+      display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -284,6 +292,28 @@
       </div>
       <div id="wav-meta" class="wav-meta">Deterministic pitch/drone synthesis (not a human voice recording).</div>
       <audio id="vedic-wav-player" controls style="display:none;width:100%;margin-top:0.6rem;"></audio>
+
+      <!-- Opt-in Spoken Sanskrit Preview (modern pronunciation only — NOT Vedic svara recitation) -->
+      <div class="spoken-preview-box" aria-label="Spoken Sanskrit Preview (Modern Pronunciation)">
+        <div class="spoken-preview-controls">
+          <button type="button" class="export-btn" id="spoken-preview-btn"
+                  title="Spoken Sanskrit preview (modern neural pronunciation — NOT Vedic recitation or svara)">
+            🗣️ Spoken Sanskrit Preview (NN)
+          </button>
+          <label style="font-size:0.85rem;color:var(--text-muted);display:flex;align-items:center;gap:0.35rem;">
+            Voice
+            <select id="spoken-preview-voice" style="width:auto;padding:0.35rem 0.6rem;font-size:0.85rem;">
+              <option value="sa">Male (sa)</option>
+              <option value="sa_female">Female (sa_female)</option>
+            </select>
+          </label>
+          <button type="button" class="export-btn" id="stop-spoken-preview-btn">⏹ Stop NN Preview</button>
+        </div>
+        <div id="spoken-preview-meta" class="wav-meta">
+          Spoken Sanskrit preview — modern pronunciation only (NOT Vedic svara recitation). Lazy-loaded on click.
+        </div>
+        <audio id="spoken-preview-audio" controls style="display:none;width:100%;margin-top:0.5rem;"></audio>
+      </div>
     </section>
 
     <!-- Progress panel -->
@@ -1096,9 +1126,6 @@
       if (metaEl) metaEl.textContent = "Vocal preview stopped.";
     }
 
-      if (metaEl) metaEl.textContent = "Vocal preview stopped.";
-    }
-
     function speakMantraVocal() {
       const textEl = document.getElementById("mantra-text");
       const metaEl = document.getElementById("wav-meta");
@@ -1154,6 +1181,94 @@
     }
 
   })();
+  </script>
+
+  <script type="module">
+    import { runSpokenSanskritPreview } from "./js/spoken_preview.js";
+
+    let activeController = null;
+
+    function stopSpokenPreview() {
+      if (activeController) {
+        activeController.abort();
+        activeController = null;
+      }
+      const audioEl = document.getElementById("spoken-preview-audio");
+      const metaEl = document.getElementById("spoken-preview-meta");
+      if (audioEl) {
+        audioEl.pause();
+        audioEl.currentTime = 0;
+      }
+      if (metaEl) {
+        metaEl.textContent = "Spoken Sanskrit preview stopped — modern pronunciation only (NOT Vedic svara recitation).";
+      }
+    }
+
+    async function triggerSpokenPreview() {
+      const textEl = document.getElementById("mantra-text");
+      const voiceEl = document.getElementById("spoken-preview-voice");
+      const metaEl = document.getElementById("spoken-preview-meta");
+      const audioEl = document.getElementById("spoken-preview-audio");
+      const btn = document.getElementById("spoken-preview-btn");
+
+      const rawText = (textEl ? textEl.value : "").trim();
+      if (!rawText) {
+        if (metaEl) metaEl.textContent = "Enter text first for spoken Sanskrit preview.";
+        return;
+      }
+
+      if (activeController) {
+        activeController.abort();
+      }
+      activeController = new AbortController();
+
+      const hasSvaraMarks = /[\u0951\u0952\u1CDA\u1CDC]/.test(rawText);
+      const voice = voiceEl && voiceEl.value === "sa_female" ? "sa_female" : "sa";
+
+      if (btn) btn.disabled = true;
+      try {
+        const result = await runSpokenSanskritPreview(rawText, {
+          voice,
+          signal: activeController.signal,
+          onStatus: (_stage, msg) => {
+            if (metaEl) {
+              const svaraSuffix = hasSvaraMarks ? " (Note: Vedic svara marks are not rendered in spoken preview.)" : "";
+              metaEl.textContent = `${msg}${svaraSuffix}`;
+            }
+          },
+        });
+
+        if (audioEl) {
+          if (audioEl.src && audioEl.src.startsWith("blob:")) {
+            URL.revokeObjectURL(audioEl.src);
+          }
+          audioEl.src = URL.createObjectURL(result.blob);
+          audioEl.style.display = "block";
+          await audioEl.play().catch(() => {});
+        }
+
+        if (metaEl) {
+          const svaraNote = hasSvaraMarks ? " | Note: Vedic svara marks are not rendered." : "";
+          metaEl.textContent = `Spoken Sanskrit preview (${result.modelKey}, TTFA ~${Math.round(result.ttfaMs)}ms, total ${(result.totalMs / 1000).toFixed(1)}s) — modern pronunciation only, NOT Vedic svara recitation.${svaraNote}`;
+        }
+      } catch (err) {
+        if (err && err.name !== "AbortError" && metaEl) {
+          metaEl.textContent = `Spoken preview unavailable (${err.message || err}). Ensure ./js/vendor/ninada.bundle.mjs is built; deterministic Vedic synthesis is unaffected.`;
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+        activeController = null;
+      }
+    }
+
+    const previewBtn = document.getElementById("spoken-preview-btn");
+    if (previewBtn) {
+      previewBtn.addEventListener("click", triggerSpokenPreview);
+    }
+    const stopPreviewBtn = document.getElementById("stop-spoken-preview-btn");
+    if (stopPreviewBtn) {
+      stopPreviewBtn.addEventListener("click", stopSpokenPreview);
+    }
   </script>
 </body>
 </html>
