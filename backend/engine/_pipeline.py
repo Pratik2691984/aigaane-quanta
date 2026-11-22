@@ -1,4 +1,4 @@
-﻿"""
+"""
 Deterministic pipeline orchestrator (Q8).
 
 Chains:

@@ -1,4 +1,4 @@
-﻿"""Tests for Rigveda corpus in canon.db (Q7-RV extension)."""
+"""Tests for Rigveda corpus in canon.db (Q7-RV extension)."""
 import sqlite3
 import unicodedata
 from pathlib import Path

@@ -1,4 +1,4 @@
-﻿from backend.data.migrate_vedic_metadata import apply_vedic_metadata_governance
+from backend.data.migrate_vedic_metadata import apply_vedic_metadata_governance
 from backend.engine.vedic._vedic_unicode_audit import (
     audit_vedic_extensions_coverage,
     find_unclassified_vedic_marks,

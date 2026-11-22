@@ -1,4 +1,4 @@
-﻿"""
+"""
 Deterministic Vedic chant rhythm alignment.
 Maps ContourEvents onto a Carnatic tala cycle (akshara grid) at a given BPM.
 """

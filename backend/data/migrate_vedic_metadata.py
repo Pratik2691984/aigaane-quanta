@@ -1,4 +1,4 @@
-﻿"""
+"""
 Idempotent Vedic metadata & provenance migration helper (F1 / F6).
 Ensures source_registry exists, unverified licenses stay 'unknown' rather than
 asserting unverified licenses, and sample edition labels are normalized cleanly.

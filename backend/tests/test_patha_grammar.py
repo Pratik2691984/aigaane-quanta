@@ -1,4 +1,4 @@
-﻿"""
+"""
 Golden regression tests for Vedic Vikṛti Pāṭha grammar (_patha_grammar.py).
 """
 import sys

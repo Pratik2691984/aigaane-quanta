@@ -1,4 +1,4 @@
-﻿"""
+"""
 Ingest remaining 6 kāṇḍas of Vālmīki Rāmāyaṇa (Ayodhyā, Araṇya, Kiṣkindhā, Sundara, Yuddha, Uttara)
 into canon.db. Bālakāṇḍa already ingested (see ingest_ramayana_bala.py).
 

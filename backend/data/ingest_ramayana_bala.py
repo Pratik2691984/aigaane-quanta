@@ -1,4 +1,4 @@
-﻿"""
+"""
 Ingest Vālmīki Rāmāyaṇa Bālakāṇḍa (2,217 verses) into canon.db.
 
 Source: github.com/Ashutosh-Vijay/Valmiki_Ramayan_Dataset

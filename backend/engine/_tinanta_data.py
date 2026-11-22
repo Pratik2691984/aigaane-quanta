@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tiṅanta data tables for Q4-B (laṅ, lṛṭ, loṭ, laṭ).
 
 Companion to _lexicon.py. Keeps paradigm tables for the four priority

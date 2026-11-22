@@ -1,4 +1,4 @@
-﻿"""
+"""
 Deterministic mixing + post-processing for Vedic chant WAV renders.
 Pure stdlib. No external audio deps.
 """

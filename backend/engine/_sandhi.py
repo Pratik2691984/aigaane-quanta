@@ -1,4 +1,4 @@
-﻿"""
+"""
 Aigaane v0.3.0-dev — Algorithmic Paninian Sandhi Generator & Splitter
 Evaluates classical sandhi rules with lexicon and samasa grounding.
 """

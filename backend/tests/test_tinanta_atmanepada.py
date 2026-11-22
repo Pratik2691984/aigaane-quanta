@@ -1,4 +1,4 @@
-﻿"""
+"""
 Q4-C regression tests: Ātmanepada paradigm tables.
 189 verified cells across 6 roots; dā loṭ explicitly unverified.
 """

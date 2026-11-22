@@ -1,4 +1,4 @@
-﻿"""
+"""
 L6 Śikṣā Articulatory Varṇa Inventory (P1-2).
 
 Implements classical Pāṇinīya Śikṣā / Taittirīya Prātiśākhya articulatory

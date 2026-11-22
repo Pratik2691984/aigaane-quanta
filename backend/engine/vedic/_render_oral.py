@@ -1,4 +1,4 @@
-﻿"""
+"""
 Mode 1 Deterministic Oral WAV Renderer.
 Consumes OralContourEvent trajectories directly. Imports _mix only — zero
 dependencies on _rhythm, _tala, or _sruti.

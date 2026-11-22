@@ -1,4 +1,4 @@
-﻿import json
+import json
 import unicodedata
 
 from fastapi.testclient import TestClient

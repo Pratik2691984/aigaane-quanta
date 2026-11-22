@@ -1,4 +1,4 @@
-﻿"""
+"""
 Q8: Deterministic unified pipeline route.
 
 Mounts:

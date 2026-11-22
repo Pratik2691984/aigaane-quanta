@@ -1,4 +1,4 @@
-﻿"""
+"""
 Isolated Neural Acoustic Vocoder Adapter Stub (Stage 8 — Track 2).
 
 Keeps PyTorch / Matcha-TTS / HiFi-GAN weights strictly outside the Cloud Run

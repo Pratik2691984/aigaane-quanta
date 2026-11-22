@@ -1,4 +1,4 @@
-﻿"""
+"""
 Deterministic DSP Oral Synthesis Adapter (Stage 8).
 Consumes validated Mode 1 text/events without altering symbolic derivations.
 """

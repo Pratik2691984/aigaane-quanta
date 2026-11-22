@@ -1,4 +1,4 @@
-﻿"""
+"""
 Contextual Sanskrit & Vedic Allophone Realization (P1-2).
 
 Enforces three core Śikṣā phonetic invariants:

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Vedic Unicode extension coverage and mark classification helpers (F2).
 Keeps U+1CD0-U+1CFF classification explicit and separates pluta U+0969 from tone marks.
 """

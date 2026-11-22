@@ -1,4 +1,4 @@
-﻿"""
+"""
 Praat TextGrid Alignment Parser & Acoustic Evaluation Metrics (P2-1).
 
 Provides L10 perceptual/acoustic verification primitives:

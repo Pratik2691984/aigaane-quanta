@@ -1,4 +1,4 @@
-﻿"""
+"""
 Gate P2-1 Acceptance Tests:
 - Praat TextGrid interval parser & F0 RMSE / duration MAE evaluator
 - Isolated Stage-8 DSP & Neural synthesis adapters (zero torch import)

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Ātmanepada paradigm tables for Q4-C v1.
 
 Merged into _tinanta.PARADIGMS at import time. Separate file so Q4-B

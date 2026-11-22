@@ -1,4 +1,4 @@
-﻿"""
+"""
 P0-2 Vedic Unicode Registry & Vowel-Nucleus Accent Segmenter.
 Maintains an explicit character-by-character registry of assigned code points in
 Devanagari Stress Signs (U+0951..U+0954) and Vedic Extensions (U+1CD0..U+1CFF),

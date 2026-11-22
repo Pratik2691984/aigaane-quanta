@@ -1,4 +1,4 @@
-﻿"""
+"""
 Decoupled Mode 1 (Vedic Oral Recitation) Event Contracts.
 Carries vowel-nucleus accent attachment, Unicode mark provenance, time-indexed
 Hz trajectories, and phonetic durations without musical sruti or tala fields.

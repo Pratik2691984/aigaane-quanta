@@ -1,4 +1,4 @@
-﻿"""
+"""
 Deterministic Vedic Vikṛti Pāṭha Grammar (P1-1).
 
 Implements classical Śākhā-aware transformations across the five core

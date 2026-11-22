@@ -1,4 +1,4 @@
-﻿"""
+"""
 Morphology (Subanta/Tiṅanta) domain routes.
 
 Wraps `_lexicon.lookup()` which returns full morphological analysis:

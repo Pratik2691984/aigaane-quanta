@@ -1,4 +1,4 @@
-﻿"""
+"""
 Aigaane v0.2.0 — Category H Cross-Domain Mapping Engine
 """
 

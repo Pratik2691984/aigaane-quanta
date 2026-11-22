@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tiṅanta (finite verb) generation engine — Q4-B.
 
 Table-first, generation-fallback approach:

@@ -1,4 +1,4 @@
-﻿"""Vedic Svara & Recension Contour API Routes."""
+"""Vedic Svara & Recension Contour API Routes."""
 from fastapi import APIRouter
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Cross-cutting route coverage tests.
 
 Verifies behaviors that every domain router must satisfy:

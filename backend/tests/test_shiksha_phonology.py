@@ -1,4 +1,4 @@
-﻿"""
+"""
 Gate P1-2 Acceptance Tests: L6 Śikṣā Articulatory Phonology & Allophones.
 """
 from __future__ import annotations

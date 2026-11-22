@@ -1,4 +1,4 @@
-﻿"""
+"""
 Studio III Vocal Audio Renderer & WAV Export.
 Deterministic synthesis from rhythm + contour events with pāda rest support.
 """
