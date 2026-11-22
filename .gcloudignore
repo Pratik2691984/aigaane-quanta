@@ -1,0 +1,43 @@
+# Git & CI metadata
+.git/
+.github/
+
+# Python virtualenvs & caches
+backend/venv/
+.venv_ci_test/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+.eggs/
+
+# Frontend build & dependencies (backend container does not serve frontend)
+frontend/node_modules/
+frontend/dist/
+frontend/.firebase/
+frontend/.agents/
+frontend/skills-lock.json
+
+# IDE / OS / local artifacts
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+last-response.json
+*.bak
+*.db.bak
+*.db.bak*
+audit_*.json
+.env.local
+.env.*.local
+test-parse.ps1
+
+# Docs & markdown
+docs/
+*.md
+!README.md
+
+# Include GCS-staged backend/data/canon.db in Cloud Build context
+!backend/data/
+!backend/data/canon.db
