@@ -1,4 +1,4 @@
-﻿"""
+"""
 Mode 1 — Vedic Oral Recitation Orchestrator.
 Strictly isolated from musical tuning (_sruti) and Carnatic rhythm (_tala / _rhythm).
 Uses _vedic_unicode.segment_vedic_nuclei for P0-2 vowel-nucleus accent binding.
@@ -97,10 +97,13 @@ def render_oral_recitation(
     baseline_hz: float = 240.0,
     sample_rate: int = 22050,
 ) -> OralRenderResult:
-    if recension == "samaveda":
+    norm_recension = (recension or "").strip().lower()
+    if norm_recension == "samaveda" or norm_recension.startswith("samaveda_"):
         raise ValueError("Samaveda Gana is melodic and excluded from Mode 1 oral recitation.")
-    policy = ORAL_RECENSION_POLICIES.get(recension, ORAL_RECENSION_POLICIES["rgveda_sakala"])
-    resolved_recension = recension if recension in ORAL_RECENSION_POLICIES else "rgveda_sakala"
+    if recension not in ORAL_RECENSION_POLICIES:
+        raise ValueError(f"Unsupported or unverified recension for Mode 1 oral recitation: {recension!r}")
+    policy = ORAL_RECENSION_POLICIES[recension]
+    resolved_recension = recension
 
     _, aksharas = segment_vedic_nuclei(text)
     if not aksharas or not any(a["mark_hint"] is not None for a in aksharas):
