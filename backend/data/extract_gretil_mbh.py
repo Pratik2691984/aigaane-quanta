@@ -24,7 +24,7 @@ DEFAULT_GRETIL_DIR = Path(
 #   01,001.003b*0018_01
 #   01,001.008
 LOCATOR_RE = re.compile(
-    r"^\s*(\d{2}),(\d{3})\.(\d{3})([a-zA-Z0-9*_]+)?\s+(.*)$"
+    r"^\s*(\d{2}),(\d{3})\.(\d{3})([a-zA-Z0-9*_@]+)?\s+(.*)$"
 )
 TAG_RE = re.compile(r"<[^>]+>")
 

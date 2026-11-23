@@ -52,3 +52,29 @@ def test_extract_parvan_html_locator_grouping_and_normalization(tmp_path: Path) 
     expected_v8 = unicodedata.normalize("NFC", "janamejayasya r\u0101jar\u1e63e\u1e25 / s\u016bta uv\u0101ca a\u0301")
     assert v8["text"] == expected_v8
     assert "front matter" not in " ".join(r["text"] for r in records)
+
+
+def test_extract_parvan_html_at_suffix_locator(tmp_path: Path) -> None:
+    sample_html = "\n".join(
+        [
+            "<html><body>",
+            "05,001.001a            prathama p\u0101da<BR>",
+            "05,001.001d@001_0001   vulgate at p\u0101da one<BR>",
+            "05,001.001d@001_0002   vulgate at p\u0101da two<BR>",
+            "</body></html>",
+        ]
+    )
+    html_file = tmp_path / "mbh_05_at_sample.htm"
+    html_file.write_text(sample_html, encoding="utf-8")
+
+    records, stats = extract_parvan_html(html_file, parvan_num=5)
+
+    assert stats["verses_emitted"] == 1
+    assert len(records) == 1
+    v1 = records[0]
+    assert v1["parvan"] == 5
+    assert v1["chapter"] == 1
+    assert v1["verse"] == 1
+    assert v1["text"] == "prathama p\u0101da / vulgate at p\u0101da one / vulgate at p\u0101da two"
+    assert v1["iast"] == v1["text"]
+    assert "@" not in v1["text"] and "@" not in v1["iast"]
