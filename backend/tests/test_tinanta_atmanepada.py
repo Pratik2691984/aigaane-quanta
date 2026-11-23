@@ -99,3 +99,16 @@ def test_no_usage_note_for_verified_roots():
         )
         assert r.status_code == 200
         assert "usage_note" not in r.json()
+
+
+def test_untabled_lrt_returns_error_not_generated_form():
+    r = _tinanta.conjugate("paṭh", "lṛṭ", "prathama_purusha", "ekavacana", "parasmaipada")
+    assert "error" in r
+    assert r.get("surface") is None
+
+
+def test_tabled_lrt_still_works_via_table():
+    r = _tinanta.conjugate("bhū", "lṛṭ", "prathama_purusha", "ekavacana", "parasmaipada")
+    assert r["surface"] == "bhaviṣyati"
+    assert r["source"] == "table"
+    assert r["confidence"] == 1.0

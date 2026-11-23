@@ -67,6 +67,9 @@ _LAN_ATMANE = [
     ("mahi", "bahuvacana", "uttama_purusha"),
 ]
 
+# lṛṭ is intentionally omitted: its future/secondary forms differ from
+# present endings, so un-tabled lṛṭ roots must not fall back to _LAT_* tables.
+# Tabled lṛṭ paradigms live in PARADIGMS; anything else returns an error.
 ENDING_TABLES = {
     ("laṭ", "parasmaipada"): _LAT_PARASMAI,
     ("laṭ", "ātmanepada"):   _LAT_ATMANE,
@@ -74,8 +77,6 @@ ENDING_TABLES = {
     ("laṅ", "ātmanepada"):   _LAN_ATMANE,
     ("loṭ", "parasmaipada"): _LOT_PARASMAI,
     ("loṭ", "ātmanepada"):   _LOT_ATMANE,
-    ("lṛṭ", "parasmaipada"): _LAT_PARASMAI,
-    ("lṛṭ", "ātmanepada"):   _LAT_ATMANE,
 }
 
 
