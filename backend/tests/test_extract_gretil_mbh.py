@@ -98,3 +98,34 @@ def test_extract_parvan_html_bare_locator_no_text(tmp_path):
     assert v["chapter"] == 1 and v["verse"] == 1
     assert v["text"] == "pāda one / pāda two"
     assert "@" not in v["text"]
+
+
+def test_extract_parvan_html_angle_bracket_delimiter(tmp_path: Path) -> None:
+    sample_html = "\n".join([
+        "<html><body>",
+        "10,008.052c<>punar abhyahanat pārśve<BR>",
+        "10,008.057c*0037_01<>śarair ācchāditas tena<BR>",
+        "</body></html>",
+    ])
+    html_file = tmp_path / "mbh_10_delim.htm"
+    html_file.write_text(sample_html, encoding="utf-8")
+    records, stats = extract_parvan_html(html_file, parvan_num=10)
+    assert stats["locator_lines"] == 2
+    assert len(records) == 2
+    assert records[0]["text"] == "punar abhyahanat pārśve"
+    assert records[1]["text"] == "śarair ācchāditas tena"
+
+
+def test_extract_parvan_html_equals_suffix_and_angle_bracket(tmp_path: Path) -> None:
+    sample_html = "\n".join([
+        "<html><body>",
+        "10,005.038c*0016=00<>saṃjaya uvāca<BR>",
+        "</body></html>",
+    ])
+    html_file = tmp_path / "mbh_10_eq.htm"
+    html_file.write_text(sample_html, encoding="utf-8")
+    records, stats = extract_parvan_html(html_file, parvan_num=10)
+    assert stats["locator_lines"] == 1
+    assert len(records) == 1
+    assert records[0]["text"] == "saṃjaya uvāca"
+    assert "<>" not in records[0]["text"] and "=" not in records[0]["text"]
