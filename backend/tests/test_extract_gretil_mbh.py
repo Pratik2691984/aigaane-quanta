@@ -78,3 +78,23 @@ def test_extract_parvan_html_at_suffix_locator(tmp_path: Path) -> None:
     assert v1["text"] == "prathama p\u0101da / vulgate at p\u0101da one / vulgate at p\u0101da two"
     assert v1["iast"] == v1["text"]
     assert "@" not in v1["text"] and "@" not in v1["iast"]
+
+
+def test_extract_parvan_html_bare_locator_no_text(tmp_path):
+    sample_html = "\n".join([
+        "<html><body>",
+        "09,001.001a            pāda one<BR>",
+        "09,001.001d@001_0001<BR>",
+        "09,001.001d@001_0002   pāda two<BR>",
+        "</body></html>",
+    ])
+    html_file = tmp_path / "mbh_09_bare.htm"
+    html_file.write_text(sample_html, encoding="utf-8")
+    records, stats = extract_parvan_html(html_file, parvan_num=9)
+    assert stats["locator_lines"] >= 2
+    assert stats["verses_emitted"] == 1
+    assert len(records) == 1
+    v = records[0]
+    assert v["chapter"] == 1 and v["verse"] == 1
+    assert v["text"] == "pāda one / pāda two"
+    assert "@" not in v["text"]

@@ -24,7 +24,7 @@ DEFAULT_GRETIL_DIR = Path(
 #   01,001.003b*0018_01
 #   01,001.008
 LOCATOR_RE = re.compile(
-    r"^\s*(\d{2}),(\d{3})\.(\d{3})([a-zA-Z0-9*_@]+)?\s+(.*)$"
+    r"^\s*(\d{2}),(\d{3})\.(\d{3})([a-zA-Z0-9*_@]+)?(?:\s+(.*)|(?:<[^>]+>|\s)*)$"
 )
 TAG_RE = re.compile(r"<[^>]+>")
 
@@ -60,7 +60,7 @@ def extract_parvan_html(
             p_num = int(m.group(1))
             ch_num = int(m.group(2))
             v_num = int(m.group(3))
-            tail = _clean_pada_line(m.group(5))
+            tail = _clean_pada_line(m.group(5) or "")
 
             if ch_num == 0 and v_num == 0:
                 in_front_matter = True
