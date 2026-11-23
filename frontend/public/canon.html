@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Canon — 25,039 Verse Sanskrit Corpus Search</title>
-  <meta name="description" content="Search the full Rāmāyaṇa, Mahābhārata, Gītā, and 11 Upaniṣads. 25,039 verses indexed for deterministic semantic and morphological lookup.">
+  <title>Canon — 40,927 Verse Sanskrit Corpus Search</title>
+  <meta name="description" content="Browse and filter indexed verses across Rāmāyaṇa, Ṛgveda, Atharvaveda Pariśiṣṭas, Sāmaveda Kauthuma, Upaniṣads, Bhagavad Gītā, and Mahābhārata (40,927 verses in canon.db).">
   <style>
     body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 2rem; }
     a { color: #fbbf24; text-decoration: none; }
@@ -27,6 +27,10 @@
     .handoff-link { color: #fbbf24; font-size: 0.85rem; border: 1px solid #475569; padding: 0.42rem 0.75rem; border-radius: 4px; background: #0f172a; }
     .handoff-link.restrained { color: #64748b; border-color: #334155; background: #1e293b; opacity: 0.65; cursor: not-allowed; pointer-events: none; }
   </style>
+  <style id="session-canon-viewport-polish">
+    html, body { max-width: 100%; overflow-x: hidden; }
+    .verse-card, .meta, .provenance-tag { min-width: 0; overflow-wrap: anywhere; }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -45,7 +49,7 @@
     </header>
   </div>
   <a href="index.html">← Aigaane</a>
-  <h1>Bhagavad Gītā · Complete Canon (700 Verses)</h1>
+  <h1>Aigaane Canon · 40,927 Indexed Verses</h1><p style="color:#94a3b8;margin:-1rem 0 1.5rem;font-size:0.9rem;">Source-grounded corpus view (Rāmāyaṇa 23,291 · Ṛgveda 10,462 + 3 svara · Pariśiṣṭas 2,718 · Sāmaveda 2,247 · Upaniṣads 1,047 · Gītā 701 · MBH Parvan 1: 454 + seeds).</p>
   <div class="filter-bar" id="canon-filter-bar">
     <button type="button" class="filter-btn active" data-filter="all">All</button>
     <button type="button" class="filter-btn" data-filter="gita">Gītā</button>
