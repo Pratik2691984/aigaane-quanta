@@ -118,3 +118,62 @@ def test_pada_to_samhita_strips_candra_above_before_sandhi():
     out = pada_to_samhita(["deva\u1cf4", "indraḥ"])
     assert "\u1cf4" not in out
     assert out == "devendraḥ"
+
+
+def test_empty_input_across_all_patha_modes():
+    for mode in ("pada", "krama", "jata", "ghana"):
+        res = transform_patha([], patha=mode)
+        assert res.units == []
+        assert res.rendered_text == ""
+        assert res.parigraha_indices == []
+
+    samhita_res = transform_patha([], patha="samhita")
+    assert samhita_res.units == [[]]
+    assert samhita_res.rendered_text == ""
+    assert samhita_res.parigraha_indices == []
+
+
+def test_single_pada_default_and_without_final_iti():
+    for mode in ("krama", "jata", "ghana"):
+        with_iti = transform_patha(["agnim"], patha=mode)
+        assert with_iti.units == [["agnim", "iti", "agnim"]]
+        assert with_iti.rendered_text == "agnim iti agnim ॥"
+        assert with_iti.parigraha_indices == [0]
+
+        # Current behavior: empty unit list still formats trailing double danda " ॥"
+        without_iti = transform_patha(["agnim"], patha=mode, append_final_iti=False)
+        assert without_iti.units == []
+        assert without_iti.rendered_text == " ॥"
+        assert without_iti.parigraha_indices == []
+
+
+def test_two_and_three_pada_weaves_krama_jata_ghana():
+    two_krama = transform_patha(["a", "b"], patha="krama")
+    assert two_krama.units == [["a", "b"], ["b", "iti", "b"]]
+    assert two_krama.rendered_text == "a b । b iti b ॥"
+    assert two_krama.parigraha_indices == [1]
+
+    two_ghana = transform_patha(["a", "b"], patha="ghana")
+    assert two_ghana.units == [["a", "b", "b", "a", "a", "b"], ["b", "iti", "b"]]
+    assert two_ghana.parigraha_indices == [1]
+
+    three_ghana = transform_patha(["a", "b", "c"], patha="ghana")
+    assert three_ghana.units == [
+        ["a", "b", "b", "a", "a", "b", "c", "c", "b", "a", "a", "b", "c"],
+        ["b", "c", "c", "b", "b", "c"],
+        ["c", "iti", "c"],
+    ]
+    assert three_ghana.parigraha_indices == [2]
+
+
+def test_pada_to_samhita_nfd_and_nfc_equivalence():
+    import unicodedata
+
+    nfc = "ágnim"
+    nfd = "a\u0301gnim"
+    nfd_out = pada_to_samhita([nfd, "īḷe"])
+    nfc_out = pada_to_samhita([nfc, "īḷe"])
+    # Fallback join preserves input Unicode normalization form
+    assert nfd_out == "a\u0301gnim īḷe"
+    assert nfc_out == "ágnim īḷe"
+    assert unicodedata.normalize("NFC", nfd_out) == unicodedata.normalize("NFC", nfc_out)
