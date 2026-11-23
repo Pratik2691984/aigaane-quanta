@@ -235,29 +235,6 @@
       <textarea id="mantra-text" placeholder="असतो मा सद्गमय । तमसो मा ज्योतिर्गमय । मृत्योर्मा अमृतं गमय ॥">असतो मा सद्गमय । तमसो मा ज्योतिर्गमय । मृत्योर्मा अमृतं गमय ॥</textarea>
       <div class="prosody" id="prosody"></div>
 
-      <div class="grid-2">
-        <div>
-          <label class="field" for="raga-select">Rāga (Just Intonation)</label>
-          <select id="raga-select">
-            <option value="bhairav">Bhairav — Dawn, komal Re &amp; Dha</option>
-            <option value="bhairavi">Bhairavī — Deep, all komal</option>
-            <option value="yaman">Yaman — Evening, tivra Ma</option>
-            <option value="malkauns">Malkauns — Meditative, pentatonic</option>
-            <option value="todi">Todī — Late morning, komal Re/Ga/Dha</option>
-          </select>
-        </div>
-        <div>
-          <label class="field" for="tala-select">Tāla (Rhythmic cycle)</label>
-          <select id="tala-select">
-            <option value="teental">Teental — 16 mātrās (4+4+4+4)</option>
-            <option value="keherwa">Keherwa — 8 mātrās (4+4)</option>
-            <option value="dadra">Dadra — 6 mātrās (3+3)</option>
-            <option value="jhaptal">Jhaptal — 10 mātrās (2+3+2+3)</option>
-            <option value="rupak">Rupak — 7 mātrās (3+2+2)</option>
-            <option value="ektaal">Ektaal — 12 mātrās (2+2+2+2+2+2)</option>
-          </select>
-        </div>
-      </div>
 
       <label class="field" style="margin-top:1rem;">Japa Count</label>
       <div class="repetition-grid" id="repetition-grid">
@@ -277,6 +254,7 @@
         <button id="play-btn" class="primary">▶ Begin Japa</button>
         <button id="stop-btn" class="stop" style="display:none;">■ Stop</button>
       </div>
+      <div style="margin-top:0.85rem;font-size:0.82rem;color:var(--accent);font-weight:600;">Tier 1 · Vedic Svara &amp; Recension Export (Accent-Bearing Vedic Text)</div>
       <div class="recension-row">
         <label>Recension
           <select id="vedic-recension">
@@ -287,6 +265,7 @@
           </select>
         </label>
         <button type="button" class="export-btn" id="render-wav-btn">↓ Download Vedic .wav</button>
+      <div style="margin-top:0.45rem;font-size:0.8rem;color:var(--text-muted);">Preview modes: <strong>Browser TTS</strong> (speechSynthesis preview only) &amp; <strong>Spoken Sanskrit Preview (NN)</strong> below (opt-in modern pronunciation, NOT Vedic svara recitation).</div>
         <button type="button" class="export-btn" id="speak-vocal-btn">🔊 Vocal Preview (TTS)</button>
         <button type="button" class="export-btn" id="stop-vocal-btn">⏹ Stop Vocal</button>
       </div>
@@ -313,6 +292,41 @@
           Spoken Sanskrit preview — modern pronunciation only (NOT Vedic svara recitation). Lazy-loaded on click.
         </div>
         <audio id="spoken-preview-audio" controls style="display:none;width:100%;margin-top:0.5rem;"></audio>
+      </div>
+    </section>
+
+
+    <!-- Tier 2 Musical Mode: Rāga (Just Intonation) & Tāla (Rhythmic Cycle) -->
+    <section class="panel" id="tier2-musical-panel" aria-label="Musical Rāga and Tāla Loop">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+        <h2 style="margin:0;">Musical Rāga &amp; Tāla Loop <span style="font-size:0.78rem;font-weight:500;color:var(--accent-2);">(Tier 2 · Musical Synthesis)</span></h2>
+        <a href="/gandharva.html" style="font-size:0.85rem;color:var(--accent);">Open Gāndharva 22-Śruti Studio →</a>
+      </div>
+      <p style="margin:0 0 0.75rem;font-size:0.85rem;color:var(--text-muted);">
+        Separate from Tier 1 Vedic svara recitation and opt-in modern spoken pronunciation.
+      </p>
+      <div class="grid-2">
+        <div>
+          <label class="field" for="raga-select">Rāga (Just Intonation)</label>
+          <select id="raga-select">
+            <option value="bhairav">Bhairav — Dawn, komal Re &amp; Dha</option>
+            <option value="bhairavi">Bhairavī — Deep, all komal</option>
+            <option value="yaman">Yaman — Evening, tivra Ma</option>
+            <option value="malkauns">Malkauns — Meditative, pentatonic</option>
+            <option value="todi">Todī — Late morning, komal Re/Ga/Dha</option>
+          </select>
+        </div>
+        <div>
+          <label class="field" for="tala-select">Tāla (Rhythmic cycle)</label>
+          <select id="tala-select">
+            <option value="teental">Teental — 16 mātrās (4+4+4+4)</option>
+            <option value="keherwa">Keherwa — 8 mātrās (4+4)</option>
+            <option value="dadra">Dadra — 6 mātrās (3+3)</option>
+            <option value="jhaptal">Jhaptal — 10 mātrās (2+3+2+3)</option>
+            <option value="rupak">Rupak — 7 mātrās (3+2+2)</option>
+            <option value="ektaal">Ektaal — 12 mātrās (2+2+2+2+2+2)</option>
+          </select>
+        </div>
       </div>
     </section>
 
@@ -1047,6 +1061,14 @@
       const rawText = (textEl ? textEl.value : "").trim();
       if (!rawText) {
         if (metaEl) metaEl.textContent = "Enter mantra text first before rendering .wav.";
+        return;
+      }
+
+      const hasVedicSvaraMarks = /[\u0951\u0952\u1CDC\u1CDA]/.test(rawText.normalize("NFC"));
+      if (!hasVedicSvaraMarks) {
+        const msg = "No Vedic svara marks (udātta/anudātta/svarita) detected; skipping Vedic svara .wav render. Use Vocal Preview (TTS) or Spoken Sanskrit Preview (NN) for unmarked text.";
+        if (metaEl) metaEl.textContent = msg;
+        if (statusEl) statusEl.textContent = msg;
         return;
       }
 
