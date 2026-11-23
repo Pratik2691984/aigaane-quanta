@@ -234,6 +234,7 @@
       <h2>Mantra Input</h2>
       <textarea id="mantra-text" placeholder="असतो मा सद्गमय । तमसो मा ज्योतिर्गमय । मृत्योर्मा अमृतं गमय ॥">असतो मा सद्गमय । तमसो मा ज्योतिर्गमय । मृत्योर्मा अमृतं गमय ॥</textarea>
       <div class="prosody" id="prosody"></div>
+      <div id="siksa-readout" style="margin-top:0.5rem;font-size:0.8rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">Syllables: 0 · L: 0 · G: 0 · Scansion units (L=1, G=2): 0 · Svara marks: no</div>
 
 
       <label class="field" style="margin-top:1rem;">Japa Count</label>
@@ -793,11 +794,23 @@
     const exportCount = $('export-count');
 
     // --- Prosody refresh ---
+    // Step 2a (bīja/viniyoga provenance data) is pending; no bīja/viniyoga claims rendered here.
+    function updateSiksaReadout(aksharas, scansionUnits, rawText) {
+      const readoutEl = $('siksa-readout');
+      if (!readoutEl) return;
+      const lCount = aksharas.filter(a => a.weight === 'L').length;
+      const gCount = aksharas.filter(a => a.weight === 'G').length;
+      const hasMarks = HAS_SVARA_MARKS.test((rawText || '').normalize('NFC')) ? 'yes' : 'no';
+      readoutEl.textContent =
+        `Syllables: ${aksharas.length} · L: ${lCount} · G: ${gCount} · Scansion units (L=1, G=2): ${scansionUnits} · Svara marks: ${hasMarks}`;
+    }
+
     function refreshProsody() {
       state.aksharas = scanProsody(mantraEl.value);
       renderProsody(state.aksharas);
-      const totalMatras = state.aksharas.reduce((s, a) => s + (a.weight === 'G' ? 2 : 1), 0);
-      status.textContent = `${state.aksharas.length} syllables · ${totalMatras} mātrās`;
+      const scansionUnits = state.aksharas.reduce((s, a) => s + (a.weight === 'G' ? 2 : 1), 0);
+      status.textContent = `${state.aksharas.length} syllables · ${scansionUnits} scansion units (L=1, G=2)`;
+      updateSiksaReadout(state.aksharas, scansionUnits, mantraEl.value);
     }
     mantraEl.addEventListener('input', refreshProsody);
     if (incomingMantraText && typeof refreshProsody === 'function') {
@@ -1011,6 +1024,8 @@
     exportCount.textContent = `${loadFeedback().length} sessions recorded`;
     refreshProsody();
 
+    const HAS_SVARA_MARKS = /[\u0951\u0952\u1CDC\u1CDA]/;
+
     function getVedicApiBases() {
       const bases = [];
       if (window.location.protocol.startsWith("http")) {
@@ -1064,7 +1079,7 @@
         return;
       }
 
-      const hasVedicSvaraMarks = /[\u0951\u0952\u1CDC\u1CDA]/.test(rawText.normalize("NFC"));
+      const hasVedicSvaraMarks = HAS_SVARA_MARKS.test(rawText.normalize("NFC"));
       if (!hasVedicSvaraMarks) {
         const msg = "No Vedic svara marks (udātta/anudātta/svarita) detected; skipping Vedic svara .wav render. Use Vocal Preview (TTS) or Spoken Sanskrit Preview (NN) for unmarked text.";
         if (metaEl) metaEl.textContent = msg;
@@ -1244,7 +1259,7 @@
       }
       activeController = new AbortController();
 
-      const hasSvaraMarks = /[\u0951\u0952\u1CDA\u1CDC]/.test(rawText);
+      const hasSvaraMarks = HAS_SVARA_MARKS.test(rawText.normalize("NFC"));
       const voice = voiceEl && voiceEl.value === "sa_female" ? "sa_female" : "sa";
 
       if (btn) btn.disabled = true;
