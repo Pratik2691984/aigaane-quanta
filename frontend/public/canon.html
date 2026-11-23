@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Canon — 40,927 Verse Sanskrit Corpus Search</title>
-  <meta name="description" content="Browse and filter indexed verses across Rāmāyaṇa, Ṛgveda, Atharvaveda Pariśiṣṭas, Sāmaveda Kauthuma, Upaniṣads, Bhagavad Gītā, and Mahābhārata (40,927 verses in canon.db).">
+  <title>Canon — 114,341 Verse Sanskrit Corpus Search</title>
+  <meta name="description" content="Browse and filter indexed verses across Mahābhārata (18 Parvans), Rāmāyaṇa, Ṛgveda, Atharvaveda Pariśiṣṭas, Sāmaveda Kauthuma, Upaniṣads, and Bhagavad Gītā (114,341 verses in canon.db).">
   <style>
     body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 2rem; }
     a { color: #fbbf24; text-decoration: none; }
@@ -47,14 +47,37 @@
     </header>
   </div>
   <a href="index.html">← Aigaane</a>
-  <h1>Aigaane Canon · 40,927 Indexed Verses</h1><p style="color:#94a3b8;margin:-1rem 0 1.5rem;font-size:0.9rem;">Source-grounded corpus view (Rāmāyaṇa 23,291 · Ṛgveda 10,462 + 3 svara · Pariśiṣṭas 2,718 · Sāmaveda 2,247 · Upaniṣads 1,047 · Gītā 701 · MBH Parvan 1: 454 + seeds).</p>
+  <h1 id="canon-main-heading">Aigaane Canon · 114,341 Indexed Verses</h1><p style="color:#94a3b8;margin:-1rem 0 1.5rem;font-size:0.9rem;">Source-grounded corpus view (Mahābhārata Parvans 1–18: 73,872 · Rāmāyaṇa 23,291 · Ṛgveda 10,462 + 3 svara · Pariśiṣṭas 2,718 · Sāmaveda 2,247 · Upaniṣads 1,047 · Gītā 701).</p>
   <div class="filter-bar" id="canon-filter-bar">
     <button type="button" class="filter-btn active" data-filter="all">All</button>
+    <button type="button" class="filter-btn" data-filter="mahabharata">Mahābhārata (Parvans 1–18)</button>
     <button type="button" class="filter-btn" data-filter="gita">Gītā</button>
     <button type="button" class="filter-btn" data-filter="ramayana">Rāmāyaṇa</button>
     <button type="button" class="filter-btn" data-filter="samaveda">Sāmaveda (AIGAANE-SV-K-%)</button>
     <button type="button" class="filter-btn" data-filter="parisista">Pariśiṣṭas (AIGAANE-AVP-%)</button>
     <button type="button" class="filter-btn" data-filter="music">Music-tagged</button>
+    <label for="mbh-parvan-select" style="color:#94a3b8;font-size:0.85rem;margin-left:0.5rem;">Parvan:</label>
+    <select id="mbh-parvan-select" aria-label="Mahābhārata Parvan filter" style="background:#1e293b;color:#f8fafc;border:1px solid #475569;border-radius:4px;padding:0.4rem 0.6rem;">
+      <option value="">All Parvans (1–18)</option>
+      <option value="1">Parvan 1 (Ādi)</option>
+      <option value="2">Parvan 2 (Sabhā)</option>
+      <option value="3">Parvan 3 (Āraṇyaka)</option>
+      <option value="4">Parvan 4 (Virāṭa)</option>
+      <option value="5">Parvan 5 (Udyoga)</option>
+      <option value="6">Parvan 6 (Bhīṣma)</option>
+      <option value="7">Parvan 7 (Droṇa)</option>
+      <option value="8">Parvan 8 (Karṇa)</option>
+      <option value="9">Parvan 9 (Śalya)</option>
+      <option value="10">Parvan 10 (Sauptika)</option>
+      <option value="11">Parvan 11 (Strī)</option>
+      <option value="12">Parvan 12 (Śānti)</option>
+      <option value="13">Parvan 13 (Anuśāsana)</option>
+      <option value="14">Parvan 14 (Āśvamedhika)</option>
+      <option value="15">Parvan 15 (Āśramavāsika)</option>
+      <option value="16">Parvan 16 (Mausala)</option>
+      <option value="17">Parvan 17 (Mahāprasthānika)</option>
+      <option value="18">Parvan 18 (Svargārohaṇa)</option>
+    </select>
   </div>
   <div id="canon-list"></div>
 
@@ -183,14 +206,34 @@
     ];
 
     const container = document.getElementById('canon-list');
+    const headingEl = document.getElementById('canon-main-heading');
+    const parvanSelect = document.getElementById('mbh-parvan-select');
     let activeFilter = 'all';
+    let activeParvan = '';
+
+    function updateActiveHeading() {
+      if (!headingEl) return;
+      if (activeFilter === 'mahabharata' && activeParvan) {
+        headingEl.textContent = `Aigaane Canon · Mahābhārata Parvan ${activeParvan} (114,341 Total Indexed)`;
+      } else if (activeFilter === 'mahabharata') {
+        headingEl.textContent = 'Aigaane Canon · Mahābhārata Parvans 1–18 (73,872 MBH / 114,341 Total)';
+      } else {
+        headingEl.textContent = 'Aigaane Canon · 114,341 Indexed Verses';
+      }
+    }
 
     function renderCanonVerses(filterKey) {
       activeFilter = filterKey || 'all';
+      updateActiveHeading();
       container.innerHTML = '';
       const filtered = allCatalogVerses.filter(item => {
         if (activeFilter === 'all') return true;
         if (activeFilter === 'music') return Array.isArray(item.themes) && item.themes.includes('music');
+        if (activeFilter === 'mahabharata') {
+          if (item.collection !== 'mahabharata') return false;
+          if (!activeParvan) return true;
+          return String(item.parvan || '') === String(activeParvan);
+        }
         return item.collection === activeFilter;
       });
 
@@ -244,6 +287,22 @@
         renderCanonVerses(btn.dataset.filter);
       });
     });
+
+    if (parvanSelect) {
+      parvanSelect.addEventListener('change', () => {
+        activeParvan = parvanSelect.value;
+        if (activeParvan && activeFilter !== 'mahabharata') {
+          const mbhBtn = document.querySelector('#canon-filter-bar .filter-btn[data-filter="mahabharata"]');
+          if (mbhBtn) {
+            document.querySelectorAll('#canon-filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
+            mbhBtn.classList.add('active');
+          }
+          renderCanonVerses('mahabharata');
+        } else {
+          renderCanonVerses(activeFilter);
+        }
+      });
+    }
 
     renderCanonVerses('all');
 
