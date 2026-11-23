@@ -10,7 +10,7 @@ Verified paradigms (189 cells):
   - cur  (gaṇa 10, ubhayapada)  — laṭ, laṅ, lṛṭ, loṭ   [usage_note: rare]
   - vah  (gaṇa 1, ubhayapada)   — laṭ, laṅ, lṛṭ, loṭ   [usage_note: semantic]
   - jñā  (gaṇa 9, ubhayapada)   — laṭ, laṅ, lṛṭ, loṭ
-  - dā   (gaṇa 3, ubhayapada)   — laṭ, laṅ, lṛṭ        [loṭ NOT yet verified]
+  - dā   (gaṇa 3, ubhayapada)   — laṭ, laṅ, lṛṭ, loṭ  [all verified Q4-C v2]
 
 Sources: M.R. Kale (Higher Sanskrit Grammar), Siddhāntakaumudī, Whitney.
 """
