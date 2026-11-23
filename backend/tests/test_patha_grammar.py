@@ -93,3 +93,28 @@ def test_vikriti_modes_preserve_accents_on_vedic_padas():
     samhita_out = pada_to_samhita(accented)
     assert "\u0951" in jata_out or "\u0952" in jata_out
     assert "\u0952" in samhita_out
+
+
+def test_vedic_accents_covers_all_tone_categories_but_not_breath():
+    from backend.engine.vedic._patha_grammar import _VEDIC_ACCENTS
+    from backend.engine.vedic._vedic_unicode import VEDIC_MARK_REGISTRY
+
+    tone_categories = {
+        "udatta",
+        "anudatta",
+        "svarita",
+        "svarita_double",
+        "svarita_triple",
+        "samaveda_tone",
+    }
+    for cp, spec in VEDIC_MARK_REGISTRY.items():
+        if spec.accent_category in tone_categories:
+            assert cp in _VEDIC_ACCENTS, f"Tone mark {spec.codepoint} missing from _VEDIC_ACCENTS"
+        elif spec.accent_category == "nasal_or_breath":
+            assert cp not in _VEDIC_ACCENTS, f"Breath mark {spec.codepoint} should not be stripped"
+
+
+def test_pada_to_samhita_strips_candra_above_before_sandhi():
+    out = pada_to_samhita(["deva\u1cf4", "indraḥ"])
+    assert "\u1cf4" not in out
+    assert out == "devendraḥ"

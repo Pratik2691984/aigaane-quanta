@@ -28,18 +28,23 @@ import _sandhi_gen
 
 SUPPORTED_PATHAS = ("samhita", "pada", "krama", "jata", "ghana")
 
-# Vedic combining accent marks preserved during sandhi boundary inspection
-_VEDIC_ACCENTS = {
-    "\u0951",  # Devanagari Stress Sign Udatta
-    "\u0952",  # Devanagari Stress Sign Anudatta
-    "\u1CDA",  # Vedic Tone Double Svarita
-    "\u1CD0", "\u1CD1", "\u1CD2", "\u1CD4", "\u1CD5", "\u1CD6", "\u1CD7",
-    "\u1CD8", "\u1CD9", "\u1CDB", "\u1CDC", "\u1CDD", "\u1CDE", "\u1CDF",
-    "\u1CE0", "\u1CE1",
-    "\u0301",  # IAST acute (udātta)
-    "\u0300",  # IAST grave (anudātta)
-    "\u0302",  # IAST circumflex (svarita)
-}
+from backend.engine.vedic._vedic_unicode import VEDIC_MARK_REGISTRY
+
+_TONE_CATEGORIES = frozenset({
+    "udatta",
+    "anudatta",
+    "svarita",
+    "svarita_double",
+    "svarita_triple",
+    "samaveda_tone",
+})
+
+# Derive Vedic tone marks from VEDIC_MARK_REGISTRY (excluding nasal_or_breath),
+# combined with IAST combining accent marks that survive NFD decomposition.
+_VEDIC_ACCENTS = (
+    {cp for cp, spec in VEDIC_MARK_REGISTRY.items() if spec.accent_category in _TONE_CATEGORIES}
+    | {"\u0301", "\u0300", "\u0302"}
+)
 
 
 @dataclass(frozen=True)
