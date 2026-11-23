@@ -78,3 +78,18 @@ def test_vedic_accent_preservation_in_vikriti():
 def test_transform_patha_rejects_unknown_mode():
     with pytest.raises(ValueError, match="Unsupported patha"):
         transform_patha(["agnim", "īḷe"], patha="unknown_mode")
+def test_pada_to_samhita_fallback_preserves_unmerged_accented_tokens():
+    accented = ["अ॒ग्निम्", "ई॒ळे"]
+    out = pada_to_samhita(accented)
+    # When _sandhi_gen.combine_sandhi does not merge accented Devanagari inputs,
+    # _join_pair_samhita falls back to spacing tokens and preserves accents.
+    assert out == "अ॒ग्निम् ई॒ळे"
+    assert "\u0952" in out
+
+
+def test_vikriti_modes_preserve_accents_on_vedic_padas():
+    accented = ["अ॒ग्निम्", "ई॒ळे", "पु॒रोहि॑तम्"]
+    jata_out = generate_jata(accented).rendered_text
+    samhita_out = pada_to_samhita(accented)
+    assert "\u0951" in jata_out or "\u0952" in jata_out
+    assert "\u0952" in samhita_out

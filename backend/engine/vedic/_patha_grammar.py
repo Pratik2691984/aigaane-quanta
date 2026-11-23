@@ -12,7 +12,11 @@ Vedic recitation modes:
                      (w1 w2 w2 w1 w1 w2 w3 w3 w2 w1 w1 w2 w3)
 
 All transformations operate purely on validated pada lists or via deterministic
-sandhi composition/inversion, with zero LLM calls and full Vedic accent preservation.
+sandhi composition/inversion, with zero LLM calls. Accent preservation applies to
+vikṛti weave modes (krama, jata, ghana). pada_to_samhita and samhita_to_padas
+strip Vedic accents before delegating to _sandhi_gen (which operates on
+unaccented IAST) and do not reattach them; accent restoration across sandhi
+junctions belongs to _svara.py.
 """
 from __future__ import annotations
 
