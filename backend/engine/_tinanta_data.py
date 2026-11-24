@@ -259,6 +259,60 @@ PARADIGMS = {
             },
         },
     },
+    "sthā": {
+        "laṭ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "tiṣṭhati",
+                ("prathama_purusha",  "dvivacana"):  "tiṣṭhataḥ",
+                ("prathama_purusha",  "bahuvacana"): "tiṣṭhanti",
+                ("madhyama_purusha",  "ekavacana"):  "tiṣṭhasi",
+                ("madhyama_purusha",  "dvivacana"):  "tiṣṭhathaḥ",
+                ("madhyama_purusha",  "bahuvacana"): "tiṣṭhatha",
+                ("uttama_purusha",    "ekavacana"):  "tiṣṭhāmi",
+                ("uttama_purusha",    "dvivacana"):  "tiṣṭhāvaḥ",
+                ("uttama_purusha",    "bahuvacana"): "tiṣṭhāmaḥ",
+            },
+        },
+        "laṅ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "atiṣṭhat",
+                ("prathama_purusha",  "dvivacana"):  "atiṣṭhatām",
+                ("prathama_purusha",  "bahuvacana"): "atiṣṭhan",
+                ("madhyama_purusha",  "ekavacana"):  "atiṣṭhaḥ",
+                ("madhyama_purusha",  "dvivacana"):  "atiṣṭhatam",
+                ("madhyama_purusha",  "bahuvacana"): "atiṣṭhata",
+                ("uttama_purusha",    "ekavacana"):  "atiṣṭham",
+                ("uttama_purusha",    "dvivacana"):  "atiṣṭhāva",
+                ("uttama_purusha",    "bahuvacana"): "atiṣṭhāma",
+            },
+        },
+        "lṛṭ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "sthāsyati",
+                ("prathama_purusha",  "dvivacana"):  "sthāsyataḥ",
+                ("prathama_purusha",  "bahuvacana"): "sthāsyanti",
+                ("madhyama_purusha",  "ekavacana"):  "sthāsyasi",
+                ("madhyama_purusha",  "dvivacana"):  "sthāsyathaḥ",
+                ("madhyama_purusha",  "bahuvacana"): "sthāsyatha",
+                ("uttama_purusha",    "ekavacana"):  "sthāsyāmi",
+                ("uttama_purusha",    "dvivacana"):  "sthāsyāvaḥ",
+                ("uttama_purusha",    "bahuvacana"): "sthāsyāmaḥ",
+            },
+        },
+        "loṭ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "tiṣṭhatu",
+                ("prathama_purusha",  "dvivacana"):  "tiṣṭhatām",
+                ("prathama_purusha",  "bahuvacana"): "tiṣṭhantu",
+                ("madhyama_purusha",  "ekavacana"):  "tiṣṭha",
+                ("madhyama_purusha",  "dvivacana"):  "tiṣṭhatam",
+                ("madhyama_purusha",  "bahuvacana"): "tiṣṭhata",
+                ("uttama_purusha",    "ekavacana"):  "tiṣṭhāni",
+                ("uttama_purusha",    "dvivacana"):  "tiṣṭhāva",
+                ("uttama_purusha",    "bahuvacana"): "tiṣṭhāma",
+            },
+        },
+    },
     "gam": {
         "laṭ": {
             "parasmaipada": {
