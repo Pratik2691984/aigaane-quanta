@@ -205,6 +205,60 @@ PARADIGMS = {
             },
         },
     },
+    "likh": {
+        "laṭ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "likhati",
+                ("prathama_purusha",  "dvivacana"):  "likhataḥ",
+                ("prathama_purusha",  "bahuvacana"): "likhanti",
+                ("madhyama_purusha",  "ekavacana"):  "likhasi",
+                ("madhyama_purusha",  "dvivacana"):  "likhathaḥ",
+                ("madhyama_purusha",  "bahuvacana"): "likhatha",
+                ("uttama_purusha",    "ekavacana"):  "likhāmi",
+                ("uttama_purusha",    "dvivacana"):  "likhāvaḥ",
+                ("uttama_purusha",    "bahuvacana"): "likhāmaḥ",
+            },
+        },
+        "laṅ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "alikhat",
+                ("prathama_purusha",  "dvivacana"):  "alikhatām",
+                ("prathama_purusha",  "bahuvacana"): "alikhan",
+                ("madhyama_purusha",  "ekavacana"):  "alikhaḥ",
+                ("madhyama_purusha",  "dvivacana"):  "alikhatam",
+                ("madhyama_purusha",  "bahuvacana"): "alikhhata",
+                ("uttama_purusha",    "ekavacana"):  "alikham",
+                ("uttama_purusha",    "dvivacana"):  "alikhāva",
+                ("uttama_purusha",    "bahuvacana"): "alikhāma",
+            },
+        },
+        "lṛṭ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "lekhiṣyati",
+                ("prathama_purusha",  "dvivacana"):  "lekhiṣyataḥ",
+                ("prathama_purusha",  "bahuvacana"): "lekhiṣyanti",
+                ("madhyama_purusha",  "ekavacana"):  "lekhiṣyasi",
+                ("madhyama_purusha",  "dvivacana"):  "lekhiṣyathaḥ",
+                ("madhyama_purusha",  "bahuvacana"): "lekhiṣyatha",
+                ("uttama_purusha",    "ekavacana"):  "lekhiṣyāmi",
+                ("uttama_purusha",    "dvivacana"):  "lekhiṣyāvaḥ",
+                ("uttama_purusha",    "bahuvacana"): "lekhiṣyāmaḥ",
+            },
+        },
+        "loṭ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "likhatu",
+                ("prathama_purusha",  "dvivacana"):  "likhatām",
+                ("prathama_purusha",  "bahuvacana"): "likhantu",
+                ("madhyama_purusha",  "ekavacana"):  "likha",
+                ("madhyama_purusha",  "dvivacana"):  "likhatam",
+                ("madhyama_purusha",  "bahuvacana"): "likhata",
+                ("uttama_purusha",    "ekavacana"):  "likhāni",
+                ("uttama_purusha",    "dvivacana"):  "likhāva",
+                ("uttama_purusha",    "bahuvacana"): "likhāma",
+            },
+        },
+    },
     "gam": {
         "laṭ": {
             "parasmaipada": {
