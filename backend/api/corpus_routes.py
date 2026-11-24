@@ -97,3 +97,78 @@ def search_verses(q: str = Query(..., min_length=2), limit: int = 10):
         "results": verses,
         "total": len(verses),
     }
+
+@router.get("/browse")
+def browse_verses(
+    source: str | None = Query(default=None, min_length=1),
+    parvan: int | None = Query(default=None, ge=1, le=18),
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+):
+    """Browse canonical verses by optional source or Mahābhārata Parvan (1–18) with real total count."""
+    if not CANON_DB_PATH.exists():
+        raise HTTPException(
+            status_code=503,
+            detail=f"canon.db not found at {CANON_DB_PATH}",
+        )
+
+    where_clauses: list[str] = []
+    params: list[object] = []
+
+    effective_source = source.strip() if isinstance(source, str) and source.strip() else None
+    if effective_source is None and parvan is not None:
+        effective_source = f"mahabharata_parvan_{parvan}"
+
+    if effective_source is not None:
+        where_clauses.append("source = ?")
+        params.append(effective_source)
+
+    where_sql = f" WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
+
+    try:
+        conn = sqlite3.connect(f"file:{CANON_DB_PATH.resolve().as_posix()}?mode=ro", uri=True)
+        cur = conn.cursor()
+
+        total = cur.execute(f"SELECT COUNT(*) FROM verses{where_sql}", params).fetchone()[0]
+
+        query_sql = (
+            "SELECT record_id, book, chapter, verse, text, iast, meter, source, recension, svara_text, text_clean "
+            f"FROM verses{where_sql} "
+            "ORDER BY rowid ASC "
+            "LIMIT ? OFFSET ?"
+        )
+        rows = cur.execute(query_sql, [*params, limit, offset]).fetchall()
+        conn.close()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"corpus browse failed: {e}")
+
+    items = [
+        {
+            "record_id": r[0],
+            "book": r[1],
+            "chapter": r[2],
+            "verse": r[3],
+            "text": r[4],
+            "iast": r[5],
+            "transliteration": r[5],
+            "meter": r[6],
+            "source": r[7],
+            "recension": r[8],
+            "svara_text": r[9],
+            "text_clean": r[10],
+        }
+        for r in rows
+    ]
+
+    return {
+        "count": len(items),
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+        "filters": {
+            "source": effective_source,
+            "parvan": parvan,
+        },
+        "verses": items,
+        "results": items,
+    }
