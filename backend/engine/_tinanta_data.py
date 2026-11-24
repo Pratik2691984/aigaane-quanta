@@ -151,6 +151,60 @@ PARADIGMS = {
             },
         },
     },
+    "vad": {
+        "laṭ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "vadati",
+                ("prathama_purusha",  "dvivacana"):  "vadataḥ",
+                ("prathama_purusha",  "bahuvacana"): "vadanti",
+                ("madhyama_purusha",  "ekavacana"):  "vadasi",
+                ("madhyama_purusha",  "dvivacana"):  "vadathaḥ",
+                ("madhyama_purusha",  "bahuvacana"): "vadatha",
+                ("uttama_purusha",    "ekavacana"):  "vadāmi",
+                ("uttama_purusha",    "dvivacana"):  "vadāvaḥ",
+                ("uttama_purusha",    "bahuvacana"): "vadāmaḥ",
+            },
+        },
+        "laṅ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "avadat",
+                ("prathama_purusha",  "dvivacana"):  "avadatām",
+                ("prathama_purusha",  "bahuvacana"): "avadan",
+                ("madhyama_purusha",  "ekavacana"):  "avadaḥ",
+                ("madhyama_purusha",  "dvivacana"):  "avadatam",
+                ("madhyama_purusha",  "bahuvacana"): "avadata",
+                ("uttama_purusha",    "ekavacana"):  "avadam",
+                ("uttama_purusha",    "dvivacana"):  "avadāva",
+                ("uttama_purusha",    "bahuvacana"): "avadāma",
+            },
+        },
+        "lṛṭ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "vadiṣyati",
+                ("prathama_purusha",  "dvivacana"):  "vadiṣyataḥ",
+                ("prathama_purusha",  "bahuvacana"): "vadiṣyanti",
+                ("madhyama_purusha",  "ekavacana"):  "vadiṣyasi",
+                ("madhyama_purusha",  "dvivacana"):  "vadiṣyathaḥ",
+                ("madhyama_purusha",  "bahuvacana"): "vadiṣyatha",
+                ("uttama_purusha",    "ekavacana"):  "vadiṣyāmi",
+                ("uttama_purusha",    "dvivacana"):  "vadiṣyāvaḥ",
+                ("uttama_purusha",    "bahuvacana"): "vadiṣyāmaḥ",
+            },
+        },
+        "loṭ": {
+            "parasmaipada": {
+                ("prathama_purusha",  "ekavacana"):  "vadatu",
+                ("prathama_purusha",  "dvivacana"):  "vadatām",
+                ("prathama_purusha",  "bahuvacana"): "vadantu",
+                ("madhyama_purusha",  "ekavacana"):  "vada",
+                ("madhyama_purusha",  "dvivacana"):  "vadatam",
+                ("madhyama_purusha",  "bahuvacana"): "vadata",
+                ("uttama_purusha",    "ekavacana"):  "vadāni",
+                ("uttama_purusha",    "dvivacana"):  "vadāva",
+                ("uttama_purusha",    "bahuvacana"): "vadāma",
+            },
+        },
+    },
     "gam": {
         "laṭ": {
             "parasmaipada": {
