@@ -102,7 +102,7 @@ def test_no_usage_note_for_verified_roots():
 
 
 def test_untabled_lrt_returns_error_not_generated_form():
-    r = _tinanta.conjugate("paṭh", "lṛṭ", "prathama_purusha", "ekavacana", "parasmaipada")
+    r = _tinanta.conjugate("paṭh", "lṛṭ", "prathama_purusha", "ekavacana", "ātmanepada")
     assert "error" in r
     assert r.get("surface") is None
 
