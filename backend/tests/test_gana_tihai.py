@@ -60,3 +60,30 @@ def test_check_tihai_congruence_valid_and_invalid():
         check_tihai_congruence(phrase_matras=-1, gap_matras=0, cycle_length=16)
     with pytest.raises(ValueError):
         check_tihai_congruence(phrase_matras=4, gap_matras=1, cycle_length=0)
+
+
+def test_studio3_tala_tihai_route():
+    from fastapi.testclient import TestClient
+    from api.main import app
+
+    client = TestClient(app)
+
+    r_ok = client.post(
+        "/api/v3/studio3/tala/tihai",
+        json={"phrase_matras": 5, "gap_matras": 1, "cycle_length": 16, "t_start": 0, "sam_anchor": 17},
+    )
+    assert r_ok.status_code == 200
+    body_ok = r_ok.json()
+    assert body_ok["congruent"] is True
+    assert body_ok["tihai_span_matras"] == 17
+
+    r_off = client.post(
+        "/api/v3/studio3/tala/tihai",
+        json={"phrase_matras": 4, "gap_matras": 1, "cycle_length": 16},
+    )
+    assert r_off.status_code == 200
+    assert r_off.json()["congruent"] is False
+
+    r_probe = client.get("/api/v3/studio3/probe")
+    assert r_probe.status_code == 200
+    assert r_probe.json().get("has_check_tihai_congruence") is True

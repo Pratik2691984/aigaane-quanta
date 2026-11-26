@@ -349,6 +349,35 @@ async def tala_suggest(payload: CongruenceRequest):
 #   Probe                                                            #
 # ------------------------------------------------------------------ #
 
+class TihaiCongruenceRequest(BaseModel):
+    phrase_matras: int = Field(..., ge=0, description="Length M of a single tihai phrase in matras")
+    gap_matras: int = Field(0, ge=0, description="Inter-phrase pause/gap G in matras (applied twice)")
+    cycle_length: int = Field(..., ge=1, description="Tala cycle length C in matras")
+    t_start: int = Field(0, ge=0, description="Starting matra offset within the cycle")
+    sam_anchor: int = Field(17, ge=1, description="Target Sam anchor (default 17)")
+
+
+@router.post("/tala/tihai")
+async def tala_tihai_congruence(payload: TihaiCongruenceRequest):
+    """
+    Validate a 3-repetition tihai cadence:
+      3 * phrase_matras + 2 * gap_matras + t_start ≡ sam_anchor (mod cycle_length)
+    """
+    if not _TALA_OK or not hasattr(_tala, "check_tihai_congruence"):
+        raise HTTPException(status_code=503, detail="Tihai congruence engine unavailable")
+
+    try:
+        return _tala.check_tihai_congruence(
+            phrase_matras=payload.phrase_matras,
+            gap_matras=payload.gap_matras,
+            cycle_length=payload.cycle_length,
+            t_start=payload.t_start,
+            sam_anchor=payload.sam_anchor,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @router.get("/probe")
 async def studio3_probe():
     return {
@@ -360,5 +389,6 @@ async def studio3_probe():
         "has_cents_to_midi_pitch_bend": _SRUTI_OK and hasattr(_sruti, "cents_to_midi_pitch_bend"),
         "tala_ok": _TALA_OK,
         "has_check_congruence": _TALA_OK and hasattr(_tala, "check_congruence"),
+        "has_check_tihai_congruence": _TALA_OK and hasattr(_tala, "check_tihai_congruence"),
         "tala_congruence": "implemented (v2.0)",
     }
