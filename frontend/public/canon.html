@@ -84,6 +84,60 @@
       font-weight: 600;
     }
 
+  
+    /* Canon live search & honest provenance/svara/license badges */
+    .canon-search-wrap {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .canon-search-input {
+      flex: 1 1 240px;
+      padding: 0.55rem 0.85rem;
+      font-size: 0.92rem;
+      color: #e2e8f0;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+    }
+    .canon-search-input:focus {
+      outline: none;
+      border-color: #fbbf24;
+    }
+    .canon-search-clear {
+      padding: 0.52rem 0.8rem;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      background: transparent;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .canon-search-clear:hover {
+      color: #fbbf24;
+      border-color: #fbbf24;
+    }
+    .canon-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.55rem;
+    }
+    .canon-badge {
+      font-family: monospace;
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #334155;
+      background: rgba(15, 23, 42, 0.75);
+      color: #cbd5e1;
+    }
+    .canon-badge.unknown {
+      color: #94a3b8;
+      border-style: dashed;
+    }
   </style>
   <style id="session-canon-viewport-polish">
     html, body { max-width: 100%; overflow-x: hidden; }
@@ -106,7 +160,13 @@
   </div>
   <a href="index.html">← Aigaane</a>
   <h1 id="canon-main-heading">Aigaane Canon · Featured Verses (114,341 Indexed)</h1><p id="canon-corpus-summary" style="color:#94a3b8;margin:-1rem 0 1.5rem;font-size:0.9rem;">Featured card view from 114,341 indexed verses (Mahābhārata Parvans 1–18: 73,872 · Rāmāyaṇa 23,291 · Ṛgveda 10,462 + 3 svara · Pariśiṣṭas 2,718 · Sāmaveda 2,247 · Upaniṣads 1,047 · Gītā 701) · <a href="https://aigaane-engine-977695793163.asia-south1.run.app/docs" target="_blank" rel="noopener">Browse/search full corpus via API docs →</a></p>
-  <div class="filter-bar" id="canon-filter-bar">
+  <div class="canon-search-wrap">
+  <input id="canon-search-input" class="canon-search-input" type="search"
+         placeholder="Search featured verses (Devanāgarī, IAST, ID, theme, recension)…"
+         autocomplete="off" aria-label="Search featured verses" />
+  <button type="button" id="canon-search-clear" class="canon-search-clear">Clear</button>
+</div>
+<div class="filter-bar" id="canon-filter-bar">
     <button type="button" class="filter-btn active" data-filter="all">All</button>
     <button type="button" class="filter-btn" data-filter="gita">Gītā</button>
     <button type="button" class="filter-btn" data-filter="ramayana">Rāmāyaṇa</button>
@@ -183,6 +243,26 @@
 
     function escapeRegex(str) {
       return String(str || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    
+    const CANON_SVARA_RE = /[\u0951\u0952\u1CDC\u1CDA]/;
+
+    function buildCanonMetaBadges(item) {
+      const rec = item && item.recension ? String(item.recension).trim() : "";
+      const lic = item && item.license ? String(item.license).trim() : "";
+      const txt = `${item && item.devanagari ? item.devanagari : ""} ${item && item.iast ? item.iast : ""}`;
+      const hasSvara = CANON_SVARA_RE.test(txt.normalize("NFC"));
+
+      const recLabel = rec || "unknown";
+      const licLabel = lic || "unknown";
+      const svaraLabel = hasSvara ? "present" : "unmarked";
+
+      return [
+        `<span class="canon-badge ${hasSvara ? "" : "unknown"}">svara: ${escapeHtml(svaraLabel)}</span>`,
+        `<span class="canon-badge ${rec ? "" : "unknown"}">recension: ${escapeHtml(recLabel)}</span>`,
+        `<span class="canon-badge ${lic ? "" : "unknown"}">license: ${escapeHtml(licLabel)}</span>`,
+      ].join("");
     }
 
     function renderSafeHighlight(rawText, query) {
@@ -367,10 +447,29 @@
     function renderCanonVerses(filterKey) {
       activeFilter = filterKey || 'all';
       container.innerHTML = '';
+      const q = (typeof getCanonSearchQuery === 'function' ? getCanonSearchQuery() : '').trim().toLowerCase();
       const filtered = allCatalogVerses.filter(item => {
-        if (activeFilter === 'all') return true;
-        if (activeFilter === 'music') return Array.isArray(item.themes) && item.themes.includes('music');
-        return item.collection === activeFilter;
+        if (activeFilter === 'all') {
+          // keep all collections
+        } else if (activeFilter === 'music') {
+          if (!(Array.isArray(item.themes) && item.themes.includes('music'))) return false;
+        } else if (item.collection !== activeFilter) {
+          return false;
+        }
+        if (!q) return true;
+        const hay = [
+          item.id || '',
+          item.collection || '',
+          item.sourceLabel || '',
+          item.recension || '',
+          item.license || '',
+          item.gloss || '',
+          item.dev || '',
+          item.devanagari || '',
+          item.iast || '',
+          Array.isArray(item.themes) ? item.themes.join(' ') : '',
+        ].join(' ').toLowerCase();
+        return hay.includes(q);
       });
 
       let currentGroup = '';
@@ -401,10 +500,11 @@
         const card = document.createElement('div');
         card.className = 'verse-card';
         card.innerHTML = `
-          ${v.dev ? `<div class="dev">${v.dev}</div>` : ''}
-          <div class="iast">${v.iast}</div>
+          ${v.dev ? `<div class="dev">${renderSafeHighlight(v.dev || '', typeof getCanonSearchQuery === 'function' ? getCanonSearchQuery() : '')}</div>` : ''}
+          <div class="iast">${renderSafeHighlight(v.iast || '', typeof getCanonSearchQuery === 'function' ? getCanonSearchQuery() : '')}</div>
           <div class="gloss-line">${musicalPills}${vedicPills}${v.gloss || ''}</div>
           <div class="meta"><span>${v.sourceLabel || v.id}</span><span class="provenance-tag">Provenance: ${v.provenance || 'canon.db'}</span></div>
+          <div class="canon-badges">${buildCanonMetaBadges(v)}</div>
           <div class="card-actions">
             ${gandharvaLink}
             <a class="handoff-link" href="mantra.html?text=${encodedText}">Open in Mantra Studio</a>
@@ -412,6 +512,26 @@
           <div id="audio-out-${v.id}" style="margin-top:1rem;"></div>
         `;
         container.appendChild(card);
+      });
+    }
+
+    
+    const canonSearchInput = document.getElementById('canon-search-input');
+    const canonSearchClear = document.getElementById('canon-search-clear');
+
+    function getCanonSearchQuery() {
+      return (canonSearchInput && canonSearchInput.value ? canonSearchInput.value : '').trim().toLowerCase();
+    }
+
+    if (canonSearchInput) {
+      canonSearchInput.addEventListener('input', () => {
+        renderCanonVerses(activeFilter);
+      });
+    }
+    if (canonSearchClear) {
+      canonSearchClear.addEventListener('click', () => {
+        if (canonSearchInput) canonSearchInput.value = '';
+        renderCanonVerses(activeFilter);
       });
     }
 
