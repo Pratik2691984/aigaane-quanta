@@ -236,3 +236,36 @@ def suggest_correction(
         options["congruent_cycle_lengths"] = alts
 
     return {"already_congruent": False, "current": r.to_dict(), "corrections": options}
+
+
+def check_tihai_congruence(
+    phrase_matras: int,
+    gap_matras: int,
+    cycle_length: int,
+    t_start: int = 0,
+    sam_anchor: int = SAM_ANCHOR,
+) -> dict:
+    """
+    Validate a 3-repetition tihai cadence:
+      total_matras = 3 * phrase_matras + 2 * gap_matras + t_start
+    checked against sam_anchor (mod cycle_length) via check_congruence.
+    """
+    if phrase_matras < 0 or gap_matras < 0 or t_start < 0:
+        raise ValueError("phrase_matras, gap_matras, and t_start must be non-negative")
+    if cycle_length <= 0:
+        raise ValueError("cycle_length must be >= 1")
+
+    span_matras = 3 * phrase_matras + 2 * gap_matras
+    res = check_congruence(
+        pluta_count=0,
+        dirgha_count=0,
+        cycle_length=cycle_length,
+        t_start=t_start,
+        laghu_count=span_matras,
+        sam_anchor=sam_anchor,
+    )
+    out = res.to_dict()
+    out["phrase_matras"] = phrase_matras
+    out["gap_matras"] = gap_matras
+    out["tihai_span_matras"] = span_matras
+    return out
