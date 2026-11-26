@@ -369,3 +369,38 @@ def scan_verse(surface: str) -> dict:
 def lookup(surface: str) -> Optional[dict]:
     """Legacy alias for analyze_verse."""
     return analyze_verse(surface)
+
+PINGALA_GANAS = {
+    "111": ("ma", "guru-guru-guru", [1, 1, 1], 6),
+    "011": ("ya", "laghu-guru-guru", [0, 1, 1], 5),
+    "101": ("ra", "guru-laghu-guru", [1, 0, 1], 5),
+    "001": ("sa", "laghu-laghu-guru", [0, 0, 1], 4),
+    "110": ("ta", "guru-guru-laghu", [1, 1, 0], 5),
+    "010": ("ja", "laghu-guru-laghu", [0, 1, 0], 4),
+    "100": ("bha", "guru-laghu-laghu", [1, 0, 0], 4),
+    "000": ("na", "laghu-laghu-laghu", [0, 0, 0], 3),
+}
+
+
+def encode_ganas(weights: List[str]) -> dict:
+    """Encode L/G weights into 3-syllable Pingala gana binary vectors (L=0, G=1)."""
+    bits = "".join("1" if w == "G" else "0" for w in weights if w in ("L", "G"))
+    ganas = []
+    for idx in range(0, len(bits) - 2, 3):
+        chunk = bits[idx:idx + 3]
+        name, label, vec, matras = PINGALA_GANAS[chunk]
+        ganas.append({
+            "index": idx // 3,
+            "gana": name,
+            "pattern_name": label,
+            "bits": chunk,
+            "vector": vec,
+            "matras": matras,
+        })
+    rem = bits[len(ganas) * 3:]
+    return {
+        "binary_string": bits,
+        "ganas": ganas,
+        "remainder_bits": rem,
+        "remainder_vector": [int(b) for b in rem],
+    }
