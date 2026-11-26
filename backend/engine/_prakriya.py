@@ -74,6 +74,7 @@ class PrakriyaTrace:
 
 
 RULE_REGISTRY: Dict[str, SutraRule] = {
+    "1.1.44": SutraRule("1.1.44", "na veti vibhasa", "samjna", "sarvam", is_tripadi=False, priority=8),
     "1.3.2": SutraRule("1.3.2", "upadese 'janunasika it", "samjna", "pratyaya", is_tripadi=False, priority=10),
     "1.3.3": SutraRule("1.3.3", "hal antyam", "samjna", "pratyaya", is_tripadi=False, priority=11),
     "1.3.8": SutraRule("1.3.8", "lasakvataddhite", "samjna", "pratyaya", is_tripadi=False, priority=12),
@@ -93,6 +94,8 @@ RULE_REGISTRY: Dict[str, SutraRule] = {
     "8.2.1": SutraRule("8.2.1", "purvatrasiddham", "adhikara", "tripadi", is_tripadi=True, priority=1),
     "8.2.66": SutraRule("8.2.66", "sasajuso ruh", "tripadi", "tripadi", is_tripadi=True, priority=50),
     "8.3.15": SutraRule("8.3.15", "kharavasanayor visarjaniyah", "tripadi", "tripadi", is_tripadi=True, priority=60),
+    "8.3.36": SutraRule("8.3.36", "va sari", "tripadi", "tripadi", is_tripadi=True, priority=65),
+    "8.4.40": SutraRule("8.4.40", "stoh scuna scuh", "tripadi", "tripadi", is_tripadi=True, priority=70),
 }
 
 
@@ -567,6 +570,104 @@ def derive_ramasya(
     return trace
 
 
+def derive_vibhasa_visarga(
+    pratipadika: str = "rāma",
+    following_word: str = "śete",
+) -> PrakriyaTrace:
+    """
+    Deterministic multi-branch vibhasa (1.1.44 na veti vibhasa) trace for
+    optional visarga retention vs. scutva assimilation before sibilant (8.3.36 va sari):
+      - Branch 1: rāmaḥ śete (visarga retained under 8.3.36)
+      - Branch 2: rāmaś śete (visarga -> s -> ś under 8.4.40)
+    Classified as AMBIGUOUS_DERIVATION with both valid sutra branches recorded.
+    """
+    if pratipadika not in ("rāma", "rama"):
+        return PrakriyaTrace(
+            query_form=f"{pratipadika} {following_word}",
+            prakruti=pratipadika,
+            category="subanta",
+            adhikaras_active=[],
+            anuvrtti={},
+            segments=[pratipadika],
+            surface=pratipadika,
+            sutra_chain=[],
+            result_classification="UNRESOLVED",
+        )
+
+    base = "rāma"
+    anuvrtti: Dict[str, str] = {
+        "pratipadika": base,
+        "linga": "pullinga",
+        "vibhakti": "prathama",
+        "vacana": "ekavacana",
+        "sandhi_context": "shar_before_sibilant",
+        "vibhasa": "1.1.44 (optional)",
+    }
+    trace = PrakriyaTrace(
+        query_form=f"{base}ḥ {following_word}",
+        prakruti=base,
+        category="subanta",
+        adhikaras_active=["sup", "pratyaya", "pada", "tripadi"],
+        anuvrtti=anuvrtti,
+        segments=[base, following_word],
+        surface=f"{base} {following_word}",
+        sutra_chain=[],
+        result_classification="UNRESOLVED",
+    )
+
+    _record_step(
+        trace=trace,
+        stage="pratyaya_yojana",
+        sutra_ids=["4.1.2", "2.3.46"],
+        rule_title="attach sup suffix su for prathama-ekavacana",
+        adhikara="sup",
+        next_segments=[base, "su", following_word],
+        next_surface=f"{base}+su {following_word}",
+        notes="Nominative singular sup ending su.",
+    )
+
+    _record_step(
+        trace=trace,
+        stage="sapadasaptadhyayee",
+        sutra_ids=["1.3.2", "1.3.9"],
+        rule_title="elide anunnasika it vowel u of su -> s",
+        adhikara="pratyaya",
+        next_segments=[base, "s", following_word],
+        next_surface=f"{base}+s {following_word}",
+        notes="u is an it-marker under 1.3.2 and elided under 1.3.9.",
+    )
+
+    _record_step(
+        trace=trace,
+        stage="tripadi_vibhasa",
+        sutra_ids=["1.1.44", "8.2.1", "8.2.66", "8.3.36", "8.4.40"],
+        rule_title="vibhasa (1.1.44) under va sari (8.3.36): retain visarga (rāmaḥ śete) or assimilate via stoh scuna scuh (8.4.40 -> rāmaś śete)",
+        adhikara="tripadi",
+        next_segments=[f"{base}ḥ / {base}ś", following_word],
+        next_surface=f"{base}ḥ {following_word}",
+        notes="Two valid Paninian vibhasa outputs: 'rāmaḥ śete' (8.3.36) and 'rāmaś śete' (8.4.40).",
+    )
+
+    _record_step(
+        trace=trace,
+        stage="final",
+        sutra_ids=["1.4.14"],
+        rule_title="suptinantam padam closure",
+        adhikara="pada",
+        next_segments=[f"{base}ḥ", following_word],
+        next_surface=f"{base}ḥ {following_word}",
+        notes="Multi-branch vibhasa derivation; primary variant recorded with full branch alternatives.",
+    )
+
+    trace.branches = [
+        ["4.1.2", "2.3.46", "1.3.2", "1.3.9", "1.1.44", "8.2.1", "8.2.66", "8.3.36", "1.4.14"],
+        ["4.1.2", "2.3.46", "1.3.2", "1.3.9", "1.1.44", "8.2.1", "8.2.66", "8.3.36", "8.4.40", "1.4.14"],
+    ]
+    trace.anuvrtti["variant_surfaces"] = f"{base}ḥ {following_word} | {base}ś {following_word}"
+    trace.result_classification = "AMBIGUOUS_DERIVATION"
+    return trace
+
+
 DERIVATION_TRACES: Dict[str, Callable[[], PrakriyaTrace]] = {
     "gacchati": derive_gacchati,
     "bhavati": derive_bhavati,
@@ -575,6 +676,8 @@ DERIVATION_TRACES: Dict[str, Callable[[], PrakriyaTrace]] = {
     "ramah": derive_ramah,
     "rāmasya": derive_ramasya,
     "ramasya": derive_ramasya,
+    "rāmaḥ śete": derive_vibhasa_visarga,
+    "rāmaś śete": derive_vibhasa_visarga,
 }
 
 
@@ -657,6 +760,32 @@ def validate_prakriya_trace(trace: PrakriyaTrace) -> List[str]:
                 if seen_tripadi and not is_terminal_pada_closure:
                     violations.append(
                         f"PURVATRASIDDHAM_VIOLATION:sapadasaptadhyayee:{sid}({coord})_after_tripadi({last_tripadi_coord})@step_{step.step_index}"
+                    )
+
+    if trace.result_classification == "AMBIGUOUS_DERIVATION":
+        if len(trace.branches) < 2:
+            violations.append("AMBIGUOUS_DERIVATION_REQUIRES_MULTI_BRANCH")
+        for b_idx, branch in enumerate(trace.branches):
+            b_seen_tripadi = False
+            b_last_coord: Optional[Tuple[int, int, int]] = None
+            for s_idx, sid in enumerate(branch):
+                rule = RULE_REGISTRY.get(sid)
+                if rule is None:
+                    violations.append(f"BRANCH_{b_idx}_UNREGISTERED_SUTRA:{sid}")
+                    continue
+                coord = parse_sutra_coord(sid)
+                in_trip = is_tripadi_coord(coord) or rule.is_tripadi
+                is_final_1414 = (s_idx == len(branch) - 1 and sid == "1.4.14")
+                if in_trip:
+                    b_seen_tripadi = True
+                    if b_last_coord is not None and coord < b_last_coord:
+                        violations.append(
+                            f"BRANCH_{b_idx}_TRIPADI_ORDER_VIOLATION:{sid}({coord})<prev({b_last_coord})"
+                        )
+                    b_last_coord = coord
+                elif b_seen_tripadi and not is_final_1414:
+                    violations.append(
+                        f"BRANCH_{b_idx}_PURVATRASIDDHAM_VIOLATION:{sid}({coord})_after_tripadi({b_last_coord})"
                     )
 
     return violations

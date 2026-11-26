@@ -178,3 +178,23 @@ def test_tripadi_and_adhikara_validation_on_registered_and_invalid_traces():
     )
     v_adh = _prakriya.validate_prakriya_trace(bad_adhikara)
     assert any(v.startswith("ADHIKARA_MISMATCH:") for v in v_adh)
+def test_vibhasa_visarga_multi_branch_trace_and_validation():
+    trace = _prakriya.derive_vibhasa_visarga()
+    assert trace.result_classification == "AMBIGUOUS_DERIVATION"
+    assert len(trace.branches) == 2
+    assert "8.3.36" in trace.branches[0]
+    assert "8.4.40" not in trace.branches[0]
+    assert "8.3.36" in trace.branches[1]
+    assert "8.4.40" in trace.branches[1]
+    assert "rāmaḥ śete" in trace.anuvrtti["variant_surfaces"]
+    assert "rāmaś śete" in trace.anuvrtti["variant_surfaces"]
+    assert _prakriya.validate_prakriya_trace(trace) == []
+
+    t_a = _prakriya.derive_form("rāmaḥ śete")
+    t_b = _prakriya.derive_form("rāmaś śete")
+    assert t_a is not None and t_b is not None
+    assert t_a.to_dict() == t_b.to_dict()
+
+    broken = _prakriya.derive_vibhasa_visarga()
+    broken.branches = [broken.branches[0]]
+    assert "AMBIGUOUS_DERIVATION_REQUIRES_MULTI_BRANCH" in _prakriya.validate_prakriya_trace(broken)
