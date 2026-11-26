@@ -10,6 +10,11 @@ async function fetchSrutiTable() {
 }
 
 export default function Studio3Tab() {
+  // === Pingala gana scansion state ===
+  const [ganaText, setGanaText] = useState("dharmakṣetre kurukṣetre");
+  const [ganaLoading, setGanaLoading] = useState(false);
+  const [ganaResult, setGanaResult] = useState(null);
+
   // === Tihai congruence verifier state ===
   const [tihaiPhrase, setTihaiPhrase] = useState("5");
   const [tihaiGap, setTihaiGap] = useState("1");
@@ -411,6 +416,23 @@ export default function Studio3Tab() {
     }
   };
 
+  const scanGanas = async () => {
+    if (!ganaText.trim()) return;
+    setGanaLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/v1/chandas/scan`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: ganaText.trim() }),
+      });
+      setGanaResult(await res.json());
+    } catch (e) {
+      setGanaResult({ errors: String(e) });
+    } finally {
+      setGanaLoading(false);
+    }
+  };
+
   const verifyTihai = async () => {
     setTihaiLoading(true);
     try {
@@ -483,6 +505,52 @@ export default function Studio3Tab() {
               </h3>
               <div style={{ fontSize: "13px", color: "#94a3b8" }}>
                 Total Matras: {result.total_matras} · Residue: {result.residue} · Target: {result.target} · Deviation: {result.deviation}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ============= PINGALA GANA SCANSION ============= */}
+      <h2 style={{ color: "#38bdf8", fontSize: "16px", marginTop: "24px" }}>Piṅgala Gaṇa Vector Scansion</h2>
+      <p style={{ color: "#64748b", fontSize: "13px" }}>
+        3-syllable L/G binary vectors (L=0, G=1) via /api/v1/chandas/scan
+      </p>
+
+      <div style={{ display: "flex", gap: "10px", marginBottom: "14px" }}>
+        <input
+          type="text"
+          value={ganaText}
+          onChange={(e) => setGanaText(e.target.value)}
+          placeholder="Enter IAST or Devanagari verse..."
+          style={{ flex: 1, padding: "8px", background: "#1e293b", color: "white", border: "1px solid #334155", borderRadius: "4px" }}
+        />
+        <button
+          onClick={scanGanas}
+          disabled={ganaLoading}
+          style={{ padding: "8px 16px", background: "#38bdf8", color: "#0f172a", border: "none", borderRadius: "4px", fontWeight: "bold", cursor: "pointer" }}
+        >
+          {ganaLoading ? "Scanning..." : "Scan Gaṇas"}
+        </button>
+      </div>
+
+      {ganaResult && (
+        <div style={{ background: "#1e293b", padding: "14px", borderRadius: "8px", marginBottom: "20px", border: "1px solid #334155" }}>
+          {ganaResult.errors ? (
+            <div style={{ color: "#f87171" }}>Error: {ganaResult.errors}</div>
+          ) : (
+            <>
+              <div style={{ fontSize: "13px", color: "#94a3b8", marginBottom: "8px" }}>
+                Pattern: <strong style={{ color: "#e2e8f0" }}>{ganaResult.pattern || "-"}</strong> · Syllables: {ganaResult.syllable_count ?? 0} · Mātrā Sum: {ganaResult.matra_sum ?? 0} · Binary: <strong style={{ color: "#38bdf8" }}>{ganaResult.ganas?.binary_string || ""}</strong>
+                {ganaResult.ganas?.remainder_bits ? ` · Remainder: ${ganaResult.ganas.remainder_bits}` : ""}
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {(ganaResult.ganas?.ganas || []).map((g) => (
+                  <div key={g.index} style={{ background: "#0f172a", padding: "6px 10px", borderRadius: "6px", border: "1px solid #1e293b", fontSize: "12px" }}>
+                    <span style={{ color: "#fbbf24", fontWeight: "bold" }}>{g.gana}</span>{" "}
+                    <span style={{ color: "#94a3b8" }}>({g.bits} · {g.matras}m)</span>
+                  </div>
+                ))}
               </div>
             </>
           )}
