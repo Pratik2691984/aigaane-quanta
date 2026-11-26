@@ -65,3 +65,54 @@ def test_prakriya_traces_are_deterministic_and_unresolved_for_unknown():
     assert t1.to_dict() == t2.to_dict()
 
     assert _prakriya.derive_form("nonexistent_xyz_form") is None
+def test_bhavati_and_tisthati_prakriya_traces_and_engine_agreement():
+    bh_trace = _prakriya.derive_bhavati()
+    assert bh_trace.result_classification == "DETERMINISTIC_DERIVATION"
+    assert bh_trace.surface == "bhavati"
+    assert bh_trace.prakruti == "bhū"
+    assert len(bh_trace.steps) == 4
+    assert "7.3.84" in bh_trace.sutra_chain
+    assert "1.4.14" in bh_trace.sutra_chain
+
+    bh_conj = _tinanta.conjugate("bhū", "laṭ", "prathama_purusha", "ekavacana", "parasmaipada")
+    assert bh_conj.get("surface") == bh_trace.surface
+
+    bh_lex = _lexicon.lookup("bhavati")
+    assert bh_lex is not None
+    assert bh_lex.get("dhatu") == bh_trace.prakruti
+
+    th_trace = _prakriya.derive_tisthati()
+    assert th_trace.result_classification == "DETERMINISTIC_DERIVATION"
+    assert th_trace.surface == "tiṣṭhati"
+    assert th_trace.prakruti == "sthā"
+    assert len(th_trace.steps) == 4
+    assert "7.4.61" in th_trace.sutra_chain
+    assert "1.4.14" in th_trace.sutra_chain
+
+    th_conj = _tinanta.conjugate("sthā", "laṭ", "prathama_purusha", "ekavacana", "parasmaipada")
+    assert th_conj.get("surface") == th_trace.surface
+
+    th_lex = _lexicon.lookup("tiṣṭhati")
+    assert th_lex is not None
+    assert th_lex.get("dhatu") == th_trace.prakruti
+
+    assert _prakriya.derive_form("bhavati") is not None
+    assert _prakriya.derive_form("tiṣṭhati") is not None
+def test_ramasya_prakriya_trace_and_lexicon_agreement():
+    trace = _prakriya.derive_ramasya()
+    assert trace.result_classification == "DETERMINISTIC_DERIVATION"
+    assert trace.surface == "rāmasya"
+    assert trace.prakruti == "rāma"
+    assert trace.category == "subanta"
+    assert len(trace.steps) == 3
+    assert "2.3.50" in trace.sutra_chain
+    assert "4.1.2" in trace.sutra_chain
+    assert "1.4.14" in trace.sutra_chain
+
+    lex_hit = _lexicon.lookup("rāmasya")
+    assert lex_hit is not None
+    assert lex_hit.get("stem") == trace.prakruti
+    assert lex_hit.get("vibhakti") == "shasthi"
+
+    assert _prakriya.derive_form("rāmasya") is not None
+    assert _prakriya.derive_form("ramasya") is not None
