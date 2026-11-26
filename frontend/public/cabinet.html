@@ -140,6 +140,48 @@
         }
         .nav-item.active { color: #fbbf24; }
         .nav-item:hover { color: #fbbf24; }
+    
+        /* Pure navigation tab row for Live Studios (matches Index & Canon) */
+        .studio-tab-row {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            gap: 0.25rem;
+            border-bottom: 1px solid #334155;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            scrollbar-width: thin;
+        }
+        @media (min-width: 640px) {
+            .studio-tab-row {
+                flex-wrap: wrap;
+                overflow-x: visible;
+            }
+        }
+        .studio-tab-link {
+            flex: 0 0 auto;
+            text-decoration: none;
+            color: #94a3b8;
+            font-size: 0.92rem;
+            font-weight: 500;
+            padding: 0.6rem 1rem;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            touch-action: manipulation;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+        .studio-tab-link:hover,
+        .studio-tab-link:focus-visible {
+            color: #fbbf24;
+            border-bottom-color: #fbbf24;
+            outline: none;
+        }
+        .studio-tab-note {
+            margin: 0 0 2rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
@@ -162,43 +204,15 @@
         </div>
 
            <!-- LIVE STUDIOS -->
-        <h3 class="section-title">Live Studios</h3>
-        <div class="cabinet-grid">
-
-            <a href="/mantra.html" class="cabinet-card">
-                <div class="card-header">
-                    <h3>Mantra Studio</h3>
-                    <span class="badge-live">LIVE</span>
-                </div>
-                <p class="card-desc">Client-side Vedic recitation &amp; Japa loop with svara and recension discipline. For 22-śruti Rāga synthesis and acoustic/MIDI tools, open Gāndharva.</p>
-                <div class="card-footer">
-                    <span>Śikṣā · Japa Loop</span>
-                </div>
-            </a>
-
-            <a href="/gandharva.html" class="cabinet-card">
-                <div class="card-header">
-                    <h3>Gāndharva</h3>
-                    <span class="badge-live">LIVE</span>
-                </div>
-                <p class="card-desc">Neural music producer and polyphonic synthesizer mainframe. Compose Vedic Rāgas with 22-Shruti microtonal accuracy.</p>
-                <div class="card-footer">
-                    <span>Nāṭya Śāstra · DSP</span>
-                </div>
-            </a>
-
-            <a href="/vedic-instruments.html" class="cabinet-card">
-                <div class="card-header">
-                    <h3>Vedic Instruments</h3>
-                    <span class="badge-live">LIVE</span>
-                </div>
-                <p class="card-desc">50 canonical specimens across 4 Vādyas (Tata, Avanaddha, Suṣira, Ghana). Explore LaTeX DSP governing equations and bio-substrates.</p>
-                <div class="card-footer">
-                    <span>DSP · Bio-substrates</span>
-                </div>
-            </a>
-
-        </div>
+        <h2 class="section-title">Live Studios</h2>
+        <nav class="studio-tab-row" aria-label="Live Studios">
+            <a href="/mantra.html" class="studio-tab-link">Mantra Studio</a>
+            <a href="/gandharva.html" class="studio-tab-link">Gāndharva</a>
+            <a href="/vedic-instruments.html" class="studio-tab-link">Vedic Instruments</a>
+        </nav>
+        <p class="studio-tab-note">
+            Mantra: Vedic recitation &amp; Japa · Gāndharva: 22-śruti &amp; acoustic/MIDI · Vedic Instruments: 50-specimen DSP &amp; substrates.
+        </p>
 
         <!-- UPAVEDAS -->
         <h3 class="section-title">The Four Upavedas</h3>
