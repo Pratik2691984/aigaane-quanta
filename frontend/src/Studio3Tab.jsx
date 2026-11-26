@@ -40,6 +40,9 @@ export default function Studio3Tab() {
   const [audioError, setAudioError] = useState(null);
   const [tanpuraOn, setTanpuraOn] = useState(false);
   const [tanpuraGain, setTanpuraGain] = useState(0.08);
+  const [andolanOn, setAndolanOn] = useState(false);
+  const [andolanHz, setAndolanHz] = useState(2.5);
+  const [andolanDepthCents, setAndolanDepthCents] = useState(12);
   const audioCtxRef = useRef(null);
   const workletNodeRef = useRef(null);
   const workletLoadedRef = useRef(false);
@@ -121,6 +124,9 @@ export default function Studio3Tab() {
       freq: entry.frequency_hz,
       durationMs,
       gain: 0.15,
+      andolanHz: andolanOn ? andolanHz : 0,
+      andolanDepthCents: andolanOn ? andolanDepthCents : 0,
+      andolanAmpDepth: andolanOn ? 0.08 : 0,
     });
     setTimeout(() => {
       setNowPlaying((cur) => (cur === entry.index ? null : cur));
@@ -137,6 +143,9 @@ export default function Studio3Tab() {
         freq: entry.frequency_hz,
         durationMs: 550,
         gain: 0.15,
+        andolanHz: andolanOn ? andolanHz : 0,
+        andolanDepthCents: andolanOn ? andolanDepthCents : 0,
+        andolanAmpDepth: andolanOn ? 0.08 : 0,
       });
       await new Promise((r) => setTimeout(r, 600));
     }
@@ -676,6 +685,31 @@ export default function Studio3Tab() {
             style={{ width: "120px" }}
           />
           <span style={{ fontFamily: "monospace", color: "#64748b" }}>{tanpuraGain.toFixed(2)}</span>
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", color: "#94a3b8" }}>
+          <input
+            type="checkbox"
+            checked={andolanOn}
+            onChange={(e) => setAndolanOn(e.target.checked)}
+            disabled={!audioReady}
+          />
+          Āndolan LFO
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", color: "#94a3b8" }}>
+          Depth (¢)
+          <input
+            type="range"
+            min="2"
+            max="30"
+            step="1"
+            value={andolanDepthCents}
+            onChange={(e) => setAndolanDepthCents(parseInt(e.target.value, 10))}
+            disabled={!audioReady || !andolanOn}
+            style={{ width: "100px" }}
+          />
+          <span style={{ fontFamily: "monospace", color: "#64748b" }}>
+            {andolanDepthCents}¢ · {andolanHz.toFixed(1)}Hz
+          </span>
         </label>
       </div>
 
