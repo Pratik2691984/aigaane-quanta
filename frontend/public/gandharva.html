@@ -62,6 +62,10 @@
       border-radius: 8px;
       margin-bottom: 20px;
     }
+  
+    /* Mobile overflow & flex/grid min-width safety */
+    *, *::before, *::after { box-sizing: border-box; min-width: 0; }
+    html, body { overflow-x: hidden; max-width: 100%; }
   </style>
 
   <!-- Core Audio Engines -->
