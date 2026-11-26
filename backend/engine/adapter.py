@@ -165,7 +165,7 @@ class EngineAdapter:
             engine_version=self.version
         )
 
-    def _lookup_verified_prakriya(self, legacy: dict) -> Optional[_prakriya.PrakriyaTrace]:
+    def _lookup_verified_prakriya(self, legacy: dict) -> _prakriya.PrakriyaTrace | None:
         translit = legacy.get("transliteration") or {}
         candidates_surface = [
             translit.get("iast"),
