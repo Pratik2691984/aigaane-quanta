@@ -7,11 +7,31 @@
   <meta name="description" content="Explore the interactive studios, Applied Vedic Sciences, and the Four Upavedas: Ayurveda, Sthapatyaveda, Dhanurveda, and the Master Hub.">
     <link rel="stylesheet" href="/css/main.css">
     <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            min-width: 0;
+        }
+        html, body {
+            overflow-x: hidden;
+        }
         .cabinet-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
+            gap: 1.25rem;
+            margin-top: 1.75rem;
+        }
+        @media (max-width: 640px) {
+            .site-header {
+                padding: 0.85rem 1rem !important;
+                flex-wrap: wrap;
+                gap: 0.6rem;
+            }
+            .container {
+                padding: 24px 14px !important;
+            }
+            .nav-item {
+                margin-left: 0 !important;
+            }
         }
         .cabinet-card {
             background: var(--bg-card, #1e293b);
@@ -126,7 +146,7 @@
     <header class="site-header">
         <a href="/index.html" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 1.8rem; color: #fbbf24;">ॐ</span>
-            <h1 style="margin: 0; font-size: 1.2rem; color: #fbbf24;">Aigaane</h1>
+            <span style="margin: 0; font-size: 1.2rem; font-weight: 700; color: #fbbf24;">Aigaane</span>
         </a>
               <nav style="display: flex; gap: 1.2rem; align-items: center;">
         <a href="index.html" style="color: var(--text-muted, #94a3b8); text-decoration: none; font-size: 0.95rem; transition: color 0.2s;" onmouseover="this.style.color='#fbbf24'" onmouseout="this.style.color='#94a3b8'">Sanskrit Engine</a>
@@ -137,7 +157,7 @@
 
     <main class="container">
         <div style="text-align: center; margin-bottom: 3rem;">
-            <h2 style="font-size: 2.2rem; color: #f8fafc; margin-bottom: 0.5rem;">The Aigaane Cabinet</h2>
+            <h1 style="font-size: clamp(1.6rem, 4vw, 2.2rem); color: #f8fafc; margin-bottom: 0.5rem;">The Aigaane Cabinet</h1>
             <p style="color: #94a3b8; font-size: 1.1rem;">Explore the interactive studios and applied Vedic sciences.</p>
         </div>
 
@@ -150,7 +170,7 @@
                     <h3>Mantra Studio</h3>
                     <span class="badge-live">LIVE</span>
                 </div>
-                <p class="card-desc">Client-side Vedic synthesis & Japa loop. Interactive prosody scanner, 22-śruti Rāga synthesis, and prastāra rhythm tracker.</p>
+                <p class="card-desc">Client-side Vedic recitation &amp; Japa loop with svara and recension discipline. For 22-śruti Rāga synthesis and acoustic/MIDI tools, open Gāndharva.</p>
                 <div class="card-footer">
                     <span>Śikṣā · Japa Loop</span>
                 </div>
