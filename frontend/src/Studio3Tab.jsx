@@ -10,6 +10,15 @@ async function fetchSrutiTable() {
 }
 
 export default function Studio3Tab() {
+  // === Tihai congruence verifier state ===
+  const [tihaiPhrase, setTihaiPhrase] = useState("5");
+  const [tihaiGap, setTihaiGap] = useState("1");
+  const [tihaiCycle, setTihaiCycle] = useState("16");
+  const [tihaiStart, setTihaiStart] = useState("0");
+  const [tihaiAnchor, setTihaiAnchor] = useState("17");
+  const [tihaiLoading, setTihaiLoading] = useState(false);
+  const [tihaiResult, setTihaiResult] = useState(null);
+
   // === Tala congruence verifier state ===
   const [pluta, setPluta] = useState(0);
   const [dirgha, setDirgha] = useState(0);
@@ -402,6 +411,28 @@ export default function Studio3Tab() {
     }
   };
 
+  const verifyTihai = async () => {
+    setTihaiLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/v3/studio3/tala/tihai`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phrase_matras: parseInt(tihaiPhrase, 10) || 0,
+          gap_matras: parseInt(tihaiGap, 10) || 0,
+          cycle_length: parseInt(tihaiCycle, 10) || 16,
+          t_start: parseInt(tihaiStart, 10) || 0,
+          sam_anchor: parseInt(tihaiAnchor, 10) || 17,
+        }),
+      });
+      setTihaiResult(await res.json());
+    } catch (e) {
+      setTihaiResult({ error: String(e) });
+    } finally {
+      setTihaiLoading(false);
+    }
+  };
+
   return (
     <div style={{ padding: "20px", color: "#e2e8f0" }}>
       <h1 style={{ color: "#f472b6" }}>Studio III: Tāla & 22-Śruti</h1>
@@ -452,6 +483,57 @@ export default function Studio3Tab() {
               </h3>
               <div style={{ fontSize: "13px", color: "#94a3b8" }}>
                 Total Matras: {result.total_matras} · Residue: {result.residue} · Target: {result.target} · Deviation: {result.deviation}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ============= TIHAI CONGRUENCE VERIFIER ============= */}
+      <h2 style={{ color: "#fbbf24", fontSize: "16px", marginTop: "24px" }}>Tihāī Congruence Verifier</h2>
+      <p style={{ color: "#64748b", fontSize: "13px" }}>
+        3 × phrase_matras + 2 × gap_matras + t_start ≡ sam_anchor (mod cycle_length)
+      </p>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "16px" }}>
+        <div>
+          <label style={{ display: "block", fontSize: "12px", color: "#94a3b8" }}>Phrase Mātrās (M)</label>
+          <input type="number" value={tihaiPhrase} onChange={(e) => setTihaiPhrase(e.target.value)} style={{ width: "100%", padding: "8px", background: "#1e293b", color: "white", border: "1px solid #334155", borderRadius: "4px" }} />
+        </div>
+        <div>
+          <label style={{ display: "block", fontSize: "12px", color: "#94a3b8" }}>Inter-Phrase Gap (G)</label>
+          <input type="number" value={tihaiGap} onChange={(e) => setTihaiGap(e.target.value)} style={{ width: "100%", padding: "8px", background: "#1e293b", color: "white", border: "1px solid #334155", borderRadius: "4px" }} />
+        </div>
+        <div>
+          <label style={{ display: "block", fontSize: "12px", color: "#94a3b8" }}>Cycle Length (C)</label>
+          <input type="number" value={tihaiCycle} onChange={(e) => setTihaiCycle(e.target.value)} style={{ width: "100%", padding: "8px", background: "#1e293b", color: "white", border: "1px solid #334155", borderRadius: "4px" }} />
+        </div>
+        <div>
+          <label style={{ display: "block", fontSize: "12px", color: "#94a3b8" }}>Start Offset (t_start)</label>
+          <input type="number" value={tihaiStart} onChange={(e) => setTihaiStart(e.target.value)} style={{ width: "100%", padding: "8px", background: "#1e293b", color: "white", border: "1px solid #334155", borderRadius: "4px" }} />
+        </div>
+        <div>
+          <label style={{ display: "block", fontSize: "12px", color: "#94a3b8" }}>Sam Anchor</label>
+          <input type="number" value={tihaiAnchor} onChange={(e) => setTihaiAnchor(e.target.value)} style={{ width: "100%", padding: "8px", background: "#1e293b", color: "white", border: "1px solid #334155", borderRadius: "4px" }} />
+        </div>
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+          <button onClick={verifyTihai} disabled={tihaiLoading} style={{ width: "100%", padding: "8px", background: "#fbbf24", color: "#0f172a", border: "none", borderRadius: "4px", fontWeight: "bold", cursor: "pointer" }}>
+            {tihaiLoading ? "Checking..." : "Verify Tihāī"}
+          </button>
+        </div>
+      </div>
+
+      {tihaiResult && (
+        <div style={{ background: "#1e293b", padding: "15px", borderRadius: "8px", marginBottom: "20px", border: tihaiResult.congruent ? "1px solid #4ade80" : "1px solid #f87171" }}>
+          {tihaiResult.error ? (
+            <div style={{ color: "#f87171" }}>Error: {tihaiResult.error}</div>
+          ) : (
+            <>
+              <h3 style={{ color: tihaiResult.congruent ? "#4ade80" : "#f87171", marginTop: 0, marginBottom: "8px" }}>
+                {tihaiResult.congruent ? "✓ Tihāī Sam Congruent" : "✗ Tihāī Not Congruent"}
+              </h3>
+              <div style={{ fontSize: "13px", color: "#94a3b8" }}>
+                Tihāī Span: {tihaiResult.tihai_span_matras} · Total Mātrās: {tihaiResult.total_matras} · Residue: {tihaiResult.residue} · Target: {tihaiResult.target} · Deviation: {tihaiResult.deviation}
               </div>
             </>
           )}
