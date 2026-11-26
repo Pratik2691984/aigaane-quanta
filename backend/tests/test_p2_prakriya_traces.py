@@ -198,3 +198,37 @@ def test_vibhasa_visarga_multi_branch_trace_and_validation():
     broken = _prakriya.derive_vibhasa_visarga()
     broken.branches = [broken.branches[0]]
     assert "AMBIGUOUS_DERIVATION_REQUIRES_MULTI_BRANCH" in _prakriya.validate_prakriya_trace(broken)
+def test_additional_lakara_and_subanta_traces_and_validation():
+    fut = _prakriya.derive_bhavisyati()
+    assert fut.result_classification == "DETERMINISTIC_DERIVATION"
+    assert fut.surface == "bhaviṣyati"
+    assert fut.anuvrtti["lakara"] == "lṛṭ"
+    assert "3.3.13" in fut.sutra_chain
+    assert "3.1.33" in fut.sutra_chain
+    assert "8.3.59" in fut.sutra_chain
+    assert _prakriya.validate_prakriya_trace(fut) == []
+
+    imp = _prakriya.derive_bhavatu()
+    assert imp.result_classification == "DETERMINISTIC_DERIVATION"
+    assert imp.surface == "bhavatu"
+    assert imp.anuvrtti["lakara"] == "loṭ"
+    assert "3.3.162" in imp.sutra_chain
+    assert "3.4.86" in imp.sutra_chain
+    assert _prakriya.validate_prakriya_trace(imp) == []
+
+    acc = _prakriya.derive_ramam()
+    assert acc.result_classification == "DETERMINISTIC_DERIVATION"
+    assert acc.surface == "rāmam"
+    assert "2.3.2" in acc.sutra_chain
+    assert "6.1.107" in acc.sutra_chain
+    assert _prakriya.validate_prakriya_trace(acc) == []
+
+    loc = _prakriya.derive_rame()
+    assert loc.result_classification == "DETERMINISTIC_DERIVATION"
+    assert loc.surface == "rāme"
+    assert "2.3.36" in loc.sutra_chain
+    assert "6.1.87" in loc.sutra_chain
+    assert _prakriya.validate_prakriya_trace(loc) == []
+
+    for key in ("bhaviṣyati", "bhavishyati", "bhavatu", "rāmam", "ramam", "rāme", "rame"):
+        assert _prakriya.derive_form(key) is not None
