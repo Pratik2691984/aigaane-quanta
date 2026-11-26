@@ -24,6 +24,13 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Sequence
 import unicodedata
 
+import sys as _sys
+from pathlib import Path as _Path
+
+_ENGINE_DIR = str(_Path(__file__).resolve().parents[1])
+if _ENGINE_DIR not in _sys.path:
+    _sys.path.insert(0, _ENGINE_DIR)
+
 import _sandhi_gen
 
 SUPPORTED_PATHAS = ("samhita", "pada", "krama", "jata", "ghana")

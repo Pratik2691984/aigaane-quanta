@@ -327,8 +327,32 @@ def generate_vedic_contour(text: str, recension: str = "rgveda_sakala", sa_hz: f
             )],
         )
 
-    profile = RECENSION_PROFILES.get(recension, RECENSION_PROFILES["rgveda_sakala"])
-    resolved_recension = recension if recension in RECENSION_PROFILES else "rgveda_sakala"
+    rec_key = (recension or "").strip()
+    if rec_key == "samaveda" or rec_key.startswith("samaveda_"):
+        return VedicContourEnvelope(
+            input_triad={"recension": rec_key, "text": text},
+            candidates=[],
+            rejected=[
+                VedicRejected(
+                    reason_code="SAMAVEDA_ROUTE",
+                    detail=f"Recension {rec_key!r} is routed to Samaveda / Studio III rather than Rgveda/Yajurveda svara contour.",
+                    fallback_endpoint="/api/v3/studio3/midi/export",
+                )
+            ],
+        )
+    if rec_key not in RECENSION_PROFILES:
+        return VedicContourEnvelope(
+            input_triad={"recension": rec_key, "text": text},
+            candidates=[],
+            rejected=[
+                VedicRejected(
+                    reason_code="UNVERIFIED_RECENSION",
+                    detail=f"Unverified or unsupported recension {rec_key!r}; refusing fallback to rgveda_sakala.",
+                )
+            ],
+        )
+    profile = RECENSION_PROFILES[rec_key]
+    resolved_recension = rec_key
 
     aksharas = segment_vedic_aksharas(nfc_text)
     if not aksharas:

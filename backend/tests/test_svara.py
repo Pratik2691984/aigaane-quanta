@@ -106,3 +106,11 @@ def test_rest_fields_present_on_models():
 
 
 
+
+
+def test_unverified_and_samaveda_variant_recensions_fail_closed():
+    for bad_rec in ("samaveda_kauthuma", "parishishta_tei", "unknown_recension", ""):
+        env = generate_vedic_contour(RV_1_1_1_A, recension=bad_rec)
+        assert env.candidates == []
+        assert len(env.rejected) == 1
+        assert env.rejected[0].reason_code in {"SAMAVEDA_ROUTE", "UNVERIFIED_RECENSION"}
