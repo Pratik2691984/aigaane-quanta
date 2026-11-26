@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 class NyayaProof(BaseModel):
     pratijna: str = Field(..., description="Proposition: What is being claimed?")
@@ -17,3 +17,5 @@ class NyayaVerifyRequest(BaseModel):
     vigraha: Optional[str] = None
     samasa_type: Optional[str] = None
     result_classification: Optional[str] = None
+    derivation_steps: Optional[List[Dict[str, Any]]] = None
+    strict_registry: bool = False

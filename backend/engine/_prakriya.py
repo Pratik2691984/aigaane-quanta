@@ -661,6 +661,60 @@ def validate_prakriya_trace(trace: PrakriyaTrace) -> List[str]:
 
     return violations
 
+def validate_sutra_chain(
+    sutra_chain: List[str],
+    require_registered: bool = False,
+) -> List[str]:
+    """
+    Validate a flat sutra_chain for canonical coordinate syntax, Tripadi (8.2.1)
+    monotonic ordering, and purvatrasiddham discipline.
+    """
+    violations: List[str] = []
+    if not sutra_chain:
+        return ["EMPTY_SUTRA_CHAIN"]
+
+    seen_tripadi = False
+    last_tripadi_coord: Optional[Tuple[int, int, int]] = None
+
+    for idx, raw_sid in enumerate(sutra_chain):
+        sid = (raw_sid or "").strip()
+        if not sid:
+            violations.append(f"EMPTY_SUTRA_AT_INDEX_{idx}")
+            continue
+        try:
+            coord = parse_sutra_coord(sid)
+        except ValueError:
+            violations.append(f"INVALID_SUTRA_FORMAT:{sid}@idx_{idx}")
+            continue
+
+        adhyaya, pada, sutra_num = coord
+        if not (1 <= adhyaya <= 8 and 1 <= pada <= 4 and sutra_num >= 1):
+            violations.append(f"OUT_OF_RANGE_SUTRA:{sid}@idx_{idx}")
+            continue
+
+        rule = RULE_REGISTRY.get(sid)
+        if require_registered and rule is None:
+            violations.append(f"UNREGISTERED_SUTRA:{sid}@idx_{idx}")
+
+        in_tripadi = is_tripadi_coord(coord) or (rule.is_tripadi if rule else False)
+        is_terminal_pada = (sid == "1.4.14" and idx == len(sutra_chain) - 1)
+
+        if in_tripadi:
+            seen_tripadi = True
+            if last_tripadi_coord is not None and coord < last_tripadi_coord:
+                violations.append(
+                    f"TRIPADI_ORDER_VIOLATION:{sid}({coord})<prev({last_tripadi_coord})@idx_{idx}"
+                )
+            last_tripadi_coord = coord
+        else:
+            if seen_tripadi and not is_terminal_pada:
+                violations.append(
+                    f"PURVATRASIDDHAM_VIOLATION:sapadasaptadhyayee:{sid}({coord})_after_tripadi({last_tripadi_coord})@idx_{idx}"
+                )
+
+    return violations
+
+
 def derive_form(form: str) -> Optional[PrakriyaTrace]:
     key = form.strip()
     fn = DERIVATION_TRACES.get(key)
