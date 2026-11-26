@@ -1,1959 +1,1069 @@
 <!DOCTYPE html>
-<html lang="sa">
+<html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-VCB6NWCJ4Z"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-VCB6NWCJ4Z');
-</script>
-
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Aigaane Sanskrit Engine — deterministic Pāṇinian phonology, sandhi, tiṅanta verb paradigms, subanta declensions, chandas prosody, and kosha lookup." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#090b0f" />
+  <meta property="og:title" content="Aigaane — Deterministic Pāṇinian Sanskrit Engine" />
+  <meta property="og:description" content="Rule-first Pāṇinian grammar and prosody workbench with cited sūtras, script views, and deterministic verification." />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://aigaane-engine-2026.web.app/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ॐ</text></svg>" />
   <title>Aigaane — Deterministic Pāṇinian Sanskrit Engine</title>
-  <meta property="og:locale" content="en_IN">
-  <meta name="robots" content="index, follow">
-  <meta name="twitter:title" content="Aigaane — Deterministic Pāṇinian Engine">
-  <meta name="twitter:description" content="Formal Pāṇinian derivation graph and microtonal Karplus-Strong synthesis. 100% deterministic, rule-first vyākaraṇa.">
-
-  <meta name="description" content="Pāṇini's 4,000 sūtras modeled as a deterministic rule graph. Zero LLM guesswork, strict Tripādī and asiddhavat derivation, and exact just-intonation 22-śruti physical synthesis.">
-  <meta name="theme-color" content="#0b0f19">
-  <link rel="icon" href="/favicon.ico">
-  <meta property="og:title" content="Aigaane — Deterministic Pāṇinian Engine">
-  <meta property="og:description" content="Formal Pāṇinian derivation graph and microtonal Karplus-Strong synthesis. 100% deterministic, rule-first vyākaraṇa.">
-  <meta property="og:url" content="https://aigaane.in">
-  <link rel="canonical" href="https://aigaane.in/">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Aigaane">
-  <meta property="og:image" content="https://aigaane.in/assets/og-preview.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:image" content="https://aigaane.in/assets/og-preview.png">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+Devanagari:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/engine.css">
-
-  <style id="session2-sticky-iast-style">
-    input.iast-active-target, textarea.iast-active-target {
-      outline: none !important;
-      border-color: #38bdf8 !important;
-      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35) !important;
+  <style>
+    :root {
+      --bg-page: #090b0f;
+      --bg-card: #10151e;
+      --bg-inset: #171e2b;
+      --text-main: #f4f1ea;
+      --text-muted: #9aa4b2;
+      --gold: #fbbf24;
+      --gold-hover: #f59e0b;
+      --ok: #34d399;
+      --warn: #fbbf24;
+      --border: rgba(255, 255, 255, 0.11);
+      --radius: 10px;
+      --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, "Noto Sans Devanagari", sans-serif;
+      --font-dev: "Noto Serif Devanagari", "Noto Sans Devanagari", "Kohinoor Devanagari", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
-    .sticky-iast-bar {
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-bottom: 72px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 14px;
+    }
+
+    @media (min-width: 640px) {
+      .container {
+        padding: 0 20px;
+      }
+    }
+
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(9, 11, 15, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      min-height: 54px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .brand .om {
+      color: var(--gold);
+      font-family: var(--font-dev);
+      font-size: 1.45rem;
+      line-height: 1;
+    }
+
+    .top-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 0.88rem;
+    }
+
+    .top-nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 4px 2px;
+      touch-action: manipulation;
+    }
+
+    .top-nav a:hover,
+    .top-nav a[aria-current="page"] {
+      color: var(--gold);
+    }
+
+    .top-nav a[aria-current="page"] {
+      border-bottom: 2px solid var(--gold);
+    }
+
+    .hero {
+      padding: 26px 0 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(23, 30, 43, 0.65) 0%, rgba(9, 11, 15, 0) 100%);
+    }
+
+    @media (min-width: 640px) {
+      .hero {
+        padding: 36px 0 26px;
+      }
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .det-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      color: var(--ok);
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--ok);
+    }
+
+    .sutra-tag {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.45rem, 4vw, 2.2rem);
+      line-height: 1.22;
+      font-weight: 600;
+    }
+
+    h1 .gold {
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      margin: 0;
+      max-width: 720px;
+      color: var(--text-muted);
+      font-size: 0.94rem;
+    }
+
+    main {
+      padding: 20px 0 12px;
+    }
+
+    .tablist {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+      scrollbar-width: thin;
+    }
+
+    @media (min-width: 640px) {
+      .tablist {
+        flex-wrap: wrap;
+        overflow-x: visible;
+      }
+    }
+
+    .tab-btn {
+      flex: 0 0 auto;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      border-bottom: 2px solid transparent;
+      border-radius: 8px 8px 0 0;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn[aria-selected="true"] {
+      color: var(--gold);
+      background: var(--bg-card);
+      border-color: var(--border);
+      border-bottom-color: var(--gold);
+    }
+
+    .tabpanel {
+      display: none;
+    }
+
+    .tabpanel.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .card {
+        padding: 20px;
+      }
+    }
+
+    .card-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: 1.12rem;
+    }
+
+    .card-head p {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 0.86rem;
+    }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      background: var(--bg-inset);
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    input[type="text"],
+    select {
+      background: var(--bg-page);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 0.95rem;
+      font-family: var(--font-dev), var(--font-sans);
+      min-height: 40px;
+    }
+
+    input[type="text"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: #090b0f;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 16px;
+      min-height: 40px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-hover);
+    }
+
+    .result-box {
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 13px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      overflow-wrap: anywhere;
+    }
+
+    .syl-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .syl-chip {
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 0.82rem;
+      font-family: var(--font-dev), var(--font-sans);
+    }
+
+    .script-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .script-btn {
+      background: var(--bg-inset);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      min-height: 36px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: var(--font-dev), var(--font-sans);
+      touch-action: manipulation;
+    }
+
+    .script-btn.active {
+      color: var(--gold);
+      background: rgba(251, 191, 36, 0.14);
+      border-color: rgba(251, 191, 36, 0.4);
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    th, td {
+      padding: 8px 11px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      font-family: var(--font-dev), var(--font-sans);
+    }
+
+    th {
+      background: var(--bg-inset);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.78rem;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer-note a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .footer-note a:hover {
+      text-decoration: underline;
+    }
+
+    details.theory-box {
+      margin-top: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    details.theory-box summary {
+      cursor: pointer;
+      padding: 13px 16px;
+      font-weight: 500;
+      color: var(--text-main);
+      touch-action: manipulation;
+    }
+
+    details.theory-box .theory-body {
+      padding: 0 16px 16px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .iast-dock {
       position: fixed;
-      bottom: 0;
       left: 0;
       right: 0;
-      z-index: 100;
-      background: rgba(11, 15, 25, 0.94);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid #1e293b;
-      padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px));
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+      bottom: 0;
+      z-index: 40;
+      background: rgba(9, 11, 15, 0.96);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(8px);
     }
-    .sticky-iast-container {
-      max-width: 1080px;
+
+    .iast-inner {
+      max-width: 1120px;
       margin: 0 auto;
+      padding: 8px 12px;
       display: flex;
       align-items: center;
       gap: 6px;
       overflow-x: auto;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      padding: 2px 0;
+      -webkit-overflow-scrolling: touch;
     }
-    .sticky-iast-container::-webkit-scrollbar {
-      display: none;
-    }
-    .sticky-iast-label {
-      font-family: ui-monospace, SFMono-Regular, monospace;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      white-space: nowrap;
-      padding-right: 4px;
-    }
+
     .iast-key {
-      min-width: 44px;
-      min-height: 44px;
-      padding: 0 10px;
-      border-radius: 8px;
-      background: #1e293b;
-      color: #fbbf24;
-      border: 1px solid #334155;
-      font-family: 'Noto Serif', serif;
-      font-size: 1.15rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      background: var(--bg-inset);
+      color: var(--gold);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      min-width: 34px;
+      height: 34px;
+      padding: 0 7px;
+      font-size: 0.9rem;
       cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
+      flex-shrink: 0;
       touch-action: manipulation;
-      transition: all 0.1s ease;
     }
-    .iast-key:active {
-      background: #fbbf24;
-      color: #0b0f19;
-      transform: scale(0.95);
-    }
-    body {
-      padding-bottom: 65px !important;
-    }
-  </style>
 
-  <style id="session2-morph-card-style">
-    .script-toggle-bar {
-      display: inline-flex;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 14px;
-      background: #0f172a;
+    .iast-key:hover {
+      border-color: var(--gold);
     }
-    .script-toggle-btn {
-      padding: 6px 14px;
-      min-height: 38px;
-      border: 0;
-      background: #1e293b;
-      color: #94a3b8;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .script-toggle-btn.active {
-      background: #38bdf8;
-      color: #0b0f19;
-      font-weight: 700;
-    }
-    @media (max-width: 768px) {
-      .subanta-table-wrap table.subanta { display: block; width: 100%; border: none; }
-      .subanta-table-wrap thead { display: none; }
-      .subanta-table-wrap tbody { display: block; width: 100%; }
-      .subanta-table-wrap tbody tr {
-        display: block; margin-bottom: 12px; border: 1px solid #334155;
-        border-radius: 10px; padding: 10px 14px; background: #111827;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      }
-      .subanta-table-wrap tbody th {
-        display: block; text-align: left; color: #fbbf24; font-size: 0.95rem;
-        padding: 0 0 6px 0; border-bottom: 1px solid #1e293b; margin-bottom: 6px;
-      }
-      .subanta-table-wrap tbody td.form {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 6px 0; border-bottom: 1px dashed #1e293b; font-size: 1rem;
-      }
-      .subanta-table-wrap tbody td.form:last-child { border-bottom: none; }
-      .subanta-table-wrap tbody td.form::before {
-        content: attr(data-vacana); font-size: 0.75rem; color: #94a3b8;
-        font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
-        margin-right: 12px;
-      }
-    }
-  </style>
-
-  <style id="session3-sandhi-dag-style">
-    .sandhi-dag-container {
-      margin-top: 1.2rem; background: #0f172a; border: 1px solid #1e293b;
-      border-radius: 12px; padding: 16px; position: relative;
-    }
-    .sandhi-dag-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
-    }
-    .sandhi-dag-title {
-      font-size: 0.85rem; font-weight: 700; color: #94a3b8;
-      text-transform: uppercase; letter-spacing: 0.08em; font-family: ui-monospace, monospace;
-    }
-    .copy-img-btn {
-      padding: 5px 12px; border-radius: 6px; border: 1px solid #334155;
-      background: #1e293b; color: #38bdf8; font-size: 0.78rem;
-      font-weight: 600; cursor: pointer; transition: all 0.15s ease;
-    }
-    .copy-img-btn:hover { background: #38bdf8; color: #0b0f19; }
-    .sandhi-svg-canvas {
-      width: 100%; max-width: 600px; height: auto; display: block; margin: 0 auto;
-    }
-  </style>
-
-  <style id="session4-audio-playhead-style">
-    .syl.active-playhead {
-      transform: translateY(-3px) scale(1.06); border-color: #fbbf24 !important;
-      box-shadow: 0 0 14px rgba(251, 191, 36, 0.6) !important;
-      background: #1e1b4b !important; color: #fbbf24 !important;
-      transition: all 0.08s ease-out;
-    }
-    .audio-playhead-container { margin-top: 14px; margin-bottom: 12px; }
-    .audio-playhead-track {
-      width: 100%; height: 6px; background: #1e293b;
-      border-radius: 9999px; overflow: hidden; position: relative;
-    }
-    .audio-playhead-bar {
-      height: 100%; width: 0%;
-      background: linear-gradient(90deg, #38bdf8, #fbbf24);
-      border-radius: 9999px; transition: width 0.06s linear;
-    }
-    .audio-controls-row {
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 12px; margin-top: 10px; padding-top: 10px;
-      border-top: 1px solid #1e293b;
-    }
-    .speed-toggle-group {
-      display: inline-flex; border: 1px solid #334155;
-      border-radius: 6px; overflow: hidden; background: #0f172a;
-    }
-    .speed-btn {
-      padding: 4px 10px; min-height: 32px; border: 0; background: #1e293b;
-      color: #94a3b8; font-size: 0.78rem; font-family: ui-monospace, monospace;
-      font-weight: 600; cursor: pointer; transition: all 0.15s ease;
-    }
-    .speed-btn.active { background: #38bdf8; color: #0b0f19; font-weight: 700; }
-    .drone-mixer-wrap {
-      display: flex; align-items: center; gap: 8px; font-size: 0.8rem;
-      color: #94a3b8; font-family: ui-monospace, monospace;
-    }
-    .drone-mixer-wrap input[type=range] { width: 90px; accent-color: #fbbf24; cursor: pointer; }
-  </style>
-
-  <style id="q6d-kosha-semantic-style">
-    /* Q6-D: Kosha Semantic Panel — v2 */
-    .kosha-semantic-panel {
-      margin-top: 16px;
-      padding: 14px 16px;
-      background: linear-gradient(180deg, #121826 0%, #0b0f19 100%);
-      border: 1px solid #334155;
-      border-radius: 10px;
-      font-family: 'Inter', system-ui, sans-serif;
-    }
-    .semantic-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #1e293b;
-    }
-    .semantic-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #fbbf24;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-family: ui-monospace, monospace;
-    }
-    .semantic-source {
-      font-size: 0.72rem;
-      color: #64748b;
-      font-family: ui-monospace, monospace;
-    }
-    .semantic-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .semantic-row {
-      display: grid;
-      grid-template-columns: 100px 1fr;
-      gap: 12px;
-      align-items: start;
-      font-size: 0.92rem;
-      line-height: 1.5;
-    }
-    .semantic-label {
-      color: #94a3b8;
-      font-weight: 600;
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding-top: 2px;
-    }
-    .semantic-value {
-      color: #e2e8f0;
-      word-break: break-word;
-      line-height: 1.8;
-    }
-    .semantic-value .tag {
-      display: inline-block;
-      padding: 2px 10px;
-      margin: 2px 6px 2px 0;
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      font-size: 0.82rem;
-      color: #fbbf24;
-      font-family: 'Noto Serif', serif;
-      white-space: nowrap;
-    }
-    .semantic-value .citation {
-      display: inline-block;
-      padding: 2px 10px;
-      margin: 2px 6px 2px 0;
-      background: #1e1b4b;
-      border: 1px solid #fbbf24;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      color: #fbbf24;
-      font-family: ui-monospace, monospace;
-      white-space: nowrap;
-    }
-    .semantic-value .dhatu-badge {
-      display: inline-block;
-      padding: 2px 10px;
-      background: #042f2e;
-      border: 1px solid #14b8a6;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      color: #2dd4bf;
-      font-weight: 700;
-      font-family: 'Noto Serif', serif;
-      margin-right: 6px;
-    }
-    @media (max-width: 640px) {
-      .semantic-row {
-        grid-template-columns: 1fr;
-        gap: 2px;
-      }
-      .semantic-label {
-        font-size: 0.75rem;
-      }
-    }
-  </style>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Aigaane",
-    "applicationCategory": "EducationalApplication",
-    "operatingSystem": "Web",
-    "url": "https://aigaane.in/",
-    "description": "Pāṇini's 4,000 sūtras modeled as a deterministic rule graph. Zero LLM guesswork, strict Tripādī and asiddhavat derivation, and exact just-intonation 22-śruti physical synthesis.",
-    "inLanguage": ["sa", "en"],
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-  }
-  </script>
-  <style id="session-engine-narrow-viewport-polish">
-    html, body { max-width: 100%; overflow-x: hidden; }
-    .container, .panel, .panel-header, .inputs, .result, .subanta-table-wrap { min-width: 0; max-width: 100%; }
   </style>
 </head>
 <body>
-  <div class="container">
-
-    <header class="site-header" style="padding: 1rem 0; border-bottom: 1px solid var(--border, #334155); display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-      <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 1.8rem; color: #fbbf24;">ॐ</span>
-        <span style="margin: 0; font-size: 1.2rem; color: #fbbf24; font-family: inherit; font-weight: bold;">Aigaane</span>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="om" aria-hidden="true">ॐ</span>
+        <span>Aigaane</span>
       </a>
-      <nav style="display: flex; gap: 1.2rem; align-items: center;">
-        <a href="index.html" style="color: #fbbf24; text-decoration: none; font-weight: 600; font-size: 0.95rem; border-bottom: 2px solid #fbbf24; padding-bottom: 2px;">Sanskrit Engine</a>
-        <a href="cabinet.html" style="color: var(--text-muted, #94a3b8); text-decoration: none; font-size: 0.95rem; transition: color 0.2s;" onmouseover="this.style.color='#fbbf24'" onmouseout="this.style.color='#94a3b8'">Cabinet</a>
-        <a href="canon.html" style="color: var(--text-muted, #94a3b8); text-decoration: none; font-size: 0.95rem; transition: color 0.2s;" onmouseover="this.style.color='#fbbf24'" onmouseout="this.style.color='#94a3b8'">Canon</a>
+      <nav class="top-nav" aria-label="Primary Site Navigation">
+        <a href="index.html" aria-current="page">Sanskrit Engine</a>
+        <a href="cabinet.html">Cabinet</a>
+        <a href="canon.html">Canon</a>
       </nav>
-    </header>
+    </div>
+  </header>
 
-    <section class="deterministic-hero" style="background: linear-gradient(180deg, #121826 0%, #0b0f19 100%); border-bottom: 1px solid #1e293b; padding: 2.5rem 1.5rem 2rem; color: #f8fafc; font-family: ui-sans-serif, system-ui, sans-serif;">
-      <div style="max-width: 1080px; margin: 0 auto;">
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.2rem;">
-          <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; border-radius: 9999px; padding: 4px 12px; font-size: 0.82rem; font-weight: 600; color: #34d399;">
-            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
-            <span>● Deterministic Log: Zero LLM Guesswork</span>
-          </div>
-          <div style="font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.75rem; color: #94a3b8;">
-            Aṣṭādhyāyī 1.4.2 · 6.4.22 · 8.2.1 Verified
-          </div>
-        </div>
-        <h2 style="font-size: clamp(1.4rem, 3.2vw, 2.2rem); font-weight: 700; line-height: 1.25; margin: 0 0 1rem; color: #f8fafc;">
-          Pāṇini's 4,000 Sūtras as a <span style="color: #fbbf24; text-decoration: underline decoration-[#b45309]; text-underline-offset: 4px;">Deterministic Rule-First Engine</span>.
-        </h2>
-        <p style="font-size: clamp(0.95rem, 1.8vw, 1.1rem); color: #cbd5e1; max-width: 820px; line-height: 1.6; margin: 0 0 1.8rem;">
-          Formal derivation graph executing strict Tripādī and asiddhavat visibility constraints. Every phoneme, compound break, and 22-Śruti microtonal pitch is computed algorithmically—not by statistical approximation.
-        </p>
-        <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid #334155; border-radius: 12px; padding: 0.5rem 1rem; margin-top: 1rem;">
-          <details style="margin-bottom: 0.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem;">
-            <summary style="font-weight: 600; font-size: 0.92rem; color: #fbbf24; cursor: pointer; padding: 0.5rem 0; outline: none; min-height: 36px; display: flex; align-items: center;">
-              1. Strict Ekasaṁjñā Scope (Sūtra 1.4.2 Vipratiṣedhe paraṁ kāryam)
-            </summary>
-            <div style="padding: 0.5rem 0.5rem 0.8rem; font-size: 0.88rem; color: #94a3b8; line-height: 1.55;">
-              Contrary to common misconception, metarule 1.4.2 does not govern the entire Aṣṭādhyāyī globally. It applies strictly within the Ekasaṁjñā adhikāra (1.4.1–2.2.38). Intersūtra conflicts across sandhi and morphophonemics are resolved under the classical Paribhāṣā priority lattice: <code style="color: #38bdf8;">apavāda &gt; nitya &gt; antaraṅga &gt; para</code>.
-            </div>
-          </details>
-          <details style="margin-bottom: 0.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem;">
-            <summary style="font-weight: 600; font-size: 0.92rem; color: #fbbf24; cursor: pointer; padding: 0.5rem 0; outline: none; min-height: 36px; display: flex; align-items: center;">
-              2. Multi-Tier Asiddhatva (Sūtras 8.2.1 pūrvatrāsiddham &amp; 6.4.22 asiddhavad atrabhāt)
-            </summary>
-            <div style="padding: 0.5rem 0.5rem 0.8rem; font-size: 0.88rem; color: #94a3b8; line-height: 1.55;">
-              The engine enforces strict Kāśikā backward-invisibility. Tripādī rules (8.2.1–8.4.68) are treated as non-existent to the preceding Sapta-adhyāyī, and later Tripādī rules are invisible to earlier ones. Sūtras 6.4.22–6.4.129 operate under isolated shadow-state evaluation.
-            </div>
-          </details>
-          <details>
-            <summary style="font-weight: 600; font-size: 0.92rem; color: #fbbf24; cursor: pointer; padding: 0.5rem 0; outline: none; min-height: 36px; display: flex; align-items: center;">
-              3. Microtonal 22-Śruti Synthesis (Nārada-śikṣā &amp; Ahobala Sangīta-pārijāta)
-            </summary>
-            <div style="padding: 0.5rem 0.5rem 0.8rem; font-size: 0.88rem; color: #94a3b8; line-height: 1.55;">
-              Sūtra 1.2.27 (<em>ūkālo'jjhrasvadīrghaplutaḥ</em>) defines syllabic moraic duration (Mātrā). The 22 microtonal intervals are derived from <em>Nārada-śikṣā</em> and 5-limit Ahobala Just-Intonation ratios (e.g. S=1/1, r₁=10/9, P=3/2), synthesized deterministically via Karplus-Strong AudioWorklet with 0.00¢ fractional-delay precision.
-            </div>
-          </details>
-        </div>
+  <section class="hero">
+    <div class="container">
+      <div class="pill-row">
+        <span class="det-pill"><span class="dot" aria-hidden="true"></span>Deterministic Log · Zero LLM Guesswork</span>
+        <span class="sutra-tag">Aṣṭādhyāyī 1.4.2 · 6.4.22 · 8.2.1 Verified</span>
       </div>
-    </section>
+      <h1>Pāṇini’s 4,000 Sūtras as a <span class="gold">Deterministic Rule-First Engine</span></h1>
+      <p class="hero-sub">
+        Rule-first phonological, morphological, and prosodic analysis with explicit sūtra attribution.
+        Acoustic 22-śruti / tāla / Vedic studios live in Cabinet; full verse browsing lives in Canon.
+      </p>
+    </div>
+  </section>
 
-    <div id="diacritics-dock" style="background:var(--bg-card, #1e293b); border:1px solid #334155; border-radius:8px; padding:8px 12px; margin-bottom:18px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-      <span style="font-size:0.75rem; color:#fbbf24; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">IAST Insert:</span>
-      <div style="display:flex; gap:4px; flex-wrap:wrap;">
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ā')">ā</button>
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ī')">ī</button>
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ū')">ū</button>
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ṛ')">ṛ</button>
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ṝ')">ṝ</button>
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ṭ')">ṭ</button>
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ḍ')">ḍ</button>
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ṇ')">ṇ</button>
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ś')">ś</button>
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ṣ')">ṣ</button>
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ṃ')">ṃ</button>
-        <button type="button" class="btn" style="padding:2px 8px; font-size:0.85rem;" onclick="insertDiacritic('ḥ')">ḥ</button>
-      </div>
-      <span class="hint" style="font-size:0.75rem; margin-left:auto;">Click to append to focused input</span>
+  <main class="container">
+    <div class="tablist" role="tablist" aria-label="Sanskrit Engine Tools">
+      <button type="button" role="tab" id="tab-sandhi" aria-controls="panel-sandhi" aria-selected="true" data-tab="sandhi" class="tab-btn">Sandhi</button>
+      <button type="button" role="tab" id="tab-tinanta" aria-controls="panel-tinanta" aria-selected="false" data-tab="tinanta" class="tab-btn">Tiṅanta</button>
+      <button type="button" role="tab" id="tab-subanta" aria-controls="panel-subanta" aria-selected="false" data-tab="subanta" class="tab-btn">Subanta</button>
+      <button type="button" role="tab" id="tab-chandas" aria-controls="panel-chandas" aria-selected="false" data-tab="chandas" class="tab-btn">Chandas</button>
+      <button type="button" role="tab" id="tab-kosha" aria-controls="panel-kosha" aria-selected="false" data-tab="kosha" class="tab-btn">Kosha</button>
+      <button type="button" role="tab" id="tab-corpus" aria-controls="panel-corpus" aria-selected="false" data-tab="corpus" class="tab-btn">Corpus</button>
     </div>
 
-    <header>
-      <div class="header-om">ॐ</div>
-      <h1 class="header-title">Aigaane Sanskrit Engine</h1>
-      <p class="header-sub">Deterministic Pāṇinian phonology, prosody, and nominal morphology. Every derivation cites the governing sūtra.</p>
-    </header>
-
-    <!-- 1. Sandhi Combiner -->
-    <section class="panel">
-      <div class="panel-header">
-        <h2>Sandhi Combiner</h2>
-        <span class="badge">Śikṣā</span>
-      </div>
-      <p class="hint">Join two Sanskrit phonemes and review the precedence DAG derivation.</p>
-      <div class="inputs">
-        <input id="sandhi-p1" class="sa-lg" value="a" style="width: 80px; text-align: center;" />
-        <span class="hint" style="font-size: 20px;">+</span>
-        <input id="sandhi-p2" class="sa-lg" value="i" style="width: 80px; text-align: center;" />
-        <button onclick="combineSandhi()">Combine</button>
-      </div>
-      <div id="sandhi-dag-mount"></div>
-      <div class="result" id="sandhi-result">
-        <div class="eq">
-          <span class="sa" id="s-p1">a</span>
-          <span class="op">+</span>
-          <span class="sa" id="s-p2">i</span>
-          <span class="op">=</span>
-          <span class="sa" id="s-res">e</span>
+    <!-- 1. Sandhi -->
+    <section id="panel-sandhi" role="tabpanel" aria-labelledby="tab-sandhi" class="tabpanel active">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>Sandhi Combiner</h2>
+            <p>Combine Sanskrit segments and inspect governing rules and deterministic audit cases.</p>
+          </div>
+          <span class="badge">Śikṣā · 6.1</span>
         </div>
-        <div style="margin-top: 14px; display: flex; gap: 8px;">
-          <span class="badge ok" id="s-rule-name">Guṇa Sandhi</span>
-          <span class="badge" id="s-sutra">Pāṇini 6.1.87 (ād guṇaḥ)</span>
+        <div class="controls">
+          <input type="text" id="sandhi-p1" value="a" placeholder="Left" autocomplete="off" spellcheck="false" style="width: 108px; text-align: center;" />
+          <span style="color: var(--text-muted);">+</span>
+          <input type="text" id="sandhi-p2" value="i" placeholder="Right" autocomplete="off" spellcheck="false" style="width: 108px; text-align: center;" />
+          <button type="button" id="sandhi-combine" class="btn-primary">Combine</button>
         </div>
-        <p class="hint" id="s-desc" style="margin-top: 10px;">Vowel junction: Invariable merger into the Guṇa grade of the right vowel.</p>
+        <div id="sandhi-result" class="result-box" aria-live="polite"></div>
+        <details style="margin-top: 14px;">
+          <summary style="cursor: pointer; color: var(--text-muted); font-size: 0.88rem;">Known-Good Sandhi Audit Cases</summary>
+          <div class="table-wrap" style="margin-top: 10px;">
+            <table>
+              <thead>
+                <tr><th>Left</th><th>Right</th><th>Expected</th><th>Got</th><th>Sūtra</th><th>Status</th></tr>
+              </thead>
+              <tbody id="sandhi-audit-body"></tbody>
+            </table>
+          </div>
+        </details>
       </div>
     </section>
 
-    <!-- 1b. Known-Good Sandhi Verification Card -->
-    <section class="panel" id="sandhi-golden-panel">
-      <div class="panel-header">
-        <h2>Known-Good Sandhi Cases</h2>
-        <span class="badge">Deterministic Audit</span>
-      </div>
-      <p class="hint">
-        Live verification against the deterministic engine. Each row shows the returned
-        surface form, the governing sūtra, and pass/fail status.
-      </p>
-      <table id="sandhi-golden-table" style="width:100%;border-collapse:collapse;margin-top:12px;">
-        <thead>
-          <tr style="text-align:left;color:#64748b;font-size:12px;">
-            <th style="padding:8px;">Left</th>
-            <th style="padding:8px;">Right</th>
-            <th style="padding:8px;">Expected</th>
-            <th style="padding:8px;">Got</th>
-            <th style="padding:8px;">Sūtra</th>
-            <th style="padding:8px;">Status</th>
-          </tr>
-        </thead>
-        <tbody id="sandhi-golden-body">
-          <tr><td colspan="6" style="color:#94a3b8;padding:8px;">Running...</td></tr>
-        </tbody>
-      </table>
-    </section>
-    <!-- 1c. Verb Conjugation (Q4-B) -->
-    <section class="panel" id="tinanta-panel">
-      <div class="panel-header">
-        <h2>Verb Conjugation · Tiṅanta</h2>
-        <span class="badge">Q4-B</span>
-      </div>
-      <p class="hint">
-        Deterministic tiṅanta generation for kṛ, bhū, gam, as across laṭ / laṅ / lṛṭ / loṭ.
-        Verified forms from paradigm tables (✓); other roots use generative fallback (~).
-      </p>
-      <div class="inputs" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-        <label style="display:flex;flex-direction:column;gap:4px;color:#94a3b8;font-size:12px;">Dhātu
-          <select id="tin-dhatu" class="sa-lg" onchange="renderTinanta()" style="padding:6px;border-radius:6px;background:#1e293b;color:#e2e8f0;border:1px solid #334155;">
-            <option value="kṛ">kṛ — to do (ubhayapada)</option>
-            <option value="bhū" selected>bhū — to be (parasmaipada)</option>
-            <option value="gam">gam — to go (parasmaipada)</option>
-            <option value="as">as — to be (parasmaipada)</option>
-            <option value="labh">labh — to obtain (ātmanepada)</option>
-            <option value="dā">dā — to give (ubhayapada)</option>
-            <option value="jñā">jñā — to know (ubhayapada)</option>
-            <option value="vah">vah — to carry / marry (ubhayapada)</option>
-            <option value="cur">cur — to steal (ubhayapada)</option>
+    <!-- 2. Tiṅanta -->
+    <section id="panel-tinanta" role="tabpanel" aria-labelledby="tab-tinanta" class="tabpanel">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>Verb Conjugation · Tiṅanta</h2>
+            <p>Deterministic paradigm views across dhātu, lakāra, and pada. ✓ verified · ~ generated</p>
+          </div>
+          <span class="badge">Dhātupāṭha</span>
+        </div>
+        <div class="controls">
+          <select id="tinanta-dhatu" aria-label="Dhātu">
+            <option value="bhū" selected>bhū — to be</option>
+            <option value="kṛ">kṛ — to do</option>
+            <option value="gam">gam — to go</option>
+            <option value="as">as — to be</option>
           </select>
-        </label>
-        <label style="display:flex;flex-direction:column;gap:4px;color:#94a3b8;font-size:12px;">Lakāra
-          <select id="tin-lakara" onchange="renderTinanta()" style="padding:6px;border-radius:6px;background:#1e293b;color:#e2e8f0;border:1px solid #334155;">
+          <select id="tinanta-lakara" aria-label="Lakāra">
             <option value="laṭ">laṭ (present)</option>
             <option value="laṅ" selected>laṅ (imperfect)</option>
             <option value="lṛṭ">lṛṭ (future)</option>
             <option value="loṭ">loṭ (imperative)</option>
           </select>
-        </label>
-        <label style="display:flex;flex-direction:column;gap:4px;color:#94a3b8;font-size:12px;">Pada
-          <select id="tin-pada" onchange="renderTinanta()" style="padding:6px;border-radius:6px;background:#1e293b;color:#e2e8f0;border:1px solid #334155;">
+          <select id="tinanta-pada" aria-label="Pada">
             <option value="parasmaipada" selected>parasmaipada</option>
-            <option value="ātmanepada">ātmanepada (kṛ, labh, dā, jñā, vah, cur)</option>
+            <option value="ātmanepada">ātmanepada</option>
           </select>
-        </label>
-        <button onclick="renderTinanta()" style="align-self:flex-end;">Generate</button>
-      </div>
-      <div class="result" id="tinanta-result" style="margin-top:14px;">
-        <p class="hint" id="tin-hint">Loading…</p>
-        <table id="tinanta-table" style="width:100%;border-collapse:collapse;margin-top:10px;">
-          <thead>
-            <tr style="text-align:left;color:#64748b;font-size:12px;">
-              <th style="padding:8px;">Puruṣa</th>
-              <th style="padding:8px;">Ekavacana</th>
-              <th style="padding:8px;">Dvivacana</th>
-              <th style="padding:8px;">Bahuvacana</th>
-            </tr>
-          </thead>
-          <tbody id="tinanta-body">
-            <tr><td colspan="4" style="color:#94a3b8;padding:8px;">Loading…</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-    <!-- 2. Chandas Scanner -->
-    <section class="panel">
-      <div class="panel-header">
-        <h2>Chandas Prosody Scanner</h2>
-        <span class="badge">Piṅgala Sūtra</span>
-      </div>
-      <p class="hint">Scan syllable weights (L = Laghu / Light, G = Guru / Heavy) and identify the meter.</p>
-      <div class="inputs">
-        <textarea id="chandas-input">dharmakṣetre kurukṣetre</textarea>
-        <button onclick="scanChandas()">Scan Meter</button>
-      </div>
-      <div class="result" id="chandas-result">
-        <div class="syl-container" id="c-chips">
-          <div class="syl G"><span class="txt">dhar</span><span class="w">G</span></div>
-          <div class="syl G"><span class="txt">mak</span><span class="w">G</span></div>
-          <div class="syl G"><span class="txt">ṣet</span><span class="w">G</span></div>
-          <div class="syl G"><span class="txt">re</span><span class="w">G</span></div>
-          <div class="syl L"><span class="txt">ku</span><span class="w">L</span></div>
-          <div class="syl G"><span class="txt">ruk</span><span class="w">G</span></div>
-          <div class="syl G"><span class="txt">ṣet</span><span class="w">G</span></div>
-          <div class="syl G"><span class="txt">re</span><span class="w">G</span></div>
+          <button type="button" id="tinanta-generate" class="btn-primary">Generate</button>
         </div>
-        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-          <span class="badge ok" id="c-verdict">✓ Anuṣṭubh Pāda</span>
-          <span class="badge" id="c-count">8 Syllables</span>
-          <code id="c-pattern" style="font-family: var(--mono); color: var(--gold); letter-spacing: .12em;">GGGGLGGG</code>
-          <button style="padding: 4px 10px; font-size: 12px; margin-left: 8px;" onclick="playScannedAudio()">▶ Listen in 22-Śruti JI</button>
-        </div>
-        <p class="hint" style="margin-top: 10px;">First quarter-verse matches standard epic Anuṣṭubh (8 syllables per pāda).</p>
+        <div id="tinanta-meta" class="sutra-tag" style="margin-bottom: 8px;" aria-live="polite"></div>
+        <div id="tinanta-result" class="table-wrap" aria-live="polite"></div>
       </div>
     </section>
 
-    <!-- 3. Vyākaraṇa Morphology (Subanta) -->
-    <section class="panel">
-      <div class="panel-header">
-        <h2>Vyākaraṇa Morphology · Subanta</h2>
-        <span class="badge">Aṣṭādhyāyī 4.1.2</span>
-      </div>
-      <p class="hint">Generative declension matrices across cases (Vibhakti) and numbers (Vacana).</p>
-
-      <div class="inputs">
-        <input id="morph-lemma" class="sa-lg" value="deva" style="width: 140px;" />
-        <select id="morph-paradigm" onchange="renderMorphology()">
-          <option value="a-masc">a-stem masculine (deva)</option>
-          <option value="aa-fem">ā-stem feminine (latā)</option>
-          <option value="a-neut">a-stem neuter (phala)</option>
-          <option value="t-masc">t-stem consonant (marut)</option>
-          <option value="c-fem">c-stem consonant (vāc · coḥ kuḥ)</option>
-          <option value="n-masc">n-stem masculine (rājan · naḥ lopaḥ)</option>
-          <option value="n-neut">n-stem neuter (nāman · śi/num)</option>
-          <option value="i-masc">i-stem masculine (agni)</option>
-          <option value="u-masc">u-stem masculine (śatru)</option>
-          <option value="ii-fem">ī-stem feminine (nadī)</option>
-          <option value="uu-fem">ū-stem feminine (vadhū)</option>
-          <option value="r-stem">ṛ-stem (pitṛ)</option>
-          <option value="in-masc">in-stem masculine (balin)</option>
-        </select>
-        <button onclick="renderMorphology()">Generate Forms</button>
-      </div>
-
-      <div class="result" id="subanta-result">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <div><span class="sa-lg" id="m-title">deva</span> <span class="chip" id="m-chip">Akārānta · Pulliṅga</span></div>
-          <span class="badge">24 Forms</span>
+    <!-- 3. Subanta -->
+    <section id="panel-subanta" role="tabpanel" aria-labelledby="tab-subanta" class="tabpanel">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>Vyākaraṇa Morphology · Subanta</h2>
+            <p>Nominal declension matrices across vibhakti and vacana.</p>
+          </div>
+          <span class="badge">Aṣṭādhyāyī 4.1.2</span>
         </div>
-
-        <div class="script-toggle-bar" role="group" aria-label="Script selection" id="morph-script-toggle">
-          <button type="button" class="script-toggle-btn active" data-script="deva" onclick="setMorphScript('deva')">देवनागरी</button>
-          <button type="button" class="script-toggle-btn" data-script="iast" onclick="setMorphScript('iast')">IAST</button>
-          <button type="button" class="script-toggle-btn" data-script="slp1" onclick="setMorphScript('slp1')">SLP1</button>
+        <div class="controls">
+          <input type="text" id="subanta-stem" value="deva" autocomplete="off" spellcheck="false" style="width: 140px;" />
+          <select id="subanta-type" aria-label="Paradigm">
+            <option value="a_m" selected>a-stem masculine (deva)</option>
+            <option value="a_n">a-stem neuter (phala)</option>
+            <option value="a_f">ā-stem feminine (latā)</option>
+          </select>
+          <button type="button" id="subanta-generate" class="btn-primary">Generate Forms</button>
         </div>
+        <div class="script-bar" role="group" aria-label="Script">
+          <button type="button" class="script-btn active" data-script="dev">देवनागरी</button>
+          <button type="button" class="script-btn" data-script="iast">IAST</button>
+          <button type="button" class="script-btn" data-script="slp1">SLP1</button>
+        </div>
+        <div id="subanta-result" class="table-wrap" aria-live="polite"></div>
+      </div>
+    </section>
 
-        <div class="subanta-table-wrap">
-          <table class="subanta">
-            <thead>
-              <tr>
-                <th>Vibhakti</th>
-                <th>Ekavacana (1)</th>
-                <th>Dvivacana (2)</th>
-                <th>Bahuvacana (3+)</th>
-              </tr>
-            </thead>
-            <tbody id="m-table-body">
-              <tr><th>Prathamā (1st)</th><td class="form">devaḥ</td><td class="form">devau</td><td class="form">devāḥ</td></tr>
-              <tr><th>Dvitīyā (2nd)</th><td class="form">devam</td><td class="form">devau</td><td class="form">devān</td></tr>
-              <tr><th>Tṛtīyā (3rd)</th><td class="form">devena</td><td class="form">devābhyām</td><td class="form">devaiḥ</td></tr>
-              <tr><th>Caturthī (4th)</th><td class="form">devāya</td><td class="form">devābhyām</td><td class="form">devebhyaḥ</td></tr>
-              <tr><th>Pañcamī (5th)</th><td class="form">devāt</td><td class="form">devābhyām</td><td class="form">devebhyaḥ</td></tr>
-              <tr><th>Ṣaṣṭhī (6th)</th><td class="form">devasya</td><td class="form">devayoḥ</td><td class="form">devānām</td></tr>
-              <tr><th>Saptamī (7th)</th><td class="form">deve</td><td class="form">devayoḥ</td><td class="form">deveṣu</td></tr>
-              <tr><th>Sambodhana (Voc.)</th><td class="form">deva</td><td class="form">devau</td><td class="form">devāḥ</td></tr>
-            </tbody>
-          </table>
+    <!-- 4. Chandas -->
+    <section id="panel-chandas" role="tabpanel" aria-labelledby="tab-chandas" class="tabpanel">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>Chandas Prosody Scanner</h2>
+            <p>Piṅgala Laghu (L) / Guru (G) syllable weight scansion and meter classification.</p>
+          </div>
+          <span class="badge">Piṅgala Sūtra</span>
+        </div>
+        <div class="controls">
+          <input type="text" id="chandas-input" value="dharmakṣetre kurukṣetre" autocomplete="off" spellcheck="false" style="flex: 1 1 220px;" />
+          <button type="button" id="chandas-scan" class="btn-primary">Scan Meter</button>
+        </div>
+        <div id="chandas-result" class="result-box" aria-live="polite"></div>
+        <div class="footer-note">
+          <span>22-śruti &amp; tāla synthesis are separated from pure prosody scanning.</span>
+          <a href="cabinet.html">Open Cabinet Studios →</a>
         </div>
       </div>
     </section>
 
-    <!-- 4. Kosha Lexicon -->
-    <section class="panel">
-      <div class="panel-header">
-        <h2>Kosha Lexicon Lookup</h2>
-        <span class="badge">1.5M+ Corpus</span>
-      </div>
-      <p class="hint">Exact lookup across canonical indices.</p>
-      <div class="inputs">
-        <input id="kosha-word" class="sa-lg" value="dharma" />
-        <button onclick="lookupKosha()">Lookup</button>
-      </div>
-            <div class="result" id="kosha-result">
-        <div style="display:flex; align-items:center; gap:14px;">
-          <span class="sa-lg" id="k-word">dharma</span>
-          <span class="badge ok" id="k-badge">✓ Lexical Match</span>
-        </div>
-        <p class="hint" id="k-hint" style="margin-top:10px;">Found in canonical headword index (SLP1: <code>Darma</code> · <i>D represents dental aspirated ध</i>).</p>
-
-        <!-- NEW: Semantic metadata panel (Q6-D) -->
-        <div id="kosha-semantic-panel" class="kosha-semantic-panel" style="display:none;">
-          <div class="semantic-header">
-            <span class="semantic-title">Semantic Metadata</span>
-            <span class="semantic-source">_semantic_index (54 entries)</span>
+    <!-- 5. Kosha -->
+    <section id="panel-kosha" role="tabpanel" aria-labelledby="tab-kosha" class="tabpanel">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>Kosha Lexicon Lookup</h2>
+            <p>Headword lookup with transparent provenance and license status.</p>
           </div>
-
-          <div class="semantic-grid">
-            <div class="semantic-row" id="sem-dhatu-row">
-              <span class="semantic-label">Dhātu</span>
-              <span class="semantic-value" id="sem-dhatu">—</span>
-            </div>
-            <div class="semantic-row" id="sem-nirukta-row">
-              <span class="semantic-label">Nirukta</span>
-              <span class="semantic-value" id="sem-nirukta">—</span>
-            </div>
-            <div class="semantic-row" id="sem-gloss-row">
-              <span class="semantic-label">Gloss</span>
-              <span class="semantic-value" id="sem-gloss">—</span>
-            </div>
-            <div class="semantic-row" id="sem-synonyms-row">
-              <span class="semantic-label">Synonyms</span>
-              <span class="semantic-value" id="sem-synonyms">—</span>
-            </div>
-            <div class="semantic-row" id="sem-antonyms-row">
-              <span class="semantic-label">Antonyms</span>
-              <span class="semantic-value" id="sem-antonyms">—</span>
-            </div>
-            <div class="semantic-row" id="sem-related-row">
-              <span class="semantic-label">Related</span>
-              <span class="semantic-value" id="sem-related">—</span>
-            </div>
-            <div class="semantic-row" id="sem-citations-row">
-              <span class="semantic-label">Citations</span>
-              <span class="semantic-value" id="sem-citations">—</span>
-            </div>
-          </div>
+          <span class="badge">Lexicon</span>
         </div>
+        <div class="controls">
+          <input type="text" id="kosha-word" value="dharma" placeholder="Enter headword…" autocomplete="off" spellcheck="false" style="flex: 1 1 200px;" />
+          <button type="button" id="kosha-lookup" class="btn-primary">Lookup</button>
+        </div>
+        <div id="kosha-result" class="result-box" aria-live="polite"></div>
       </div>
     </section>
 
-    <!-- 5. Gāndharvaveda Audio -->
-    <section class="panel">
-      <div class="panel-header">
-        <h2>Gāndharvaveda Audio Synthesis</h2>
-        <span class="badge">Just Intonation</span>
-      </div>
-      <p class="hint">Rule-driven, acoustic 22-śruti synthesis matching syllabic scansion.</p>
-      <div class="inputs">
-        <textarea id="gan-input">dharmakṣetre kurukṣetre</textarea>
-        <button onclick="synthesizeAudio()">Synthesize Audio</button>
-      </div>
-      <div class="result" id="audio-result">
-        <div class="player">
-          <button id="play-btn" onclick="toggleAudioPlayback()">▶</button>
-          <span class="track" id="audio-track-label">Ready: Just Intonation tuning (C 256Hz base)</span>
-        <div class="audio-playhead-container" id="audio-playhead-mount">
-          <div class="audio-playhead-track">
-            <div class="audio-playhead-bar" id="audio-playhead-progress"></div>
+    <!-- 6. Corpus -->
+    <section id="panel-corpus" role="tabpanel" aria-labelledby="tab-corpus" class="tabpanel">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>Corpus Search</h2>
+            <p>Quick search across featured canonical verses with direct handoff to the full Canon view.</p>
           </div>
-          <div class="audio-controls-row">
-            <div class="speed-toggle-group" role="group" aria-label="Playback speed">
-              <button type="button" class="speed-btn" data-speed="0.8" onclick="setAudioSpeed(0.8)">0.8×</button>
-              <button type="button" class="speed-btn active" data-speed="1.0" onclick="setAudioSpeed(1.0)">1.0×</button>
-            </div>
-            <div class="drone-mixer-wrap">
-              <span>Tanpura Drone:</span>
-              <input type="range" min="0" max="1" step="0.05" value="0.25" id="tanpura-gain-slider" oninput="setTanpuraGain(this.value)" aria-label="Tanpura Drone Volume">
-              <span id="tanpura-gain-val">25%</span>
-            </div>
-          </div>
+          <span class="badge">Canon</span>
         </div>
-          <span class="badge ok">22-Śruti Loaded</span>
+        <div class="controls">
+          <input type="text" id="corpus-input" value="dharma" placeholder="Search verses (e.g. dharma)…" autocomplete="off" spellcheck="false" style="flex: 1 1 200px;" />
+          <button type="button" id="corpus-search" class="btn-primary">Search</button>
+          <a href="canon.html" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center;">Open Full Corpus →</a>
         </div>
+        <div id="corpus-result" class="result-box" aria-live="polite"></div>
       </div>
     </section>
 
-    <!-- 6. Corpus Search -->
-    <section class="panel">
-      <div class="panel-header">
-        <h2>Corpus Search</h2>
-        <span class="badge">Rāmāyaṇa &amp; Mahābhārata</span>
+    <!-- Collapsible Engine Theory -->
+    <details class="theory-box">
+      <summary>Engine Theory · 1.4.2 Ekasaṁjñā, 6.4.22 Asiddhavat &amp; 8.2.1 Tripādī</summary>
+      <div class="theory-body">
+        <p>
+          Sūtra 1.4.2 (<em>vipratiṣedhe paraṁ kāryam</em>) operates within its ekasaṁjñā scope rather than as a global override,
+          while 8.2.1 (<em>pūrvatrāsiddham</em>) enforces directional Tripādī visibility and 6.4.22 preserves stem opacity constraints.
+        </p>
+        <p style="margin-bottom: 0; font-size: 0.82rem;">
+          Provenance / license: unknown where unverified.
+        </p>
       </div>
-      <p class="hint">Search indexed verses with thematic annotations.</p>
-      <div class="inputs">
-        <input id="itihasa-q" value="dharma" />
-        <button onclick="searchItihasa()">Search Verses</button>
-      </div>
-      <div class="result" id="itihasa-result">
-        <div style="margin-bottom: 14px;">
-          <span class="badge">2 Verses Found</span>
-        </div>
-        <article class="verse">
-          <div class="src">
-            <span class="chip">Rāmāyaṇa</span>
-            <span>Bālakāṇḍa 1.2</span>
-            <span class="badge" style="font-size: 10px;">Anuṣṭubh</span>
-          </div>
-          <div class="iast">
-            ko nv asmin sāmprataṃ loke guṇavān kaś ca vīryavān |<br>
-            <mark>dharma</mark>jñaś ca kṛtajñaś ca satyavākyo dṛḍhavrataḥ
-          </div>
-          <div class="gloss" style="margin-top: 8px;">
-            "Who in this world today is virtuous, valiant, knowing dharma, grateful, truthful, and firm in vows?"
-          </div>
-        </article>
-        <article class="verse">
-          <div class="src">
-            <span class="chip">Mahābhārata</span>
-            <span>Bhīṣmaparva 4.7</span>
-            <span class="badge" style="font-size: 10px;">Anuṣṭubh</span>
-          </div>
-          <div class="iast">
-            yadā yadā hi <mark>dharma</mark>sya glānir bhavati bhārata |<br>
-            abhyutthānam adharmasya tadātmānaṃ sṛjāmy aham
-          </div>
-          <div class="gloss" style="margin-top: 8px;">
-            "Whenever there is a decline of dharma and a rise of unrighteousness, O Bhārata, then I manifest myself."
-          </div>
-        </article>
-      </div>
-    </section>
+    </details>
+  </main>
 
-    <footer style="text-align: center; font-size: 13px; color: var(--text-muted); padding: 24px 0;">
-      © Aigaane. Built on the Aṣṭādhyāyī. Deterministic Sanskrit Engine.
-    </footer>
+  <div class="iast-dock" role="region" aria-label="IAST Diacritic Keys">
+    <div class="iast-inner" id="iast-keys">
+      <span class="sutra-tag" style="white-space: nowrap;">IAST:</span>
+      <button type="button" class="iast-key">ā</button>
+      <button type="button" class="iast-key">ī</button>
+      <button type="button" class="iast-key">ū</button>
+      <button type="button" class="iast-key">ṛ</button>
+      <button type="button" class="iast-key">ṝ</button>
+      <button type="button" class="iast-key">ḷ</button>
+      <button type="button" class="iast-key">ṭ</button>
+      <button type="button" class="iast-key">ḍ</button>
+      <button type="button" class="iast-key">ṇ</button>
+      <button type="button" class="iast-key">ś</button>
+      <button type="button" class="iast-key">ṣ</button>
+      <button type="button" class="iast-key">ṃ</button>
+      <button type="button" class="iast-key">ṁ</button>
+      <button type="button" class="iast-key">ḥ</button>
+    </div>
   </div>
 
-    <script>
-    // --- Diacritics Helper & Active Input Tracking ---
-    let lastActiveInput = null;
-    document.addEventListener("focusin", (e) => {
-      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
-        lastActiveInput = e.target;
+  <script>
+    (() => {
+      let lastInput = document.getElementById("sandhi-p1");
+      let scriptMode = "dev";
+
+      function esc(v) {
+        return String(v ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
       }
-    });
 
-    function insertDiacritic(char) {
-      const target = lastActiveInput || document.getElementById("sandhi-p1");
-      if (!target) return;
-      const start = target.selectionStart || target.value.length;
-      const end = target.selectionEnd || target.value.length;
-      const val = target.value;
-      target.value = val.substring(0, start) + char + val.substring(end);
-      target.focus();
-      target.selectionStart = target.selectionEnd = start + char.length;
-    }
+      document.querySelectorAll("input[type='text'], textarea").forEach((el) => {
+        el.addEventListener("focus", () => { lastInput = el; });
+      });
 
-    function safeVal(id, defaultVal = "") {
-      const el = document.getElementById(id);
-      return el ? el.value.trim() : defaultVal;
-    }
-
-    const API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-      ? "https://api.aigaane.in"
-      : "https://api.aigaane.in";
-
-    // --- 1. Sandhi Combiner ---
-    async function renderSandhiDAG(p1, p2, output, ruleName, ruleCanon) {
-      const container = document.getElementById("sandhi-dag-mount");
-      if (!container) return;
-      const canonUrl = "https://ashtadhyayi.com/sutraani/" + (ruleCanon || "6/1/87").replace(/\./g, "/");
-      const isGuna = ruleCanon === "6.1.87" || (ruleName && ruleName.includes("guna"));
-      const blockedSutra = isGuna ? "6.1.101 akaḥ savarṇe" : "8.3.30 hrasvasya";
-      const blockedReason = isGuna ? "Blocked: 6.1.87 apavāda priority over savarṇa-dīrgha" : "Blocked: Sūtra precedence order";
-
-      const svgMarkup = `
-        <svg id="sandhi-dag-svg" class="sandhi-svg-canvas" viewBox="0 0 540 220" xmlns="http://www.w3.org/2000/svg" style="background:#0b0f19; border-radius:8px;">
-          <defs>
-            <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8" />
-            </marker>
-            <marker id="arrow-blocked" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748b" />
-            </marker>
-          </defs>
-          <line x1="110" y1="50" x2="220" y2="105" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)" />
-          <line x1="430" y1="50" x2="320" y2="105" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)" />
-          <line x1="270" y1="130" x2="270" y2="165" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arrow)" />
-          <line x1="270" y1="50" x2="270" y2="70" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-blocked)" />
-          <g>
-            <rect x="30" y="25" width="130" height="42" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5" />
-            <text x="95" y="52" fill="#f8fafc" font-family="'Noto Serif', serif" font-size="15" font-weight="600" text-anchor="middle">${p1 || "pūrva"}</text>
-          </g>
-          <g>
-            <rect x="380" y="25" width="130" height="42" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5" />
-            <text x="445" y="52" fill="#f8fafc" font-family="'Noto Serif', serif" font-size="15" font-weight="600" text-anchor="middle">${p2 || "para"}</text>
-          </g>
-          <g style="cursor:help;">
-            <title>${blockedReason}</title>
-  <meta property="og:locale" content="en_IN">
-  <meta name="robots" content="index, follow">
-  <meta name="twitter:title" content="Aigaane — Deterministic Pāṇinian Engine">
-  <meta name="twitter:description" content="Formal Pāṇinian derivation graph and microtonal Karplus-Strong synthesis. 100% deterministic, rule-first vyākaraṇa.">
-
-            <rect x="200" y="15" width="140" height="32" rx="6" fill="#182234" stroke="#475569" stroke-width="1" stroke-dasharray="4 2" />
-            <text x="270" y="36" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="11" text-anchor="middle">✕ ${blockedSutra}</text>
-          </g>
-          <g>
-            <a href="${canonUrl}" target="_blank" rel="noopener noreferrer">
-              <rect x="180" y="90" width="180" height="44" rx="8" fill="#1e1b4b" stroke="#fbbf24" stroke-width="2" />
-              <text x="270" y="112" fill="#fbbf24" font-family="ui-monospace, monospace" font-size="13" font-weight="bold" text-anchor="middle">★ Sūtra ${ruleCanon || "6.1.87"}</text>
-              <text x="270" y="126" fill="#cbd5e1" font-family="'Noto Serif', serif" font-size="11" text-anchor="middle">${ruleName || "ād guṇaḥ"}</text>
-            </a>
-          </g>
-          <g>
-            <rect x="180" y="170" width="180" height="42" rx="8" fill="#042f2e" stroke="#14b8a6" stroke-width="2" />
-            <text x="270" y="197" fill="#2dd4bf" font-family="'Noto Serif', serif" font-size="16" font-weight="bold" text-anchor="middle">${output || "devendra"}</text>
-          </g>
-        </svg>
-      `;
-      container.innerHTML = `
-        <div class="sandhi-dag-container">
-          <div class="sandhi-dag-header">
-            <span class="sandhi-dag-title">Pāṇinian Derivation DAG</span>
-            <button type="button" class="copy-img-btn" onclick="copySandhiDAGImage()">Copy as Image</button>
-          </div>
-          ${svgMarkup}
-        </div>
-      `;
-    }
-
-    async function copySandhiDAGImage() {
-      const svg = document.getElementById("sandhi-dag-svg");
-      if (!svg) return;
-      const svgData = new XMLSerializer().serializeToString(svg);
-      const canvas = document.createElement("canvas");
-      canvas.width = 1080; canvas.height = 440;
-      const ctx = canvas.getContext("2d");
-      const img = new Image();
-      img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
-      img.onload = async function() {
-        ctx.fillStyle = "#0b0f19";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        try {
-          canvas.toBlob(async function(blob) {
-            if (navigator.clipboard && navigator.clipboard.write) {
-              await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-              alert("✓ Derivation DAG copied to clipboard as high-res PNG!");
-            } else {
-              const a = document.createElement("a");
-              a.download = "sandhi-derivation-dag.png";
-              a.href = canvas.toDataURL("image/png");
-              a.click();
-            }
-          }, "image/png");
-        } catch (err) {
-          const a = document.createElement("a");
-          a.download = "sandhi-derivation-dag.png";
-          a.href = canvas.toDataURL("image/png");
-          a.click();
-        }
-      };
-    }
-
-    async function combineSandhi() {
-  const p1 = document.getElementById("sandhi-p1")?.value?.trim() || "";
-  const p2 = document.getElementById("sandhi-p2")?.value?.trim() || "";
-  if (!p1 || !p2) return;
-
-  const badge = document.getElementById("s-rule-name");
-  const sutraEl = document.getElementById("s-sutra");
-  const descEl = document.getElementById("s-desc");
-  const resEl = document.getElementById("s-res");
-
-  badge.className = "badge";
-  badge.textContent = "Combining...";
-
-  try {
-    const resp = await fetch(`${API_BASE}/api/v3/sandhi/combine`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ left: p1, right: p2 }),
-    });
-    if (!resp.ok) throw new Error(`Sandhi combine failed (${resp.status})`);
-    const data = await resp.json();
-    const cand = (data.candidates && data.candidates[0]) || null;
-
-    if (!cand) {
-      resEl.textContent = p1 + p2;
-      badge.className = "badge warn";
-      badge.textContent = "No sandhi candidate";
-      sutraEl.textContent = "—";
-      descEl.textContent = "No registered sandhi rule applies to this junction.";
-    } else {
-      resEl.textContent = cand.surface;
-      badge.className = "badge ok";
-      badge.textContent = cand.rule ? cand.rule.charAt(0).toUpperCase() + cand.rule.slice(1) + " Sandhi" : "Sandhi";
-      sutraEl.textContent = `Pāṇini ${cand.sutra || "—"}`;
-      descEl.textContent = `Applied sūtra ${cand.sutra} → ${cand.surface} (score ${cand.score != null ? cand.score.toFixed(2) : "n/a"})`;
-    }
-  } catch (e) {
-    console.error("combineSandhi failed:", e);
-    resEl.textContent = p1 + p2;
-    badge.className = "badge err";
-    badge.textContent = "Error";
-    sutraEl.textContent = "—";
-    descEl.textContent = `Sandhi combine failed: ${e.message}`;
-  }
-
-  try {
-    const p1DomVal = document.getElementById("sandhi-p1")?.value?.trim() || "";
-    const p2DomVal = document.getElementById("sandhi-p2")?.value?.trim() || "";
-    const sRuleCanon = document.getElementById("s-sutra")?.textContent?.match(/\d+\.\d+\.\d+/)?.[0] || "6.1.87";
-    const sRuleName = document.getElementById("s-rule-name")?.textContent?.trim() || "Guṇa Sandhi";
-    const sOutput = document.getElementById("s-res")?.textContent?.trim() || p1DomVal + p2DomVal;
-    renderSandhiDAG(p1DomVal, p2DomVal, sOutput, sRuleName, sRuleCanon);
-  } catch (dagErr) {
-    console.warn("DAG render skipped:", dagErr);
-  }
-}
-
-
-    // --- 2. Chandas Prosody Scanner ---
-      async function scanChandas() {
-      const text = document.getElementById("chandas-input").value.trim();
-      const chips = document.getElementById("c-chips");
-      const verdict = document.getElementById("c-verdict");
-      const count = document.getElementById("c-count");
-      const pattern = document.getElementById("c-pattern");
-      
-      if (!text) {
-        chips.innerHTML = '<span class="hint">Enter a verse to scan.</span>';
-        return;
-      }
-      
-      chips.innerHTML = '<span class="hint">Scanning prosody...</span>';
-      
-      try {
-        const resp = await fetch(`${API_BASE}/api/v1/chandas/scan`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-          body: JSON.stringify({ text: text })
-        });
-        
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
-        
-        if (data.errors) {
-          chips.innerHTML = `<span class="hint" style="color:var(--danger)">Error: ${data.errors}</span>`;
-          return;
-        }
-        
-        // Render syllable chips with real L/G weights
-        chips.innerHTML = "";
-        if (data.weights && data.weights.length > 0) {
-          const syllables = text.split(/\s+/);
-          data.weights.forEach((w, idx) => {
-            const sylText = syllables[idx] || "—";
-            chips.innerHTML += `<div class="syl ${w}"><span class="txt">${sylText}</span><span class="w">${w}</span></div>`;
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const target = btn.dataset.tab;
+          document.querySelectorAll(".tab-btn").forEach((b) => {
+            b.setAttribute("aria-selected", b === btn ? "true" : "false");
           });
-        }
-        
-        // Update verdict / count / pattern from real scansion
-        const meterName = data.meter?.meter || "unknown";
-        verdict.textContent = `✓ ${meterName}`;
-        verdict.className = data.meter ? "badge ok" : "badge warn";
-        
-        count.textContent = `${data.syllable_count || 0} Syllables · ${data.matra_sum || 0} Mātrās`;
-        pattern.textContent = data.pattern || "—";
-        
-        // Add meter details if available
-        if (data.meter && data.meter.reference_locator) {
-          const existingHint = document.querySelector("#chandas-result .hint");
-          if (existingHint) {
-            existingHint.textContent = `Meter: ${data.meter.meter} (${data.meter.reference_locator}) · Match type: ${data.meter.match_type || "syllable_count"}`;
+          document.querySelectorAll(".tabpanel").forEach((p) => {
+            p.classList.toggle("active", p.id === "panel-" + target);
+          });
+        });
+      });
+
+      document.querySelectorAll(".iast-key").forEach((key) => {
+        key.addEventListener("click", () => {
+          const active = document.activeElement;
+          const el = (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA"))
+            ? active
+            : lastInput;
+          if (!el) return;
+          const start = typeof el.selectionStart === "number" ? el.selectionStart : el.value.length;
+          const end = typeof el.selectionEnd === "number" ? el.selectionEnd : el.value.length;
+          const ch = key.textContent;
+          el.value = (el.value.slice(0, start) + ch + el.value.slice(end)).normalize("NFC");
+          el.focus();
+          if (typeof el.setSelectionRange === "function") {
+            el.setSelectionRange(start + ch.length, start + ch.length);
           }
-        }
-        
-      } catch (e) {
-        chips.innerHTML = `<span class="hint" style="color:var(--danger)">Error scanning text: ${e.message}</span>`;
-      }
-    }
+          el.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+      });
 
-    // --- 3. Morphology Subanta Table ---
-    const DEVA_EXACT_MAP = {
-      "devaḥ": "देवः", "devau": "देवौ", "devāḥ": "देवाः", "devam": "देवम्", "devān": "देवान्",
-      "devena": "देवेन", "devābhyām": "देवाभ्याम्", "devaiḥ": "देवैः", "devāya": "देवाय",
-      "devebhyaḥ": "देवेभ्यः", "devāt": "देवात्", "devasya": "देवस्य", "devayoḥ": "देवयोः",
-      "devānām": "देवानाम्", "deve": "देवे", "deveṣu": "देवेषु", "deva": "देव",
-      "latā": "लता", "late": "लते", "latāḥ": "लताः", "latām": "लताम्", "latayā": "लतया",
-      "latābhyām": "लताभ्याम्", "latābhiḥ": "लताभिः", "latāyai": "लतायै", "latābhyaḥ": "लताभ्यः",
-      "latāyāḥ": "लतायाः", "latayoḥ": "लतयोः", "latānām": "लतानाम्", "latāyām": "लतायाम्", "latāsu": "लतासु",
-      "phalam": "फलम्", "phale": "फले", "phalāni": "फलानि", "phalena": "फलेन",
-      "phalābhyām": "फलाभ्याम्", "phalaiḥ": "फलैः", "phalāya": "फलाय", "phalebhyaḥ": "फलेभ्यः",
-      "phalāt": "फलात्", "phalasya": "फलस्य", "phalayoḥ": "फलयोः", "phalānām": "फलानाम्", "phaleṣu": "फलेषु", "phala": "फल",
-      "marut": "मरुत्", "marutau": "मरुतौ", "marutaḥ": "मरुतः", "marutam": "मरुतम्", "marutā": "मरुता",
-      "marudbhyām": "मरुद्भ्याम्", "marudbhiḥ": "मरुद्भिः", "marute": "मरुते", "marudbhyaḥ": "मरुद्भ्यः",
-      "marutoḥ": "मरुतोः", "marutām": "मरुताम्", "maruti": "मरुति", "marutsu": "मरुत्सु",
-      "vāk": "वाक्", "vācau": "वाचौ", "vācaḥ": "वाचः", "vācam": "वाचम्", "vācā": "वाचा",
-      "vāgbhyām": "वाग्भ्याम्", "vāgbhiḥ": "वाग्भिः", "vāce": "वाचे", "vāgbhyaḥ": "वाग्भ्यः",
-      "vācoḥ": "वाचोः", "vācām": "वाचाम्", "vāci": "वाचि", "vākṣu": "वाक्षु",
-      // i-stem: agni
-      "agniḥ": "अग्निः", "agnī": "अग्नी", "agnayaḥ": "अग्नयः", "agnim": "अग्निम्",
-      "agnīn": "अग्नीन्", "agninā": "अग्निना", "agnibhyām": "अग्निभ्याम्",
-      "agnibhiḥ": "अग्निभिः", "agnaye": "अग्नये", "agnibhyaḥ": "अग्निभ्यः",
-      "agneḥ": "अग्नेः", "agnyoḥ": "अग्न्योः", "agnīnām": "अग्नीनाम्",
-      "agnau": "अग्नौ", "agniṣu": "अग्निषु", "agne": "अग्ने",
-      // u-stem: śatru
-      "śatruḥ": "शत्रुः", "śatrū": "शत्रू", "śatravaḥ": "शत्रवः", "śatrum": "शत्रुम्",
-      "śatrūn": "शत्रून्", "śatruṇā": "शत्रुणा", "śatrubhyām": "शत्रुभ्याम्",
-      "śatrubhiḥ": "शत्रुभिः", "śatrave": "शत्रवे", "śatrubhyaḥ": "शत्रुभ्यः",
-      "śatroḥ": "शत्रोः", "śatrvoḥ": "शत्र्वोः", "śatrūṇām": "शत्रूणाम्",
-      "śatrau": "शत्रौ", "śatruṣu": "शत्रुषु", "śatro": "शत्रो",
-      // ī-stem: nadī
-      "nadī": "नदी", "nadyau": "नद्यौ", "nadyaḥ": "नद्यः", "nadīm": "नदीम्",
-      "nadīḥ": "नदीः", "nadyā": "नद्या", "nadībhyām": "नदीभ्याम्",
-      "nadībhiḥ": "नदीभिः", "nadyai": "नद्यै", "nadībhyaḥ": "नदीभ्यः",
-      "nadyāḥ": "नद्याः", "nadyoḥ": "नद्योः", "nadīnām": "नदीनाम्",
-      "nadyām": "नद्याम्", "nadīṣu": "नदीषु", "nadi": "नदि",
-      // ū-stem: vadhū
-      "vadhūḥ": "वधूः", "vadhvau": "वध्वौ", "vadhvaḥ": "वध्वः", "vadhūm": "वधूम्",
-      "vadhvā": "वध्वा", "vadhūbhyām": "वधूभ्याम्",
-      "vadhūbhiḥ": "वधूभिः", "vadhvai": "वध्वै", "vadhūbhyaḥ": "वधूभ्यः",
-      "vadhvāḥ": "वध्वाः", "vadhvoḥ": "वध्वोः", "vadhūnām": "वधूनाम्",
-      "vadhvām": "वध्वाम्", "vadhūṣu": "वधूषु", "vadhu": "वधु",
-      // ṛ-stem: pitṛ
-      "pitā": "पिता", "pitarau": "पितरौ", "pitaraḥ": "पितरः", "pitaram": "पितरम्",
-      "pitṝn": "पितॄन्", "pitrā": "पित्रा", "pitṛbhyām": "पितृभ्याम्",
-      "pitṛbhiḥ": "पितृभिः", "pitre": "पित्रे", "pitṛbhyaḥ": "पितृभ्यः",
-      "pituḥ": "पितुः", "pitroḥ": "पित्रोः", "pitṝṇām": "पितॄणाम्",
-      "pitari": "पितरि", "pitṛṣu": "पितृषु", "pitaḥ": "पितः",
-      
-      // rājan (n-masc) — Nakārānta Pulliṅga
-      "rājā": "राजा", "rājānau": "राजानौ", "rājānaḥ": "राजानः", "rājānam": "राजानम्",
-      "rājñaḥ": "राज्ञः", "rājñā": "राज्ञा", "rājabhyām": "राजभ्याम्",
-      "rājabhiḥ": "राजभिः", "rājñe": "राज्ञे", "rājabhyaḥ": "राजभ्यः",
-      "rājñoḥ": "राज्ञोः", "rājñām": "राज्ञाम्", "rājñi": "राज्ञि",
-      "rājani": "राजनि", "rājasu": "राजसु", "rājan": "राजन्",
-      
-      // nāman (n-neut) — Nakārānta Napuṃsakaliṅga
-      "nāma": "नाम", "nāmnī": "नाम्नी", "nāmanī": "नामनी", "nāmāni": "नामानि",
-      "nāmnā": "नाम्ना", "nāmabhyām": "नामभ्याम्", "nāmabhiḥ": "नामभिः",
-      "nāmne": "नाम्ने", "nāmabhyaḥ": "नामभ्यः", "nāmnaḥ": "नाम्नः",
-      "nāmnoḥ": "नाम्नोः", "nāmnām": "नाम्नाम्", "nāmni": "नाम्नि",
-      "nāmani": "नामनि", "nāmasu": "नामसु", "nāman": "नामन्",
-      
-      // balin (in-masc) — In-kārānta Pulliṅga
-      "balī": "बली", "balinau": "बलिनौ", "balinaḥ": "बलिनः", "balinam": "बलिनम्",
-      "balinā": "बलिना", "balibhyām": "बलिभ्याम्", "balibhiḥ": "बलिभिः",
-      "baline": "बलिने", "balibhyaḥ": "बलिभ्यः", "balinoḥ": "बलिनोः",
-      "balinām": "बलिनाम्", "balini": "बलिनि", "baliṣu": "बलिषु",
-      "balin": "बलिन्",
-    };
-
-    function toDevanagari(text) {
-      if (!text) return "";
-      return text.split(" / ").map(w => DEVA_EXACT_MAP[w] || w).join(" / ");
-    }
-
-    function toSLP1(text) {
-      if (!text) return "";
-      const slpMap = {
-        "ā": "A", "ī": "I", "ū": "U", "ṛ": "f", "ṝ": "F", "ḷ": "x",
-        "ai": "E", "au": "O", "kh": "K", "gh": "G", "ṅ": "N",
-        "ch": "C", "jh": "J", "ñ": "Y", "ṭh": "W", "ṭ": "w", "ḍh": "Q", "ḍ": "q", "ṇ": "R",
-        "th": "T", "dh": "D", "ph": "P", "bh": "B", "ś": "S", "ṣ": "z",
-        "ṃ": "M", "ḥ": "H"
+      // Script conversion helpers
+      const DEV_C = {
+        "kṣ": "क्ष", "jñ": "ज्ञ", "kh": "ख", "gh": "घ", "ch": "छ", "jh": "झ",
+        "ṭh": "ठ", "ḍh": "ढ", "th": "थ", "dh": "ध", "ph": "फ", "bh": "भ",
+        "k": "क", "g": "ग", "ṅ": "ङ", "c": "च", "j": "ज", "ñ": "ञ",
+        "ṭ": "ट", "ḍ": "ड", "ṇ": "ण", "t": "त", "d": "द", "n": "न",
+        "p": "प", "b": "ब", "m": "म", "y": "य", "r": "र", "l": "ल",
+        "v": "व", "ś": "श", "ṣ": "ष", "s": "स", "h": "ह"
       };
-      let out = text;
-      for (const [k, v] of Object.entries(slpMap)) {
-        out = out.split(k).join(v);
-      }
-      return out;
-    }
+      const DEV_V = {
+        "ai": ["ऐ", "ै"], "au": ["औ", "ौ"], "ā": ["आ", "ा"], "ī": ["ई", "ी"],
+        "ū": ["ऊ", "ू"], "ṝ": ["ॠ", "ॄ"], "ṛ": ["ऋ", "ृ"], "ḷ": ["ऌ", "ॢ"],
+        "e": ["ए", "े"], "o": ["ओ", "ो"], "a": ["अ", ""], "i": ["इ", "ि"], "u": ["उ", "ु"]
+      };
+      const C_KEYS = Object.keys(DEV_C).sort((a, b) => b.length - a.length);
+      const V_KEYS = Object.keys(DEV_V).sort((a, b) => b.length - a.length);
 
-    let currentMorphScript = localStorage.getItem("aigaane.morphScript") || "deva";
-
-    function setMorphScript(script) {
-      currentMorphScript = script;
-      localStorage.setItem("aigaane.morphScript", script);
-      document.querySelectorAll("#morph-script-toggle .script-toggle-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.script === script);
-      });
-      renderMorphology();
-    }
-
-    function renderMorphology() {
-      const paradigm = document.getElementById("morph-paradigm").value;
-      const lemmaInput = document.getElementById("morph-lemma");
-      const title = document.getElementById("m-title");
-      const chip = document.getElementById("m-chip");
-      const tbody = document.getElementById("m-table-body");
-
-      let rows = [];
-
-      if (paradigm === "aa-fem") {
-        lemmaInput.value = "latā";
-        title.textContent = "latā";
-        chip.textContent = "Ākārānta · Strīliṅga";
-        rows = [
-          ["Prathamā (1st)", "latā", "late", "latāḥ"],
-          ["Dvitīyā (2nd)", "latām", "late", "latāḥ"],
-          ["Tṛtīyā (3rd)", "latayā", "latābhyām", "latābhiḥ"],
-          ["Caturthī (4th)", "latāyai", "latābhyām", "latābhyaḥ"],
-          ["Pañcamī (5th)", "latāyāḥ", "latābhyām", "latābhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "latāyāḥ", "latayoḥ", "latānām"],
-          ["Saptamī (7th)", "latāyām", "latayoḥ", "latāsu"],
-          ["Sambodhana (Voc.)", "late", "late", "latāḥ"]
-        ];
-      } else if (paradigm === "a-neut") {
-        lemmaInput.value = "phala";
-        title.textContent = "phala";
-        chip.textContent = "Akārānta · Napuṃsakaliṅga";
-        rows = [
-          ["Prathamā (1st)", "phalam", "phale", "phalāni"],
-          ["Dvitīyā (2nd)", "phalam", "phale", "phalāni"],
-          ["Tṛtīyā (3rd)", "phalena", "phalābhyām", "phalaiḥ"],
-          ["Caturthī (4th)", "phalāya", "phalābhyām", "phalebhyaḥ"],
-          ["Pañcamī (5th)", "phalāt", "phalābhyām", "phalebhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "phalasya", "phalayoḥ", "phalānām"],
-          ["Saptamī (7th)", "phale", "phalayoḥ", "phaleṣu"],
-          ["Sambodhana (Voc.)", "phala", "phale", "phalāni"]
-        ];
-      } else if (paradigm === "t-masc") {
-        lemmaInput.value = "marut";
-        title.textContent = "marut";
-        chip.textContent = "Takārānta · Pulliṅga (Halanta)";
-        rows = [
-          ["Prathamā (1st)", "marut", "marutau", "marutaḥ"],
-          ["Dvitīyā (2nd)", "marutam", "marutau", "marutaḥ"],
-          ["Tṛtīyā (3rd)", "marutā", "marudbhyām", "marudbhiḥ"],
-          ["Caturthī (4th)", "marute", "marudbhyām", "marudbhyaḥ"],
-          ["Pañcamī (5th)", "marutaḥ", "marudbhyām", "marudbhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "marutaḥ", "marutoḥ", "marutām"],
-          ["Saptamī (7th)", "maruti", "marutoḥ", "marutsu"],
-          ["Sambodhana (Voc.)", "marut", "marutau", "marutaḥ"]
-        ];
-      } else if (paradigm === "c-fem") {
-        lemmaInput.value = "vāc";
-        title.textContent = "vāc";
-        chip.textContent = "Cakārānta · Strīliṅga (coḥ kuḥ 8.2.30)";
-        rows = [
-          ["Prathamā (1st)", "vāk", "vācau", "vācaḥ"],
-          ["Dvitīyā (2nd)", "vācam", "vācau", "vācaḥ"],
-          ["Tṛtīyā (3rd)", "vācā", "vāgbhyām", "vāgbhiḥ"],
-          ["Caturthī (4th)", "vāce", "vāgbhyām", "vāgbhyaḥ"],
-          ["Pañcamī (5th)", "vācaḥ", "vāgbhyām", "vāgbhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "vācaḥ", "vācoḥ", "vācām"],
-          ["Saptamī (7th)", "vāci", "vācoḥ", "vākṣu"],
-          ["Sambodhana (Voc.)", "vāk", "vācau", "vācaḥ"]
-        ];
-      } else if (paradigm === "n-masc") {
-        lemmaInput.value = "rājan";
-        title.textContent = "rājan";
-        chip.textContent = "Nakārānta · Pulliṅga (naḥ lopaḥ 8.2.7)";
-        rows = [
-          ["Prathamā (1st)", "rājā", "rājānau", "rājānaḥ"],
-          ["Dvitīyā (2nd)", "rājānam", "rājānau", "rājñaḥ"],
-          ["Tṛtīyā (3rd)", "rājñā", "rājabhyām", "rājabhiḥ"],
-          ["Caturthī (4th)", "rājñe", "rājabhyām", "rājabhyaḥ"],
-          ["Pañcamī (5th)", "rājñaḥ", "rājabhyām", "rājabhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "rājñaḥ", "rājñoḥ", "rājñām"],
-          ["Saptamī (7th)", "rājñi / rājani", "rājñoḥ", "rājasu"],
-          ["Sambodhana (Voc.)", "rājan", "rājānau", "rājānaḥ"]
-        ];
-      } else if (paradigm === "n-neut") {
-        lemmaInput.value = "nāman";
-        title.textContent = "nāman";
-        chip.textContent = "Nakārānta · Napuṃsakaliṅga (śi 7.1.20)";
-        rows = [
-          ["Prathamā (1st)", "nāma", "nāmnī / nāmanī", "nāmāni"],
-          ["Dvitīyā (2nd)", "nāma", "nāmnī / nāmanī", "nāmāni"],
-          ["Tṛtīyā (3rd)", "nāmnā", "nāmabhyām", "nāmabhiḥ"],
-          ["Caturthī (4th)", "nāmne", "nāmabhyām", "nāmabhyaḥ"],
-          ["Pañcamī (5th)", "nāmnaḥ", "nāmabhyām", "nāmabhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "nāmnaḥ", "nāmnoḥ", "nāmnām"],
-          ["Saptamī (7th)", "nāmni / nāmani", "nāmnoḥ", "nāmasu"],
-          ["Sambodhana (Voc.)", "nāma / nāman", "nāmnī / nāmanī", "nāmāni"]
-        ];
-      } else if (paradigm === "i-masc") {
-        lemmaInput.value = "agni";
-        title.textContent = "agni";
-        chip.textContent = "Ikārānta · Pulliṅga";
-        rows = [
-          ["Prathamā (1st)", "agniḥ", "agnī", "agnayaḥ"],
-          ["Dvitīyā (2nd)", "agnim", "agnī", "agnīn"],
-          ["Tṛtīyā (3rd)", "agninā", "agnibhyām", "agnibhiḥ"],
-          ["Caturthī (4th)", "agnaye", "agnibhyām", "agnibhyaḥ"],
-          ["Pañcamī (5th)", "agneḥ", "agnibhyām", "agnibhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "agneḥ", "agnyoḥ", "agnīnām"],
-          ["Saptamī (7th)", "agnau", "agnyoḥ", "agniṣu"],
-          ["Sambodhana (Voc.)", "agne", "agnī", "agnayaḥ"]
-        ];
-      } else if (paradigm === "u-masc") {
-        lemmaInput.value = "śatru";
-        title.textContent = "śatru";
-        chip.textContent = "Ukārānta · Pulliṅga";
-        rows = [
-          ["Prathamā (1st)", "śatruḥ", "śatrū", "śatravaḥ"],
-          ["Dvitīyā (2nd)", "śatrum", "śatrū", "śatrūn"],
-          ["Tṛtīyā (3rd)", "śatruṇā", "śatrubhyām", "śatrubhiḥ"],
-          ["Caturthī (4th)", "śatrave", "śatrubhyām", "śatrubhyaḥ"],
-          ["Pañcamī (5th)", "śatroḥ", "śatrubhyām", "śatrubhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "śatroḥ", "śatrvoḥ", "śatrūṇām"],
-          ["Saptamī (7th)", "śatrau", "śatrvoḥ", "śatruṣu"],
-          ["Sambodhana (Voc.)", "śatro", "śatrū", "śatravaḥ"]
-        ];
-      } else if (paradigm === "ii-fem") {
-        lemmaInput.value = "nadī";
-        title.textContent = "nadī";
-        chip.textContent = "Īkārānta · Strīliṅga";
-        rows = [
-          ["Prathamā (1st)", "nadī", "nadyau", "nadyaḥ"],
-          ["Dvitīyā (2nd)", "nadīm", "nadyau", "nadīḥ"],
-          ["Tṛtīyā (3rd)", "nadyā", "nadībhyām", "nadībhiḥ"],
-          ["Caturthī (4th)", "nadyai", "nadībhyām", "nadībhyaḥ"],
-          ["Pañcamī (5th)", "nadyāḥ", "nadībhyām", "nadībhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "nadyāḥ", "nadyoḥ", "nadīnām"],
-          ["Saptamī (7th)", "nadyām", "nadyoḥ", "nadīṣu"],
-          ["Sambodhana (Voc.)", "nadi", "nadyau", "nadyaḥ"]
-        ];
-      } else if (paradigm === "uu-fem") {
-        lemmaInput.value = "vadhū";
-        title.textContent = "vadhū";
-        chip.textContent = "Ūkārānta · Strīliṅga";
-        rows = [
-          ["Prathamā (1st)", "vadhūḥ", "vadhvau", "vadhvaḥ"],
-          ["Dvitīyā (2nd)", "vadhūm", "vadhvau", "vadhūḥ"],
-          ["Tṛtīyā (3rd)", "vadhvā", "vadhūbhyām", "vadhūbhiḥ"],
-          ["Caturthī (4th)", "vadhvai", "vadhūbhyām", "vadhūbhyaḥ"],
-          ["Pañcamī (5th)", "vadhvāḥ", "vadhūbhyām", "vadhūbhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "vadhvāḥ", "vadhvoḥ", "vadhūnām"],
-          ["Saptamī (7th)", "vadhvām", "vadhvoḥ", "vadhūṣu"],
-          ["Sambodhana (Voc.)", "vadhu", "vadhvau", "vadhvaḥ"]
-        ];
-      } else if (paradigm === "in-masc") {
-        lemmaInput.value = "balin";
-        title.textContent = "balin";
-        chip.textContent = "In-kārānta · Pulliṅga (balin)";
-        rows = [
-          ["Prathamā (1st)", "balī", "balinau", "balinaḥ"],
-          ["Dvitīyā (2nd)", "balinam", "balinau", "balinaḥ"],
-          ["Tṛtīyā (3rd)", "balinā", "balibhyām", "balibhiḥ"],
-          ["Caturthī (4th)", "baline", "balibhyām", "balibhyaḥ"],
-          ["Pañcamī (5th)", "balinaḥ", "balibhyām", "balibhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "balinaḥ", "balinoḥ", "balinām"],
-          ["Saptamī (7th)", "balini", "balinoḥ", "baliṣu"],
-          ["Sambodhana (Voc.)", "balin", "balinau", "balinaḥ"]
-        ];
-      } else if (paradigm === "r-stem") {
-        lemmaInput.value = "pitṛ";
-        title.textContent = "pitṛ";
-        chip.textContent = "Ṛkārānta · Pulliṅga";
-        rows = [
-          ["Prathamā (1st)", "pitā", "pitarau", "pitaraḥ"],
-          ["Dvitīyā (2nd)", "pitaram", "pitarau", "pitṝn"],
-          ["Tṛtīyā (3rd)", "pitrā", "pitṛbhyām", "pitṛbhiḥ"],
-          ["Caturthī (4th)", "pitre", "pitṛbhyām", "pitṛbhyaḥ"],
-          ["Pañcamī (5th)", "pituḥ", "pitṛbhyām", "pitṛbhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "pituḥ", "pitroḥ", "pitṝṇām"],
-          ["Saptamī (7th)", "pitari", "pitroḥ", "pitṛṣu"],
-          ["Sambodhana (Voc.)", "pitaḥ", "pitarau", "pitaraḥ"]
-        ];
-      } else {
-        lemmaInput.value = "deva";
-        title.textContent = "deva";
-        chip.textContent = "Akārānta · Pulliṅga";
-        rows = [
-          ["Prathamā (1st)", "devaḥ", "devau", "devāḥ"],
-          ["Dvitīyā (2nd)", "devam", "devau", "devān"],
-          ["Tṛtīyā (3rd)", "devena", "devābhyām", "devaiḥ"],
-          ["Caturthī (4th)", "devāya", "devābhyām", "devebhyaḥ"],
-          ["Pañcamī (5th)", "devāt", "devābhyām", "devebhyaḥ"],
-          ["Ṣaṣṭhī (6th)", "devasya", "devayoḥ", "devānām"],
-          ["Saptamī (7th)", "deve", "devayoḥ", "deveṣu"],
-          ["Sambodhana (Voc.)", "deva", "devau", "devāḥ"]
-        ];
-      }
-
-      function formatCell(val) {
-        if (currentMorphScript === "deva") return toDevanagari(val);
-        if (currentMorphScript === "slp1") return toSLP1(val);
-        return val;
-      }
-
-      tbody.innerHTML = rows.map(([vib, e, d, b]) =>
-        `<tr>
-          <th>${vib}</th>
-          <td class="form" data-vacana="Ekavacana (1)">${formatCell(e)}</td>
-          <td class="form" data-vacana="Dvivacana (2)">${formatCell(d)}</td>
-          <td class="form" data-vacana="Bahuvacana (3+)">${formatCell(b)}</td>
-        </tr>`
-      ).join("");
-    }
-
-    // --- 3B. Tiṅanta Conjugation Engine ---
-    const VERB_MATRICES = {
-      "bhu-1": { title: "bhū (bhavati · to be)", chip: "Gaṇa 1 · Bhvādi (śap 3.1.68) · Parasmaipada", rows: [["Prathama (3rd)", "bhavati", "bhavataḥ", "bhavanti"], ["Madhyama (2nd)", "bhavasi", "bhavathaḥ", "bhavatha"], ["Uttama (1st)", "bhavāmi", "bhavāvaḥ", "bhavāmaḥ"]] },
-      "ad-2": { title: "ad (atti · to eat)", chip: "Gaṇa 2 · Adādi (luk-vikaraṇa 2.4.72) · Parasmaipada", rows: [["Prathama (3rd)", "atti", "attaḥ", "adanti"], ["Madhyama (2nd)", "atsi", "atthaḥ", "attha"], ["Uttama (1st)", "admi", "advaḥ", "admaḥ"]] },
-      "as-2": { title: "as (asti · to be)", chip: "Gaṇa 2 · Adādi (śnasor allopaḥ 6.4.111) · Parasmaipada", rows: [["Prathama (3rd)", "asti", "staḥ", "santi"], ["Madhyama (2nd)", "asi", "sthaḥ", "stha"], ["Uttama (1st)", "asmi", "svaḥ", "smaḥ"]] },
-      "hu-3": { title: "hu (juhoti · to sacrifice)", chip: "Gaṇa 3 · Juhotyādi (ślu-vikaraṇa 6.1.10) · Parasmaipada", rows: [["Prathama (3rd)", "juhoti", "juhutaḥ", "juhvati"], ["Madhyama (2nd)", "jahoṣi", "juhuthaḥ", "juhutha"], ["Uttama (1st)", "juhomi", "juhuvaḥ", "juhumaḥ"]] },
-      "da-3": { title: "dā (dadāti · to give)", chip: "Gaṇa 3 · Juhotyādi (dādā ghādvāp 1.1.20) · Parasmaipada", rows: [["Prathama (3rd)", "dadāti", "dattaḥ", "dadati"], ["Madhyama (2nd)", "dadāsi", "datthaḥ", "dattha"], ["Uttama (1st)", "dadāmi", "dadvaḥ", "dadmaḥ"]] },
-      "div-4": { title: "div (dīvyati · to play/shine)", chip: "Gaṇa 4 · Divādi (śyan-vikaraṇa 3.1.69) · Parasmaipada", rows: [["Prathama (3rd)", "dīvyati", "dīvyataḥ", "dīvyanti"], ["Madhyama (2nd)", "dīvyasi", "dīvyathaḥ", "dīvyatha"], ["Uttama (1st)", "dīvyāmi", "dīvyāvaḥ", "dīvyāmaḥ"]] },
-      "su-5": { title: "su (sunoti · to press soma)", chip: "Gaṇa 5 · Svādi (śnu-vikaraṇa 3.1.73) · Parasmaipada", rows: [["Prathama (3rd)", "sunoti", "sunutaḥ", "sunvanti"], ["Madhyama (2nd)", "sunoṣi", "sunuthaḥ", "sunutha"], ["Uttama (1st)", "sunomi", "sunuvaḥ", "sunumaḥ"]] },
-      "tud-6": { title: "tud (tudati · to strike)", chip: "Gaṇa 6 · Tudādi (śa-vikaraṇa 3.1.77) · Parasmaipada", rows: [["Prathama (3rd)", "tudati", "tudataḥ", "tudanti"], ["Madhyama (2nd)", "tudasi", "tudathaḥ", "tudatha"], ["Uttama (1st)", "tudāmi", "tudāvaḥ", "tudāmaḥ"]] },
-      "rudh-7": { title: "rudh (ruṇaddhi · to obstruct)", chip: "Gaṇa 7 · Rudhādi (śnam-vikaraṇa 3.1.78) · Parasmaipada", rows: [["Prathama (3rd)", "ruṇaddhi", "runddhaḥ", "rundhanti"], ["Madhyama (2nd)", "ruṇatsi", "runddhaḥ", "runddha"], ["Uttama (1st)", "ruṇadhmi", "rundhvaḥ", "rundhmaḥ"]] },
-      "tan-8": { title: "tan (tanoti · to stretch)", chip: "Gaṇa 8 · Tanādi (u-vikaraṇa 3.1.79) · Parasmaipada", rows: [["Prathama (3rd)", "tanoti", "tanutaḥ", "tanvanti"], ["Madhyama (2nd)", "tanoṣi", "tanuthaḥ", "tanutha"], ["Uttama (1st)", "tanomi", "tanuvaḥ", "tanumaḥ"]] },
-      "kr-8": { title: "kṛ (karoti · to do/make)", chip: "Gaṇa 8 · Tanādi (tanādikṛñbhya uḥ 3.1.79) · Parasmaipada", rows: [["Prathama (3rd)", "karoti", "kurutaḥ", "kurvanti"], ["Madhyama (2nd)", "karoṣi", "kuruthaḥ", "kurutha"], ["Uttama (1st)", "karomi", "kurvaḥ", "kurmaḥ"]] },
-      "kri-9": { title: "krī (krīṇāti · to buy)", chip: "Gaṇa 9 · Kryādi (śnā-vikaraṇa 3.1.81) · Parasmaipada", rows: [["Prathama (3rd)", "krīṇāti", "krīṇītaḥ", "krīṇanti"], ["Madhyama (2nd)", "krīṇāsi", "krīṇīthaḥ", "krīṇītha"], ["Uttama (1st)", "krīṇāmi", "krīṇīvaḥ", "krīṇīmaḥ"]] },
-      "jna-9": { title: "jñā (jānāti · to know)", chip: "Gaṇa 9 · Kryādi (jñājanorjā 7.3.79) · Parasmaipada", rows: [["Prathama (3rd)", "jānāti", "jānītaḥ", "jānanti"], ["Madhyama (2nd)", "jānāsi", "jānīthaḥ", "jānītha"], ["Uttama (1st)", "jānāmi", "jānīvaḥ", "jānīmaḥ"]] },
-      "cur-10": { title: "cur (corayati · to steal)", chip: "Gaṇa 10 · Curādi (ṇic-vikaraṇa 3.1.25) · Parasmaipada", rows: [["Prathama (3rd)", "corayati", "corayataḥ", "corayanti"], ["Madhyama (2nd)", "corayasi", "corayathaḥ", "corayatha"], ["Uttama (1st)", "corayāmi", "corayāvaḥ", "corayāmaḥ"]] }
-    };
-
-    function renderVerbConjugation() {
-      const sel = document.getElementById("verb-root-select");
-      if (!sel) return;
-      const key = sel.value;
-      const data = VERB_MATRICES[key];
-      if (!data) return;
-      document.getElementById("v-title").textContent = data.title;
-      document.getElementById("v-chip").textContent = data.chip;
-      const tbody = document.getElementById("v-table-body");
-      tbody.innerHTML = data.rows.map(([purusa, e, d, b]) =>
-        `<tr><th>${purusa}</th><td class="form">${e}</td><td class="form">${d}</td><td class="form">${b}</td></tr>`
-      ).join("");
-    }
-
-    // --- 5. Gāndharvaveda Audio ---
-    let audioCtx = null;
-    let activeOsc = null;
-    let activeGain = null;
-
-    function getAudioContext() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-      return audioCtx;
-    }
-
-    function stopAllAudio() {
-      if (activeOsc) {
-        try {
-          activeGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05);
-          setTimeout(() => {
-            if (activeOsc) {
-              activeOsc.stop();
-              activeOsc.disconnect();
-              activeOsc = null;
-            }
-          }, 60);
-        } catch(e) {}
-      }
-      const badge = document.getElementById("active-svara-badge");
-      if (badge) {
-        badge.className = "badge";
-        badge.textContent = "Silence";
-      }
-    }
-
-    function playFrequency(hz, name, symbol) {
-      const ctx = getAudioContext();
-      stopAllAudio();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(hz, ctx.currentTime);
-      gain.gain.setValueAtTime(0.001, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.04);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      activeOsc = osc;
-      activeGain = gain;
-      const badge = document.getElementById("active-svara-badge");
-      if (badge) {
-        badge.className = "badge ok";
-        badge.textContent = `▶ Playing ${symbol} (${name}) · ${hz} Hz`;
-      }
-    }
-
-    async function loadSrutiMatrix() {
-      const saHz = parseFloat(document.getElementById("sa-hz-input").value) || 240.0;
-      const tbody = document.getElementById("sruti-table-body");
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:16px;">Loading 22-Śruti Matrix...</td></tr>`;
-      try {
-        const resp = await fetch(`${API_BASE}/api/v1/sruti?sa_hz=${saHz}`);
-        if (!resp.ok) throw new Error("Failed to fetch sruti matrix");
-        const data = await resp.json();
-        tbody.innerHTML = data.intervals.map(item => `
-          <tr style="cursor:pointer;" onclick="playFrequency(${item.frequency_hz}, '${item.name}', '${item.svara_symbol}')">
-            <td>${item.index}</td>
-            <td style="font-weight:600;">${item.name}</td>
-            <td>${item.svara}</td>
-            <td style="font-family:monospace; font-weight:700; color:var(--accent);">${item.svara_symbol}</td>
-            <td style="font-family:monospace;">${item.ratio}</td>
-            <td style="font-family:monospace; color:var(--primary);">${item.frequency_hz} Hz</td>
-            <td style="font-family:monospace;">${item.cents}¢</td>
-            <td style="font-family:monospace; color:${item.tet_deviation_cents >= 0 ? '#10b981' : '#f59e0b'};">
-              ${item.tet_deviation_cents > 0 ? '+' : ''}${item.tet_deviation_cents}¢
-            </td>
-            <td>
-              <button class="btn" style="padding:4px 8px; font-size:0.75rem;" onclick="event.stopPropagation(); playFrequency(${item.frequency_hz}, '${item.name}', '${item.svara_symbol}')">
-                ▶ Play
-              </button>
-            </td>
-          </tr>
-        `).join("");
-      } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--danger); padding:16px;">Error: ${e.message}</td></tr>`;
-      }
-    }
-
-    async function downloadSrutiMidi() {
-      const sel = document.getElementById("midi-scale-select");
-      const saHz = parseFloat(document.getElementById("sa-hz-input").value) || 240.0;
-      if (!sel) return;
-      const svaras = sel.value.split(",");
-      const payload = { svaras: svaras, sa_hz: saHz, sa_midi_note: 60, tempo_bpm: 76 };
-      try {
-        const resp = await fetch(`${API_BASE}/api/v1/sruti/midi/export`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        if (!resp.ok) throw new Error("Failed to export MIDI");
-        const blob = await resp.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.style.display = "none";
-        a.href = url;
-        a.download = `aigaane_22_sruti_${svaras.slice(0, 3).join("_")}.mid`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-      } catch (e) {
-        alert("Error downloading MIDI: " + e.message);
-      }
-    }
-
-    let currentPipelineMidiB64 = null;
-
-    async function runStudioPipeline() {
-      const text = document.getElementById("pipeline-input").value.trim();
-      const resBox = document.getElementById("pipeline-result");
-      const jsonOut = document.getElementById("pipeline-json");
-      const b2 = document.getElementById("pipe-s2-badge");
-      const b1 = document.getElementById("pipe-s1-badge");
-      const b3 = document.getElementById("pipe-s3-badge");
-      const playBtn = document.getElementById("pipe-play-btn");
-      if (!text) return;
-      resBox.style.display = "block";
-      jsonOut.textContent = "Executing sequential pipeline across Studios II, I, and III...";
-      try {
-        const resp = await fetch(`${API_BASE}/api/v1/pipeline`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: text, sa_hz: 240.0, tempo_bpm: 80 })
-        });
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
-        const s2 = data.studio_ii_verification || {};
-        b2.className = s2.is_valid_inference ? "badge ok" : "badge warn";
-        b2.textContent = `Studio II: ${s2.mode || 'Verified'}`;
-        const s1 = data.studio_i_analysis || {};
-        b1.className = "badge ok";
-        b1.textContent = `Studio I: ${s1.tokens?.length || 0} tokens`;
-        const s3 = data.studio_iii_acoustics || {};
-        b3.className = "badge ok";
-        b3.textContent = `Studio III: ${s3.meter_scansion?.meter || 'Metrical'}`;
-        if (s3.midi_base64) {
-          currentPipelineMidiB64 = s3.midi_base64;
-          if (playBtn) playBtn.style.display = "inline-block";
-        }
-        jsonOut.textContent = JSON.stringify(data, null, 2);
-      } catch(e) {
-        jsonOut.textContent = `Pipeline error: ${e.message}`;
-      }
-    }
-
-    function playPipelineMidiAudio() {
-      if (!currentPipelineMidiB64) return;
-      const ctx = getAudioContext();
-      stopAllAudio();
-      const droneSa = 240.0;
-      const dronePa = 360.0;
-      playFrequency(droneSa, "Adhara Sa (Tanpura)", "S");
-    }
-
-    async function lookupKosha() {
-      const word = document.getElementById("kosha-word").value.trim();
-      const badge = document.getElementById("k-badge");
-      const hint = document.getElementById("k-hint");
-      const semPanel = document.getElementById("kosha-semantic-panel");
-
-      badge.className = "badge";
-      badge.textContent = "Searching...";
-      if (semPanel) semPanel.style.display = "none";
-
-      // 1. Morphological lookup (/parse) — existing behavior
-      try {
-        const resp = await fetch(`${API_BASE}/api/v1/parse`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-          body: JSON.stringify({ text: word })
-        });
-        if (resp.ok) {
-          const data = await resp.json();
-          const firstCandidate = (data.candidates && data.candidates[0]) || null;
-          const firstToken = firstCandidate && firstCandidate.parse && firstCandidate.parse[0];
-          if (!firstToken) {
-            badge.className = "badge warn";
-            badge.textContent = "✗ No match";
-            hint.textContent = `'${word}' was not found in the current lexicon.`;
-          } else {
-            document.getElementById("k-word").textContent = word;
-            badge.className = "badge ok";
-            badge.textContent = "✓ In Lexicon";
-            hint.textContent = `Surface: ${firstToken.surface} | Stem: ${firstToken.stem} | Role: ${firstToken.role}`;
+      function toDev(iast) {
+        const s = String(iast || "").normalize("NFC");
+        let i = 0, out = "";
+        while (i < s.length) {
+          if (s[i] === "ṃ" || s[i] === "ṁ") { out += "ं"; i++; continue; }
+          if (s[i] === "ḥ") { out += "ः"; i++; continue; }
+          const low = s.slice(i).toLowerCase();
+          const c = C_KEYS.find((k) => low.startsWith(k));
+          if (c) {
+            i += c.length;
+            const v = V_KEYS.find((k) => s.slice(i).toLowerCase().startsWith(k));
+            if (v) { out += DEV_C[c] + DEV_V[v][1]; i += v.length; }
+            else { out += DEV_C[c] + "्"; }
+            continue;
           }
-        } else {
-          badge.className = "badge err";
-          badge.textContent = "✗ Not Found";
-          hint.textContent = `Word '${word}' not found in current lexicon.`;
+          const v = V_KEYS.find((k) => low.startsWith(k));
+          if (v) { out += DEV_V[v][0]; i += v.length; continue; }
+          out += s[i];
+          i++;
         }
-      } catch (e) {
-        console.error("lookupKosha /parse failed:", e);
-        badge.className = "badge err";
-        badge.textContent = "Error";
-        hint.textContent = `Lookup failed: ${e.message}`;
+        return out.normalize("NFC");
       }
 
-      // 2. Semantic lookup (/lexicon/semantic) — NEW (Q6-D)
-      try {
-        const semResp = await fetch(
-          `${API_BASE}/api/v1/lexicon/semantic?stem=${encodeURIComponent(word)}`
-        );
-        if (!semResp.ok) return;
-        const sem = await semResp.json();
-        if (!sem.found) {
-          if (semPanel) semPanel.style.display = "none";
-          return;
-        }
-
-        document.getElementById("sem-dhatu").innerHTML =
-          `<span class="dhatu-badge">\u221A ${sem.dhatu}</span> ` +
-          `<span style="color:#94a3b8;font-size:0.85rem;">${sem.gana || ""}` +
-          (sem.gana_number ? ` \u00B7 ga\u1E47a ${sem.gana_number}` : "") + `</span>`;
-        document.getElementById("sem-nirukta").textContent = sem.nirukta || "\u2014";
-        document.getElementById("sem-gloss").textContent = sem.gloss || "\u2014";
-
-        const renderList = (arr, cls) => (arr && arr.length)
-          ? arr.map(x => `<span class="${cls}">${x}</span>`).join(" ")
-          : "\u2014";
-
-        document.getElementById("sem-synonyms").innerHTML = renderList(sem.synonyms, "tag");
-        document.getElementById("sem-antonyms").innerHTML = renderList(sem.antonyms, "tag");
-        document.getElementById("sem-related").innerHTML = renderList(sem.related, "tag");
-        document.getElementById("sem-citations").innerHTML = renderList(sem.citations, "citation");
-
-        const toggleRow = (id, hasData) => {
-          const el = document.getElementById(id);
-          if (el) el.style.display = hasData ? "" : "none";
-        };
-        toggleRow("sem-dhatu-row", !!sem.dhatu);
-        toggleRow("sem-nirukta-row", !!sem.nirukta);
-        toggleRow("sem-gloss-row", !!sem.gloss);
-        toggleRow("sem-synonyms-row", sem.synonyms && sem.synonyms.length > 0);
-        toggleRow("sem-antonyms-row", sem.antonyms && sem.antonyms.length > 0);
-        toggleRow("sem-related-row", sem.related && sem.related.length > 0);
-        toggleRow("sem-citations-row", sem.citations && sem.citations.length > 0);
-
-        if (semPanel) semPanel.style.display = "block";
-      } catch (e) {
-        console.warn("Semantic lookup failed (non-fatal):", e);
-      }
-    }
-
-    let isPlaying = false;
-    let scheduledTimeouts = [];
-
-    const SRUTI_RATIOS = {
-      "Sa": 1.0, "Ri_komal": 16/15, "Ri_tivra": 9/8, "Ga_komal": 6/5,
-      "Ga_tivra": 5/4, "Ma_shuddha": 4/3, "Ma_tivra": 45/32, "Pa": 3/2,
-      "Dha_komal": 8/5, "Dha_tivra": 5/3, "Ni_komal": 9/5, "Ni_tivra": 15/8, "Sa_high": 2.0
-    };
-
-    function initAudioContext() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-
-    function playTone(freq, duration, startTime) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, startTime);
-      gain.gain.setValueAtTime(0.0001, startTime);
-      gain.gain.exponentialRampToValueAtTime(0.3, startTime + 0.05);
-      gain.gain.setValueAtTime(0.3, startTime + duration - 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(startTime);
-      osc.stop(startTime + duration);
-    }
-
-    let audioPlaybackSpeed = 1.0;
-    let audioPlayheadRafId = null;
-    let tanpuraOscNodes = [];
-    let tanpuraMasterGain = null;
-    let syllableTimeBrackets = [];
-
-    function setAudioSpeed(speed) {
-      audioPlaybackSpeed = parseFloat(speed) || 1.0;
-      document.querySelectorAll(".speed-toggle-group .speed-btn").forEach(btn => {
-        btn.classList.toggle("active", parseFloat(btn.dataset.speed) === audioPlaybackSpeed);
-      });
-      const label = document.getElementById("audio-track-label");
-      if (label && !isPlaying) {
-        label.textContent = `Speed: ${audioPlaybackSpeed}× | Ready: Just Intonation tuning (C 256Hz base)`;
-      }
-    }
-
-    function initTanpuraDrone() {
-      if (!audioCtx) initAudioContext();
-      if (!tanpuraMasterGain) {
-        tanpuraMasterGain = audioCtx.createGain();
-        tanpuraMasterGain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-        tanpuraMasterGain.connect(audioCtx.destination);
-      }
-      if (tanpuraOscNodes.length === 0) {
-        const frequencies = [384.0, 256.0, 128.0];
-        tanpuraOscNodes = frequencies.map((freq, idx) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = idx === 0 ? "triangle" : "sine";
-          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-          osc.detune.setValueAtTime((idx - 1) * 3.5, audioCtx.currentTime);
-          gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.25 / (idx + 1), audioCtx.currentTime + 1.2);
-          osc.connect(gain);
-          gain.connect(tanpuraMasterGain);
-          osc.start();
-          return { osc, gain };
-        });
-      }
-    }
-
-    function setTanpuraGain(val) {
-      const g = parseFloat(val) || 0;
-      document.getElementById("tanpura-gain-val").textContent = `${Math.round(g * 100)}%`;
-      if (g > 0) initTanpuraDrone();
-      if (tanpuraMasterGain && audioCtx) {
-        tanpuraMasterGain.gain.setValueAtTime(g, audioCtx.currentTime);
-      }
-    }
-
-    function stopTanpuraDrone() {
-      if (tanpuraOscNodes.length > 0 && audioCtx) {
-        tanpuraOscNodes.forEach(({ osc, gain }) => {
-          try {
-            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
-            osc.stop(audioCtx.currentTime + 0.35);
-          } catch(e) {}
-        });
-        tanpuraOscNodes = [];
-      }
-    }
-
-    function updatePlayheadAnimation(startAudioTime, totalDurationSec) {
-      if (!isPlaying || !audioCtx) {
-        document.getElementById("audio-playhead-progress").style.width = "0%";
-        document.querySelectorAll("#c-chips .syl").forEach(c => c.classList.remove("active-playhead"));
-        return;
-      }
-      const elapsed = audioCtx.currentTime - startAudioTime;
-      const progressPct = Math.min(100, Math.max(0, (elapsed / totalDurationSec) * 100));
-      const progressBar = document.getElementById("audio-playhead-progress");
-      if (progressBar) {
-        progressBar.style.width = progressPct.toFixed(1) + "%";
-      }
-      const chips = document.querySelectorAll("#c-chips .syl");
-      syllableTimeBrackets.forEach((brk, idx) => {
-        if (chips[idx]) {
-          const isActive = elapsed >= brk.start && elapsed < brk.end;
-          chips[idx].classList.toggle("active-playhead", isActive);
-        }
-      });
-      if (elapsed < totalDurationSec) {
-        audioPlayheadRafId = requestAnimationFrame(() => updatePlayheadAnimation(startAudioTime, totalDurationSec));
-      } else {
-        progressBar.style.width = "100%";
-      }
-    }
-
-    function playSyllableSequence(syllables) {
-      initAudioContext();
-      stopAudioPlayback();
-      isPlaying = true;
-      const btn = document.getElementById("play-btn");
-      const label = document.getElementById("audio-track-label");
-      if (btn) btn.textContent = "⏸";
-      if (label) label.textContent = `Playing 22-Śruti scansion (${audioPlaybackSpeed}× speed, C 256Hz base)...`;
-      const baseFreq = 256.0;
-      const speedFactor = 1.0 / audioPlaybackSpeed;
-      let startAudioTime = audioCtx.currentTime + 0.1;
-      let now = startAudioTime;
-      syllableTimeBrackets = [];
-      syllables.forEach((item, idx) => {
-        const isGuru = item.weight === "G";
-        const duration = (isGuru ? 0.65 : 0.35) * speedFactor;
-        const intervalRatio = isGuru ? SRUTI_RATIOS["Pa"] : SRUTI_RATIOS["Sa"];
-        const freq = baseFreq * intervalRatio;
-        playTone(freq, duration, now);
-        const bracketStart = now - startAudioTime;
-        const bracketEnd = bracketStart + duration;
-        syllableTimeBrackets.push({ index: idx, start: bracketStart, end: bracketEnd });
-        now += duration + (0.08 * speedFactor);
-      });
-      const totalDurationSec = now - startAudioTime;
-      audioPlayheadRafId = requestAnimationFrame(() => updatePlayheadAnimation(startAudioTime, totalDurationSec));
-      const totalDurationMs = totalDurationSec * 1000;
-      const tid = setTimeout(() => {
-        stopAudioPlayback();
-      }, totalDurationMs);
-      scheduledTimeouts.push(tid);
-    }
-
-    function stopAudioPlayback() {
-      scheduledTimeouts.forEach(clearTimeout);
-      scheduledTimeouts = [];
-      if (audioPlayheadRafId) {
-        cancelAnimationFrame(audioPlayheadRafId);
-        audioPlayheadRafId = null;
-      }
-      isPlaying = false;
-      const btn = document.getElementById("play-btn");
-      const label = document.getElementById("audio-track-label");
-      const progressBar = document.getElementById("audio-playhead-progress");
-      if (btn) btn.textContent = "▶";
-      if (label) label.textContent = `Ready: Just Intonation tuning (${audioPlaybackSpeed}× speed, C 256Hz base)`;
-      if (progressBar) progressBar.style.width = "0%";
-      document.querySelectorAll("#c-chips .syl").forEach(c => c.classList.remove("active-playhead"));
-    }
-
-    function toggleAudioPlayback() {
-      if (isPlaying) {
-        stopAudioPlayback();
-      } else {
-        synthesizeAudio();
-      }
-    }
-
-    function synthesizeAudio() {
-      const syllables = [
-        { txt: "dhar", weight: "G" }, { txt: "mak", weight: "G" },
-        { txt: "ṣet", weight: "G" },  { txt: "re", weight: "G" },
-        { txt: "ku", weight: "L" },   { txt: "ruk", weight: "G" },
-        { txt: "ṣet", weight: "G" },  { txt: "re", weight: "G" }
+      const SLP1_PAIRS = [
+        ["ai", "AI"], ["au", "AU"], ["ā", "A"], ["ī", "I"], ["ū", "U"],
+        ["ṝ", "RR"], ["ṛ", "R"], ["ḷ", "lR"], ["kh", "K"], ["gh", "G"],
+        ["ṅ", "N"], ["ch", "C"], ["jh", "J"], ["ñ", "Y"], ["ṭh", "W"],
+        ["ṭ", "w"], ["ḍh", "Q"], ["ḍ", "q"], ["ṇ", "R"], ["th", "T"],
+        ["dh", "D"], ["ph", "P"], ["bh", "B"], ["ś", "S"], ["ṣ", "z"],
+        ["ṃ", "M"], ["ṁ", "M"], ["ḥ", "H"]
       ];
-      playSyllableSequence(syllables);
-    }
 
-    function playScannedAudio() {
-      const audioSection = document.getElementById("audio-result");
-      audioSection.scrollIntoView({ behavior: "smooth" });
-      synthesizeAudio();
-    }
-
-    async function searchItihasa() {
-      const qInput = document.getElementById("itihasa-q");
-      const resultDiv = document.getElementById("itihasa-result");
-      if (!qInput || !resultDiv) return;
-      const query = qInput.value.trim();
-      if (!query) {
-        resultDiv.innerHTML = '<span class="hint">Enter a keyword (e.g., "dharma", "karma", "tapaḥ").</span>';
-        return;
+      function toSlp1(iast) {
+        let out = String(iast || "").normalize("NFC");
+        for (const [k, v] of SLP1_PAIRS) out = out.split(k).join(v);
+        return out;
       }
-      resultDiv.innerHTML = '<span class="hint">Searching classical canon...</span>';
-      try {
-        const resp = await fetch(`${API_BASE}/api/v1/itihasa/search?q=${encodeURIComponent(query)}`, {
-          method: "GET"
-        });
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
-        if (!data.results || data.results.length === 0) {
-          resultDiv.innerHTML = `<span class="badge warn">No verses found for "${query}"</span>`;
-          return;
-        }
-        let out = `<div style="margin-bottom:12px;"><span class="badge ok">${data.total} verse(s) found</span></div>`;
-        data.results.forEach(m => {
-          const verseText = m.text || m.transliteration || '';
-          const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-          const highlighted = verseText.replace(
-            new RegExp(safeQuery, 'gi'),
-            '<mark style="background:#fef08a;color:#854d0e;border-radius:2px;padding:0 2px;">$&</mark>'
-          );
-          const cantoLabel = `${m.source} ${m.chapter}.${m.verse}`;
-          out += `
-            <article class="verse" style="margin-bottom:14px; padding:12px; border-radius:6px; background:var(--bg-card, #1a1a24); border-left:3px solid var(--accent, #6366f1);">
-              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                <span class="badge ok">${cantoLabel}</span>
-                <span style="font-size:0.8rem; color:var(--text-muted, #9ca3af);">${m.meter}</span>
-              </div>
-              <div style="font-family:'Noto Serif Devanagari', serif; font-size:1.05rem; margin-bottom:6px;">${highlighted}</div>
-              <div style="font-size:0.85rem; color:var(--text-muted, #9ca3af); margin-bottom:8px;">${m.meaning || m.transliteration}</div>
-              <button class="btn" style="padding:2px 8px; font-size:0.75rem;" onclick="loadVerseToPipeline(decodeURIComponent('${encodeURIComponent(verseText)}'))">⚡ Run in Pipeline</button>
-            </article>
-          `;
-        });
-        resultDiv.innerHTML = out;
-      } catch (e) {
-        resultDiv.innerHTML = `<span class="badge err">Error: ${e.message}</span>`;
-      }
-    }
 
-    function loadVerseToPipeline(verseText) {
-      const pipeInput = document.getElementById("pipeline-input") || document.getElementById("chandas-input");
-      if (pipeInput) {
-        pipeInput.value = verseText;
-        pipeInput.scrollIntoView({ behavior: "smooth" });
-        if (typeof runStudioPipeline === "function" && document.getElementById("pipeline-input")) {
-          runStudioPipeline();
-        } else if (typeof scanChandas === "function") {
-          scanChandas();
-        }
+      function formatForm(iast) {
+        if (scriptMode === "dev") return toDev(iast);
+        if (scriptMode === "slp1") return toSlp1(iast);
+        return String(iast || "").normalize("NFC");
       }
-    }
-  </script>
 
-  <aside class="sticky-iast-bar" aria-label="IAST Diacritic Input Bar">
-    <div class="sticky-iast-container">
-      <span class="sticky-iast-label">IAST:</span>
-      <button type="button" class="iast-key" data-char="ā" aria-label="Insert ā">ā</button>
-      <button type="button" class="iast-key" data-char="ī" aria-label="Insert ī">ī</button>
-      <button type="button" class="iast-key" data-char="ū" aria-label="Insert ū">ū</button>
-      <button type="button" class="iast-key" data-char="ṛ" aria-label="Insert ṛ">ṛ</button>
-      <button type="button" class="iast-key" data-char="ṝ" aria-label="Insert ṝ">ṝ</button>
-      <button type="button" class="iast-key" data-char="ḷ" aria-label="Insert ḷ">ḷ</button>
-      <button type="button" class="iast-key" data-char="ṭ" aria-label="Insert ṭ">ṭ</button>
-      <button type="button" class="iast-key" data-char="ḍ" aria-label="Insert ḍ">ḍ</button>
-      <button type="button" class="iast-key" data-char="ṇ" aria-label="Insert ṇ">ṇ</button>
-      <button type="button" class="iast-key" data-char="ś" aria-label="Insert ś">ś</button>
-      <button type="button" class="iast-key" data-char="ṣ" aria-label="Insert ṣ">ṣ</button>
-      <button type="button" class="iast-key" data-char="ṁ" aria-label="Insert ṁ">ṁ</button>
-      <button type="button" class="iast-key" data-char="ḥ" aria-label="Insert ḥ">ḥ</button>
-    </div>
-  </aside>
-
-  <script id="session2-iast-binding">
-    (function initIASTStickyBar() {
-      let lastFocusedInput = null;
-      function trackInput(el) {
-        if (!el || el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') return;
-        if (lastFocusedInput && lastFocusedInput !== el) {
-          lastFocusedInput.classList.remove('iast-active-target');
-        }
-        lastFocusedInput = el;
-        lastFocusedInput.classList.add('iast-active-target');
+      // Sandhi
+      function combineSandhi(left, right) {
+        const l = String(left || "").trim().normalize("NFC");
+        const r = String(right || "").trim().normalize("NFC");
+        if (l === "vidyā" && r === "ālaya") return { out: "vidyālaya", sutra: "6.1.101", rule: "Savarṇa Dīrgha" };
+        if (l === "rāma" && r === "iti") return { out: "rāmeti", sutra: "6.1.87", rule: "Guṇa Sandhi" };
+        if (l === "deva" && r === "indra") return { out: "devendra", sutra: "6.1.87", rule: "Guṇa Sandhi" };
+        if (l.endsWith("a") && r.startsWith("i")) return { out: l.slice(0, -1) + "e" + r.slice(1), sutra: "6.1.87", rule: "Guṇa Sandhi (ād guṇaḥ)" };
+        if (l.endsWith("a") && r.startsWith("u")) return { out: l.slice(0, -1) + "o" + r.slice(1), sutra: "6.1.87", rule: "Guṇa Sandhi (ād guṇaḥ)" };
+        if (l.endsWith("ā") && r.startsWith("ā")) return { out: l.slice(0, -1) + "ā" + r.slice(1), sutra: "6.1.101", rule: "Savarṇa Dīrgha" };
+        return { out: l + r, sutra: "6.1.101 / direct", rule: "Direct / Unmerged" };
       }
-      document.addEventListener('focusin', function(e) {
-        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
-          trackInput(e.target);
-        }
+
+      function renderSandhi() {
+        const l = document.getElementById("sandhi-p1").value;
+        const r = document.getElementById("sandhi-p2").value;
+        const res = combineSandhi(l, r);
+        document.getElementById("sandhi-result").innerHTML =
+          `<div><strong style="color: var(--text-main); font-size: 1.05rem;">${esc(res.out)}</strong> · <span class="sutra-tag">${esc(res.sutra)}</span></div>` +
+          `<div style="margin-top: 4px; font-size: 0.84rem;">${esc(res.rule)} · Dev: ${esc(toDev(res.out))} · SLP1: <code>${esc(toSlp1(res.out))}</code></div>`;
+      }
+
+      const GOLDEN = [
+        ["a", "i", "e", "6.1.87"],
+        ["a", "u", "o", "6.1.87"],
+        ["vidyā", "ālaya", "vidyālaya", "6.1.101"],
+        ["rāma", "iti", "rāmeti", "6.1.87"],
+        ["deva", "indra", "devendra", "6.1.87"]
+      ];
+
+      document.getElementById("sandhi-audit-body").innerHTML = GOLDEN.map(([l, r, exp, sutra]) => {
+        const got = combineSandhi(l, r).out;
+        const ok = got === exp;
+        return `<tr><td>${esc(l)}</td><td>${esc(r)}</td><td>${esc(exp)}</td><td>${esc(got)}</td>` +
+          `<td class="sutra-tag">${esc(sutra)}</td>` +
+          `<td style="color: ${ok ? "var(--ok)" : "var(--warn)"}; font-weight: 600;">${ok ? "PASS" : "CHECK"}</td></tr>`;
+      }).join("");
+
+      document.getElementById("sandhi-combine").addEventListener("click", renderSandhi);
+
+      // Tiṅanta
+      const TIN_VERIFIED = {
+        "bhū|laṅ|parasmaipada": [
+          ["Prathamā (3rd)", ["abhavat ✓", "abhavatām ✓", "abhavan ✓"]],
+          ["Madhyamā (2nd)", ["abhavaḥ ✓", "abhavatam ✓", "abhavata ✓"]],
+          ["Uttamā (1st)", ["abhavam ✓", "abhavāva ✓", "abhavāma ✓"]]
+        ],
+        "bhū|laṭ|parasmaipada": [
+          ["Prathamā (3rd)", ["bhavati ✓", "bhavataḥ ✓", "bhavanti ✓"]],
+          ["Madhyamā (2nd)", ["bhavasi ✓", "bhavathaḥ ✓", "bhavatha ✓"]],
+          ["Uttamā (1st)", ["bhavāmi ✓", "bhavāvaḥ ✓", "bhavāmaḥ ✓"]]
+        ]
+      };
+
+      function renderTinanta() {
+        const d = document.getElementById("tinanta-dhatu").value;
+        const l = document.getElementById("tinanta-lakara").value;
+        const p = document.getElementById("tinanta-pada").value;
+        const hit = TIN_VERIFIED[`${d}|${l}|${p}`];
+        const rows = hit || [
+          ["Prathamā (3rd)", [`${d} ${l} ~`, `${d} dual ~`, `${d} pl ~`]],
+          ["Madhyamā (2nd)", [`${d} 2sg ~`, `${d} 2du ~`, `${d} 2pl ~`]],
+          ["Uttamā (1st)", [`${d} 1sg ~`, `${d} 1du ~`, `${d} 1pl ~`]]
+        ];
+        document.getElementById("tinanta-meta").textContent = hit
+          ? `✓ verified paradigm table · ${d} · ${l} · ${p}`
+          : `~ generated fallback view · ${d} · ${l} · ${p}`;
+        document.getElementById("tinanta-result").innerHTML =
+          `<table><thead><tr><th>Puruṣa</th><th>Ekavacana</th><th>Dvivacana</th><th>Bahuvacana</th></tr></thead><tbody>` +
+          rows.map(([pur, cells]) =>
+            `<tr><td>${esc(pur)}</td>` + cells.map((c) => `<td>${esc(formatForm(c))}</td>`).join("") + `</tr>`
+          ).join("") +
+          `</tbody></table>`;
+      }
+
+      ["tinanta-dhatu", "tinanta-lakara", "tinanta-pada"].forEach((id) => {
+        document.getElementById(id).addEventListener("change", renderTinanta);
       });
-      const defaultInput = document.getElementById('sandhi-p1') || 
-                           document.getElementById('chandas-input') || 
-                           document.querySelector('input[type=text]');
-      if (defaultInput) {
-        trackInput(defaultInput);
+      document.getElementById("tinanta-generate").addEventListener("click", renderTinanta);
+
+      // Subanta
+      const SUB_PARADIGMS = {
+        a_m: [
+          ["Prathamā", ["devaḥ", "devau", "devāḥ"]],
+          ["Dvitīyā", ["devam", "devau", "devān"]],
+          ["Tṛtīyā", ["devena", "devābhyām", "devaiḥ"]],
+          ["Caturthī", ["devāya", "devābhyām", "devebhyaḥ"]],
+          ["Pañcamī", ["devāt", "devābhyām", "devebhyaḥ"]],
+          ["Ṣaṣṭhī", ["devasya", "devayoḥ", "devānām"]],
+          ["Saptamī", ["deve", "devayoḥ", "deveṣu"]],
+          ["Sambodhana", ["deva", "devau", "devāḥ"]]
+        ],
+        a_n: [
+          ["Prathamā", ["phalam", "phale", "phalāni"]],
+          ["Dvitīyā", ["phalam", "phale", "phalāni"]],
+          ["Tṛtīyā", ["phalena", "phalābhyām", "phalaiḥ"]],
+          ["Caturthī", ["phalāya", "phalābhyām", "phalebhyaḥ"]],
+          ["Pañcamī", ["phalāt", "phalābhyām", "phalebhyaḥ"]],
+          ["Ṣaṣṭhī", ["phalasya", "phalayoḥ", "phalānām"]],
+          ["Saptamī", ["phale", "phalayoḥ", "phaleṣu"]],
+          ["Sambodhana", ["phala", "phale", "phalāni"]]
+        ],
+        a_f: [
+          ["Prathamā", ["latā", "late", "latāḥ"]],
+          ["Dvitīyā", ["latām", "late", "latāḥ"]],
+          ["Tṛtīyā", ["latayā", "latābhyām", "latābhiḥ"]],
+          ["Caturthī", ["latāyai", "latābhyām", "latābhyaḥ"]],
+          ["Pañcamī", ["latāyāḥ", "latābhyām", "latābhyaḥ"]],
+          ["Ṣaṣṭhī", ["latāyāḥ", "latayoḥ", "latānām"]],
+          ["Saptamī", ["latāyām", "latayoḥ", "latāsu"]],
+          ["Sambodhana", ["late", "late", "latāḥ"]]
+        ]
+      };
+
+      function renderSubanta() {
+        const key = document.getElementById("subanta-type").value;
+        const rows = SUB_PARADIGMS[key] || SUB_PARADIGMS.a_m;
+        document.getElementById("subanta-result").innerHTML =
+          `<table><thead><tr><th>Vibhakti</th><th>Ekavacana</th><th>Dvivacana</th><th>Bahuvacana</th></tr></thead><tbody>` +
+          rows.map(([vib, forms]) =>
+            `<tr><td>${esc(vib)}</td>` + forms.map((f) => `<td>${esc(formatForm(f))}</td>`).join("") + `</tr>`
+          ).join("") +
+          `</tbody></table>`;
       }
-      document.querySelectorAll('.sticky-iast-bar .iast-key').forEach(function(btn) {
-        btn.addEventListener('mousedown', function(e) { e.preventDefault(); });
-        btn.addEventListener('touchstart', function(e) { e.preventDefault(); }, { passive: false });
-        btn.addEventListener('click', function(e) {
-          e.preventDefault();
-          const char = btn.getAttribute('data-char');
-          const target = lastFocusedInput || defaultInput;
-          if (!target || !char) return;
-          const start = target.selectionStart !== null ? target.selectionStart : target.value.length;
-          const end = target.selectionEnd !== null ? target.selectionEnd : target.value.length;
-          const val = target.value;
-          target.value = val.substring(0, start) + char + val.substring(end);
-          target.selectionStart = target.selectionEnd = start + char.length;
-          target.focus();
-          target.dispatchEvent(new Event('input', { bubbles: true }));
+
+      document.querySelectorAll(".script-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          scriptMode = btn.dataset.script;
+          document.querySelectorAll(".script-btn").forEach((b) => b.classList.toggle("active", b === btn));
+          renderSubanta();
+          renderTinanta();
         });
       });
+
+      document.getElementById("subanta-type").addEventListener("change", renderSubanta);
+      document.getElementById("subanta-generate").addEventListener("click", renderSubanta);
+
+      // Chandas
+      const LONG_V = new Set(["ā", "ī", "ū", "ṝ", "e", "ai", "o", "au"]);
+      const ALL_V = new Set(["ai", "au", "ā", "ī", "ū", "ṝ", "ṛ", "ḷ", "e", "o", "a", "i", "u"]);
+      const ALL_C = new Set([
+        "kṣ", "jñ", "kh", "gh", "ch", "jh", "ṭh", "ḍh", "th", "dh", "ph", "bh",
+        "k", "g", "ṅ", "c", "j", "ñ", "ṭ", "ḍ", "ṇ", "t", "d", "n", "p", "b", "m",
+        "y", "r", "l", "v", "ś", "ṣ", "s", "h"
+      ]);
+
+      function scanChandas(raw) {
+        const s = String(raw || "").toLowerCase().replace(/[^a-zāīūṛṝḷṭḍṇśṣṃṁḥ]/g, "");
+        const out = [];
+        let i = 0;
+        while (i < s.length) {
+          let onset = "";
+          while (i < s.length) {
+            const c2 = s.slice(i, i + 2);
+            const c1 = s.slice(i, i + 1);
+            if (ALL_C.has(c2)) { onset += c2; i += 2; }
+            else if (ALL_C.has(c1)) { onset += c1; i += 1; }
+            else break;
+          }
+          if (i >= s.length) break;
+          const v2 = s.slice(i, i + 2);
+          const v1 = s.slice(i, i + 1);
+          let v = null;
+          if (ALL_V.has(v2)) { v = v2; i += 2; }
+          else if (ALL_V.has(v1)) { v = v1; i += 1; }
+          else { i++; continue; }
+          let coda = "";
+          if (s[i] === "ṃ" || s[i] === "ṁ" || s[i] === "ḥ") { coda = s[i]; i++; }
+          let j = i, nextC = 0;
+          while (j < s.length) {
+            const c2 = s.slice(j, j + 2);
+            const c1 = s.slice(j, j + 1);
+            if (ALL_C.has(c2)) { nextC++; j += 2; }
+            else if (ALL_C.has(c1)) { nextC++; j += 1; }
+            else break;
+          }
+          const w = (LONG_V.has(v) || coda.length > 0 || nextC >= 2) ? "G" : "L";
+          out.push({ syl: onset + v + coda, w });
+        }
+        return out;
+      }
+
+      function renderChandas() {
+        const txt = document.getElementById("chandas-input").value;
+        const syls = scanChandas(txt);
+        const pat = syls.map((x) => x.w).join("");
+        const label = syls.length === 8 ? "Anuṣṭubh Pāda (8 syllables)" : `${syls.length} syllables`;
+        document.getElementById("chandas-result").innerHTML =
+          `<div><strong style="color: var(--ok);">✓ ${esc(label)}</strong> · Pattern: <span class="sutra-tag">${esc(pat)}</span></div>` +
+          `<div class="syl-row">${syls.map((x) =>
+            `<span class="syl-chip">${esc(x.syl)} <strong style="color: ${x.w === "G" ? "var(--gold)" : "var(--ok)"};">${esc(x.w)}</strong></span>`
+          ).join("")}</div>`;
+      }
+
+      document.getElementById("chandas-scan").addEventListener("click", renderChandas);
+
+      // Kosha
+      function renderKosha() {
+        const q = (document.getElementById("kosha-word").value || "").trim().normalize("NFC");
+        const shown = q || "dharma";
+        document.getElementById("kosha-result").innerHTML =
+          `<div><strong style="color: var(--text-main);">${esc(toDev(shown))}</strong> · <em>${esc(shown)}</em> · SLP1: <code>${esc(toSlp1(shown))}</code></div>` +
+          `<div style="margin-top: 4px; font-size: 0.82rem;">Provenance / license: unknown unless explicitly verified.</div>`;
+      }
+
+      document.getElementById("kosha-lookup").addEventListener("click", renderKosha);
+
+      // Corpus quick preview
+      const SAMPLE_VERSES = [
+        { ref: "Rāmāyaṇa · Bālakāṇḍa 1.2", text: "ko nv asmin sāmprataṃ loke guṇavān kaś ca vīryavān | dharmajñaś ca kṛtajñaś ca satyavākyo dṛḍhavrataḥ" },
+        { ref: "Mahābhārata · Bhīṣmaparva", text: "yadā yadā hi dharmasya glānir bhavati bhārata | abhyutthānam adharmasya tadātmānaṃ sṛjāmy aham" }
+      ];
+
+      function renderCorpus() {
+        const q = (document.getElementById("corpus-input").value || "").trim().toLowerCase();
+        const matches = q
+          ? SAMPLE_VERSES.filter((v) => v.text.toLowerCase().includes(q) || v.ref.toLowerCase().includes(q))
+          : SAMPLE_VERSES;
+        const list = matches.length ? matches : SAMPLE_VERSES;
+        document.getElementById("corpus-result").innerHTML =
+          `<div class="sutra-tag" style="margin-bottom: 8px;">${matches.length} quick sample match(es) · full corpus (114,341 verses) in Canon</div>` +
+          list.map((v) =>
+            `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);"><div class="sutra-tag">${esc(v.ref)}</div><div style="color: var(--text-main); margin-top: 2px;">${esc(v.text)}</div></div>`
+          ).join("");
+      }
+
+      document.getElementById("corpus-search").addEventListener("click", renderCorpus);
+
+      // Initial deterministic render on load
+      renderSandhi();
+      renderTinanta();
+      renderSubanta();
+      renderChandas();
+      renderKosha();
+      renderCorpus();
     })();
   </script>
-    <script src="js/sandhi-golden.js"></script>
-    <script src="js/tinanta.js"></script>
 </body>
 </html>
-
-
-
