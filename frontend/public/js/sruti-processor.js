@@ -60,7 +60,10 @@ class SrutiOscillator extends AudioWorkletProcessor {
       // Glide + kampa: per-sample instantaneous frequency
       const elapsed = this._totalSamples - this._samplesRemaining + i;
       const glideT = Math.min(1, elapsed / Math.max(1, this._totalSamples));
-      const baseFreq = this._startFreq + (this._endFreq - this._startFreq) * glideT;
+      const baseFreq =
+        this._startFreq > 0 && this._endFreq > 0 && this._startFreq !== this._endFreq
+          ? this._startFreq * Math.pow(this._endFreq / this._startFreq, glideT)
+          : this._startFreq;
       let instFreq = baseFreq;
       if (this._kampaHz > 0 && this._kampaDepthHz > 0) {
         this._kampaPhase += (2 * Math.PI * this._kampaHz) / sampleRate;
