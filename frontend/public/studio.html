@@ -133,7 +133,11 @@
     white-space: pre-wrap;
     font-family: inherit;
   }
-</style>
+
+    /* Mobile overflow & flex/grid min-width safety */
+    *, *::before, *::after { box-sizing: border-box; min-width: 0; }
+    html, body { overflow-x: hidden; max-width: 100%; }
+  </style>
 </head>
 <body>
 
