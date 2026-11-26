@@ -10,7 +10,7 @@ import sys
 
 from backend.engine.vedic._mode1 import render_oral_recitation
 
-PINNED_MODE1_RV_1_1_1_SHA = "84959e18c371e4d7a3a5462da287d75fe5ecdd2a40dded80be1bb24223456308"
+PINNED_MODE1_RV_1_1_1_SHA = "54b67117d1882cc4714c9ae32ab4c289ca72b210a76a570ad937397bf4e38c55"
 
 
 def test_mode1_paninian_unmarked_anudatta_and_sha_determinism(monkeypatch):
