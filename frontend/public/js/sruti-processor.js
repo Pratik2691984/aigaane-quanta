@@ -1,11 +1,13 @@
-﻿// frontend/public/js/sruti-processor.js
-// AudioWorkletProcessor: 22-śruti oscillator
-// Receives frequency + duration from the main thread, synthesizes a sine wave
-// with a subtle second harmonic for a musical (tanpura-like) timbre.
+// frontend/public/js/sruti-processor.js
+// AudioWorkletProcessor: 22-sruti oscillator + multi-harmonic tanpura drone
+// Supports:
+//   - Note mode ('play' / 'stop'): exponential mind glide + kampa + 2nd harmonic
+//   - Drone mode ('startDrone' / 'setDroneGain' / 'stopDrone'): multi-harmonic Sa/Pa/Sa' bed
 
 class SrutiOscillator extends AudioWorkletProcessor {
   constructor() {
     super();
+    // Note state
     this._phase = 0;
     this._freq = 240.0;
     this._startFreq = 240.0;
@@ -19,8 +21,22 @@ class SrutiOscillator extends AudioWorkletProcessor {
     this._kampaDepthHz = 0;
     this._kampaPhase = 0;
 
+    // Multi-harmonic tanpura drone state (mandrā Pa, Sa, Pa, Sa' + harmonics)
+    this._droneActive = false;
+    this._droneTargetGain = 0.0;
+    this._droneCurrentGain = 0.0;
+    this._droneSaHz = 240.0;
+    this._dronePhaseMandPa = 0;
+    this._dronePhaseSa = 0;
+    this._dronePhaseSa2 = 0;
+    this._dronePhaseSa3 = 0;
+    this._dronePhasePa = 0;
+    this._dronePhasePa2 = 0;
+    this._dronePhaseHighSa = 0;
+    this._droneModPhase = 0;
+
     this.port.onmessage = (event) => {
-      const msg = event.data;
+      const msg = event.data || {};
       if (msg.type === 'play') {
         this._startFreq = msg.freq;
         this._endFreq = (typeof msg.endFreq === 'number') ? msg.endFreq : msg.freq;
@@ -38,8 +54,72 @@ class SrutiOscillator extends AudioWorkletProcessor {
       } else if (msg.type === 'stop') {
         this._targetGain = 0.0;
         this._active = false;
+      } else if (msg.type === 'startDrone') {
+        this._droneSaHz = (typeof msg.saHz === 'number' && msg.saHz > 0) ? msg.saHz : 240.0;
+        this._droneTargetGain = (typeof msg.gain === 'number') ? Math.max(0, msg.gain) : 0.08;
+        this._droneActive = true;
+      } else if (msg.type === 'setDroneGain') {
+        if (typeof msg.saHz === 'number' && msg.saHz > 0) {
+          this._droneSaHz = msg.saHz;
+        }
+        const g = (typeof msg.gain === 'number') ? Math.max(0, msg.gain) : 0.0;
+        this._droneTargetGain = g;
+        this._droneActive = g > 0;
+      } else if (msg.type === 'stopDrone') {
+        this._droneTargetGain = 0.0;
+        this._droneActive = false;
       }
     };
+  }
+
+  _wrapPhase(phase) {
+    const twoPi = 2 * Math.PI;
+    if (phase > twoPi || phase < -twoPi) {
+      phase = phase % twoPi;
+    }
+    if (phase < 0) phase += twoPi;
+    return phase;
+  }
+
+  _renderDroneSample() {
+    const fadePerSample = 1 / (0.02 * sampleRate); // 20ms smooth drone fade
+    if (this._droneCurrentGain < this._droneTargetGain) {
+      this._droneCurrentGain = Math.min(this._droneCurrentGain + fadePerSample, this._droneTargetGain);
+    } else if (this._droneCurrentGain > this._droneTargetGain) {
+      this._droneCurrentGain = Math.max(this._droneCurrentGain - fadePerSample, this._droneTargetGain);
+    }
+
+    if (this._droneCurrentGain <= 1e-6) {
+      return 0.0;
+    }
+
+    // Subtle organic breathing (~0.12 Hz)
+    this._droneModPhase = this._wrapPhase(this._droneModPhase + (2 * Math.PI * 0.12) / sampleRate);
+    const shimmer = 1.0 + 0.04 * Math.sin(this._droneModPhase);
+
+    const sa = this._droneSaHz;
+    const mandPa = sa * 0.75;      // 3/4 mandrā Pa
+    const pa = sa * 1.5;        // 3/2 Pa
+    const highSa = sa * 2.0;    // 2/1 tāra Sa
+
+    const sMandPa = 0.28 * Math.sin(this._dronePhaseMandPa);
+    const sSa1 = 1.00 * Math.sin(this._dronePhaseSa);
+    const sSa2 = 0.14 * Math.sin(this._dronePhaseSa2);
+    const sSa3 = 0.06 * Math.sin(this._dronePhaseSa3);
+    const sPa1 = 0.38 * Math.sin(this._dronePhasePa);
+    const sPa2 = 0.05 * Math.sin(this._dronePhasePa2);
+    const sHighSa = 0.22 * Math.sin(this._dronePhaseHighSa);
+
+    this._dronePhaseMandPa = this._wrapPhase(this._dronePhaseMandPa + (2 * Math.PI * mandPa) / sampleRate);
+    this._dronePhaseSa = this._wrapPhase(this._dronePhaseSa + (2 * Math.PI * sa) / sampleRate);
+    this._dronePhaseSa2 = this._wrapPhase(this._dronePhaseSa2 + (2 * Math.PI * (sa * 2.0)) / sampleRate);
+    this._dronePhaseSa3 = this._wrapPhase(this._dronePhaseSa3 + (2 * Math.PI * (sa * 3.0)) / sampleRate);
+    this._dronePhasePa = this._wrapPhase(this._dronePhasePa + (2 * Math.PI * pa) / sampleRate);
+    this._dronePhasePa2 = this._wrapPhase(this._dronePhasePa2 + (2 * Math.PI * (pa * 2.0)) / sampleRate);
+    this._dronePhaseHighSa = this._wrapPhase(this._dronePhaseHighSa + (2 * Math.PI * highSa) / sampleRate);
+
+    const mix = (sMandPa + sSa1 + sSa2 + sSa3 + sPa1 + sPa2 + sHighSa) * 0.42 * shimmer;
+    return mix * this._droneCurrentGain;
   }
 
   process(inputs, outputs) {
@@ -75,13 +155,13 @@ class SrutiOscillator extends AudioWorkletProcessor {
       // Fundamental + second harmonic (gentle, ~10% amplitude)
       const fundamental = Math.sin(this._phase);
       const secondHarm = 0.1 * Math.sin(2 * this._phase);
-      const sample = (fundamental + secondHarm) * this._currentGain;
+      const noteSample = (fundamental + secondHarm) * this._currentGain;
+      const droneSample = this._renderDroneSample();
 
-      channel[i] = sample;
+      channel[i] = noteSample + droneSample;
 
       // Advance phase
-      this._phase += 2 * Math.PI * this._freq / sampleRate;
-      if (this._phase > 2 * Math.PI) this._phase -= 2 * Math.PI;
+      this._phase = this._wrapPhase(this._phase + (2 * Math.PI * this._freq) / sampleRate);
 
       // Countdown timer
       if (this._active) {

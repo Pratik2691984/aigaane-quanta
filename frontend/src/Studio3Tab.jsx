@@ -38,6 +38,8 @@ export default function Studio3Tab() {
   const [audioReady, setAudioReady] = useState(false);
   const [nowPlaying, setNowPlaying] = useState(null); // index of sruti currently playing
   const [audioError, setAudioError] = useState(null);
+  const [tanpuraOn, setTanpuraOn] = useState(false);
+  const [tanpuraGain, setTanpuraGain] = useState(0.08);
   const audioCtxRef = useRef(null);
   const workletNodeRef = useRef(null);
   const workletLoadedRef = useRef(false);
@@ -139,6 +141,36 @@ export default function Studio3Tab() {
       await new Promise((r) => setTimeout(r, 600));
     }
     setNowPlaying(null);
+  };
+
+  
+  const startTanpura = async () => {
+    const node = await ensureAudio();
+    if (!node) return;
+    node.port.postMessage({
+      type: "startDrone",
+      saHz: 240,
+      gain: tanpuraGain,
+    });
+    setTanpuraOn(true);
+  };
+
+  const stopTanpura = () => {
+    if (workletNodeRef.current) {
+      workletNodeRef.current.port.postMessage({ type: "stopDrone" });
+    }
+    setTanpuraOn(false);
+  };
+
+  const updateTanpuraGain = (g) => {
+    setTanpuraGain(g);
+    if (workletNodeRef.current && tanpuraOn) {
+      workletNodeRef.current.port.postMessage({
+        type: "setDroneGain",
+        saHz: 240,
+        gain: g,
+      });
+    }
   };
 
   const stopAudio = () => {
@@ -619,6 +651,33 @@ export default function Studio3Tab() {
           {audioError}
         </div>
       )}
+
+
+      <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "12px", flexWrap: "wrap" }}>
+        <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", color: "#94a3b8" }}>
+          <input
+            type="checkbox"
+            checked={tanpuraOn}
+            onChange={(e) => (e.target.checked ? startTanpura() : stopTanpura())}
+            disabled={!audioReady}
+          />
+          Tanpura Drone (multi-harmonic)
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", color: "#94a3b8" }}>
+          Level
+          <input
+            type="range"
+            min="0"
+            max="0.2"
+            step="0.01"
+            value={tanpuraGain}
+            onChange={(e) => updateTanpuraGain(parseFloat(e.target.value))}
+            disabled={!audioReady}
+            style={{ width: "120px" }}
+          />
+          <span style={{ fontFamily: "monospace", color: "#64748b" }}>{tanpuraGain.toFixed(2)}</span>
+        </label>
+      </div>
 
       <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
         <button
