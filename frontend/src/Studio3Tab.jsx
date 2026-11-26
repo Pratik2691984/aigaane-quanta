@@ -33,8 +33,14 @@ export default function Studio3Tab() {
   const [selectedTala, setSelectedTala] = useState("");
   const [bpm, setBpm] = useState(60);
   const [talaPlaying, setTalaPlaying] = useState(false);
+  const talaPlayingRef = useRef(false);
   const [currentAkshara, setCurrentAkshara] = useState(0);
   const talaTimeoutsRef = useRef([]);
+
+  const setTalaPlayingSync = (val) => {
+    talaPlayingRef.current = val;
+    setTalaPlaying(val);
+  };
 
   // === Vedic Chant state ===
   const [vedicText, setVedicText] = useState("");
@@ -129,6 +135,7 @@ export default function Studio3Tab() {
   };
 
   const stopTala = () => {
+    talaPlayingRef.current = false;
     talaTimeoutsRef.current.forEach((t) => clearTimeout(t));
     talaTimeoutsRef.current = [];
     setTalaPlaying(false);
@@ -329,13 +336,14 @@ export default function Studio3Tab() {
     if (!tala) return;
 
     stopTala();
-    setTalaPlaying(true);
+    setTalaPlayingSync(true);
 
     const cycleLength = tala.cycle_length;
     const matraMs = (60 / bpm) * 1000;
     const totalCycleMs = cycleLength * matraMs;
 
     const scheduleCycle = () => {
+      if (!talaPlayingRef.current) return;
       for (let i = 0; i < cycleLength; i++) {
         const isSam = i === 0;
         const freq = isSam ? 360.0 : 240.0;
@@ -343,10 +351,12 @@ export default function Studio3Tab() {
         const delayMs = i * matraMs;
 
         const t = setTimeout(() => {
+          if (!talaPlayingRef.current) return;
           setCurrentAkshara(i + 1);
           if (workletNodeRef.current) {
             workletNodeRef.current.port.postMessage({ type: "stop" });
             setTimeout(() => {
+              if (!talaPlayingRef.current) return;
               if (workletNodeRef.current) {
                 workletNodeRef.current.port.postMessage({
                   type: "play",
@@ -362,7 +372,7 @@ export default function Studio3Tab() {
       }
 
       const loopTimeout = setTimeout(() => {
-        if (talaPlaying) scheduleCycle();
+        if (talaPlayingRef.current) scheduleCycle();
       }, totalCycleMs);
       talaTimeoutsRef.current.push(loopTimeout);
     };

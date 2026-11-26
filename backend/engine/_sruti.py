@@ -157,6 +157,13 @@ def generate_sruti_midi(
     mid.tracks.append(melody_track)
     melody_track.append(MetaMessage('track_name', name="Sarasvati Vina (Melody)", time=0))
     melody_track.append(Message('program_change', channel=0, program=104, time=0))  # 104 = Sitar / Vina
+    # Explicit RPN 0x0000 Pitch Bend Sensitivity = +/-2 semitones (coarse=2, fine=0), then RPN null
+    melody_track.append(Message('control_change', channel=0, control=101, value=0, time=0))
+    melody_track.append(Message('control_change', channel=0, control=100, value=0, time=0))
+    melody_track.append(Message('control_change', channel=0, control=6, value=2, time=0))
+    melody_track.append(Message('control_change', channel=0, control=38, value=0, time=0))
+    melody_track.append(Message('control_change', channel=0, control=101, value=127, time=0))
+    melody_track.append(Message('control_change', channel=0, control=100, value=127, time=0))
 
     ticks_per_beat = mid.ticks_per_beat
     total_ticks = 0
@@ -214,19 +221,17 @@ def generate_sruti_midi(
 
         current_tick = 0
         str_idx = 0
+        step_ticks = max(1, pluck_spacing_ticks)
+        gate_ticks = max(1, min(string_decay_ticks, step_ticks))
+        tail_ticks = max(0, step_ticks - gate_ticks)
         while current_tick < (total_ticks + 2 * ticks_per_beat):
             note = drone_notes[str_idx % 4]
-            # Note-on on Channel 1
             tanpura_track.append(Message('note_on', channel=1, note=note, velocity=48, time=0))
-            # Note-off scheduled
-            tanpura_track.append(Message('note_off', channel=1, note=note, velocity=0, time=min(string_decay_ticks, pluck_spacing_ticks)))
-            
-            delta_advance = max(0, pluck_spacing_ticks - min(string_decay_ticks, pluck_spacing_ticks))
-            if delta_advance > 0:
-                # Add delay before next pluck
-                tanpura_track.append(Message('control_change', channel=1, control=0, value=0, time=delta_advance))
-            
-            current_tick += pluck_spacing_ticks
+            tanpura_track.append(Message('note_off', channel=1, note=note, velocity=0, time=gate_ticks))
+            if tail_ticks > 0:
+                tanpura_track.append(Message('control_change', channel=1, control=0, value=0, time=tail_ticks))
+
+            current_tick += step_ticks
             str_idx += 1
 
         tanpura_track.append(MetaMessage('end_of_track', time=0))
