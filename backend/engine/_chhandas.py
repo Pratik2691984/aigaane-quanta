@@ -351,10 +351,11 @@ def analyze_verse(surface: str) -> Optional[dict]:
 def scan_verse(surface: str) -> dict:
     """
     Full scansion + meter identification.
-    Returns weights, syllable count, matra sum, and meter info.
+    Returns weights, syllable count, matra sum, gana encoding, and meter info.
     """
     weights = _compute_weights(surface)
     meter = detect_meter(weights)
+    ganas = encode_ganas(weights)
 
     return {
         "surface": surface,
@@ -362,6 +363,7 @@ def scan_verse(surface: str) -> dict:
         "pattern": "".join(weights),
         "syllable_count": len(weights),
         "matra_sum": sum(2 if w == "G" else 1 for w in weights),
+        "ganas": ganas,
         "meter": meter,
     }
 
