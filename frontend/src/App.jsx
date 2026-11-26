@@ -37,7 +37,7 @@ export default function App() {
       </div>
 
       <nav style={{
-        display: "flex", gap: "5px", padding: "10px",
+        display: "flex", flexWrap: "wrap", gap: "5px", padding: "10px",
         background: "#1e293b", borderBottom: "1px solid #334155",
       }}>
         {tabs.map((t) => (
