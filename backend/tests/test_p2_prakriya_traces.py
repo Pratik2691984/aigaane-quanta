@@ -232,3 +232,26 @@ def test_additional_lakara_and_subanta_traces_and_validation():
 
     for key in ("bhaviṣyati", "bhavishyati", "bhavatu", "rāmam", "ramam", "rāme", "rame"):
         assert _prakriya.derive_form(key) is not None
+def test_engine_adapter_attaches_verified_prakriya_trace():
+    from backend.engine.adapter import EngineAdapter
+
+    adapter = EngineAdapter()
+
+    for surface, expected_chain in (
+        ("gacchati", ["3.2.123", "3.4.78", "1.4.101", "1.3.3", "1.3.9", "3.1.68", "1.3.8", "7.3.77", "1.4.14"]),
+        ("bhavati", ["3.2.123", "3.4.78", "1.4.101", "1.3.3", "1.3.9", "3.1.68", "1.3.8", "7.3.84", "1.4.14"]),
+        ("rāmaḥ", ["4.1.2", "2.3.46", "1.3.2", "1.3.9", "8.2.1", "8.2.66", "8.3.15", "1.4.14"]),
+    ):
+        env = adapter.parse(surface)
+        assert len(env.candidates) >= 1
+        cand = env.candidates[0]
+        assert cand.result_classification == "DETERMINISTIC_DERIVATION"
+        assert cand.sutra_chain == expected_chain
+        assert cand.derivation_trace is not None
+        assert cand.derivation_trace["surface"] == surface
+        assert len(cand.derivation_trace["steps"]) >= 3
+
+    unknown_env = adapter.parse("nonexistent_xyz_form")
+    for cand in unknown_env.candidates:
+        assert cand.derivation_trace is None
+        assert cand.result_classification != "DETERMINISTIC_DERIVATION"

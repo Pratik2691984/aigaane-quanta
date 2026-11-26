@@ -25,6 +25,7 @@ except Exception as _e:
     _LEGACY_OK = False
     logging.warning(f"Legacy engine not loaded: {_e}")
 
+from backend.engine import _prakriya
 from backend.engine.pydantic_models import (
     KernelEnvelope, Candidate, RejectedCandidate,
     OrthographicTriad, Authority, ParseToken, ResultClassification
@@ -164,6 +165,26 @@ class EngineAdapter:
             engine_version=self.version
         )
 
+    def _lookup_verified_prakriya(self, legacy: dict) -> Optional[_prakriya.PrakriyaTrace]:
+        translit = legacy.get("transliteration") or {}
+        candidates_surface = [
+            translit.get("iast"),
+            legacy.get("surface"),
+            legacy.get("normalized"),
+        ]
+        for raw_key in candidates_surface:
+            if not isinstance(raw_key, str) or not raw_key.strip():
+                continue
+            trace = _prakriya.derive_form(raw_key.strip())
+            if trace is None:
+                continue
+            if trace.result_classification not in ("DETERMINISTIC_DERIVATION", "AMBIGUOUS_DERIVATION"):
+                continue
+            if _prakriya.validate_prakriya_trace(trace):
+                continue
+            return trace
+        return None
+
     def _adapt_primary(self, legacy: dict) -> Candidate | None:
         tokens = legacy.get("tokens") or []
         if not tokens:
@@ -196,6 +217,17 @@ class EngineAdapter:
         score = max(0.0, min(1.0, score))
 
         classification: ResultClassification = self._classify_primary(legacy)
+        derivation_payload = None
+
+        prakriya_trace = self._lookup_verified_prakriya(legacy)
+        if prakriya_trace is not None:
+            sutra_chain = list(prakriya_trace.sutra_chain)
+            classification = prakriya_trace.result_classification
+            derivation_payload = prakriya_trace.to_dict()
+            existing_notes = authority.authority_notes or ""
+            tag = "prakriya=deterministic-trace"
+            if tag not in existing_notes:
+                authority.authority_notes = f"{existing_notes}; {tag}" if existing_notes else tag
 
         return Candidate(
             candidate_id="cand_01",
@@ -205,6 +237,7 @@ class EngineAdapter:
             sutra_chain=sutra_chain,
             authority=authority,
             result_classification=classification,
+            derivation_trace=derivation_payload,
             score=score
         )
 

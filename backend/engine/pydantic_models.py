@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional, Literal
+from typing import Any, Dict, List, Optional, Literal
 
 ResultClassification = Literal[
     "DETERMINISTIC_DERIVATION",
@@ -39,6 +39,7 @@ class Candidate(BaseModel):
     sutra_chain: List[str]
     authority: Authority
     result_classification: Optional[ResultClassification] = None
+    derivation_trace: Optional[Dict[str, Any]] = None
     score: float = Field(ge=0.0, le=1.0)
 
 
