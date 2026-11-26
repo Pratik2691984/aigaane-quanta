@@ -116,3 +116,65 @@ def test_ramasya_prakriya_trace_and_lexicon_agreement():
 
     assert _prakriya.derive_form("rāmasya") is not None
     assert _prakriya.derive_form("ramasya") is not None
+def test_tripadi_and_adhikara_validation_on_registered_and_invalid_traces():
+    for form in ("gacchati", "bhavati", "tiṣṭhati", "rāmaḥ", "rāmasya"):
+        trace = _prakriya.derive_form(form)
+        assert trace is not None
+        assert _prakriya.validate_prakriya_trace(trace) == []
+
+    # Invalid 1: Sapadasaptadhyayee rule (7.3.84) recorded after Tripadi rule (8.3.15)
+    bad_purvatrasiddham = _prakriya.PrakriyaTrace(
+        query_form="invalid_order",
+        prakruti="bhū",
+        category="tinanta",
+        adhikaras_active=["tripadi", "angasya"],
+        anuvrtti={},
+        segments=["bhū"],
+        surface="bhū",
+        sutra_chain=[],
+        result_classification="UNRESOLVED",
+    )
+    _prakriya._record_step(
+        trace=bad_purvatrasiddham,
+        stage="tripadi",
+        sutra_ids=["8.3.15"],
+        rule_title="visarga",
+        adhikara="tripadi",
+        next_segments=["bhūḥ"],
+        next_surface="bhūḥ",
+    )
+    _prakriya._record_step(
+        trace=bad_purvatrasiddham,
+        stage="anga",
+        sutra_ids=["7.3.84"],
+        rule_title="guna after tripadi",
+        adhikara="angasya",
+        next_segments=["bhoḥ"],
+        next_surface="bhoḥ",
+    )
+    v_order = _prakriya.validate_prakriya_trace(bad_purvatrasiddham)
+    assert any(v.startswith("PURVATRASIDDHAM_VIOLATION:") for v in v_order)
+
+    # Invalid 2: Adhikara mismatch between step adhikara and registered SutraRule.adhikara
+    bad_adhikara = _prakriya.PrakriyaTrace(
+        query_form="bad_adhikara",
+        prakruti="gam",
+        category="tinanta",
+        adhikaras_active=["pratyaya", "angasya"],
+        anuvrtti={},
+        segments=["gam"],
+        surface="gam",
+        sutra_chain=[],
+        result_classification="UNRESOLVED",
+    )
+    _prakriya._record_step(
+        trace=bad_adhikara,
+        stage="pratyaya_yojana",
+        sutra_ids=["7.3.77"],
+        rule_title="mismatched adhikara",
+        adhikara="pratyaya",
+        next_segments=["gaccha"],
+        next_surface="gaccha",
+    )
+    v_adh = _prakriya.validate_prakriya_trace(bad_adhikara)
+    assert any(v.startswith("ADHIKARA_MISMATCH:") for v in v_adh)

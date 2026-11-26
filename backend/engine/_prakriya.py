@@ -578,6 +578,89 @@ DERIVATION_TRACES: Dict[str, Callable[[], PrakriyaTrace]] = {
 }
 
 
+TRIPADI_START: Tuple[int, int, int] = (8, 2, 1)
+TRIPADI_END: Tuple[int, int, int] = (8, 4, 68)
+
+
+def parse_sutra_coord(sutra_id: str) -> Tuple[int, int, int]:
+    """Parse canonical 'adhyaya.pada.sutra' identifier into an integer tuple."""
+    parts = sutra_id.strip().split(".")
+    if len(parts) != 3 or not all(p.isdigit() for p in parts):
+        raise ValueError(f"Invalid sutra_id format: {sutra_id!r}")
+    return (int(parts[0]), int(parts[1]), int(parts[2]))
+
+
+def is_tripadi_coord(coord: Tuple[int, int, int]) -> bool:
+    """Return True if coord falls within the Ashtadhyayi Tripadi (8.2.1 - 8.4.68)."""
+    return TRIPADI_START <= coord <= TRIPADI_END
+
+
+def validate_prakriya_trace(trace: PrakriyaTrace) -> List[str]:
+    """
+    Validate Tripadi (8.2.1 purvatrasiddham) ordering and adhikara scope
+    across a PrakriyaTrace. Returns a list of deterministic violation codes
+    (empty list means valid).
+    """
+    violations: List[str] = []
+    seen_tripadi = False
+    last_tripadi_coord: Optional[Tuple[int, int, int]] = None
+    active_adhikaras = set(trace.adhikaras_active)
+
+    for step in trace.steps:
+        step_sids = [s.strip() for s in step.sutra_id.split("+") if s.strip()]
+        if not step_sids:
+            violations.append(f"MISSING_SUTRA_AT_STEP_{step.step_index}")
+            continue
+
+        if active_adhikaras and step.adhikara not in active_adhikaras:
+            violations.append(
+                f"INACTIVE_ADHIKARA:{step.adhikara}@step_{step.step_index}"
+            )
+
+        rules: List[Tuple[str, SutraRule, Tuple[int, int, int]]] = []
+        for sid in step_sids:
+            rule = RULE_REGISTRY.get(sid)
+            if rule is None:
+                violations.append(f"UNREGISTERED_SUTRA:{sid}@step_{step.step_index}")
+                continue
+            coord = parse_sutra_coord(sid)
+            rules.append((sid, rule, coord))
+
+        if len(rules) == 1:
+            sid, rule, _ = rules[0]
+            if (
+                rule.adhikara != "sarvam"
+                and step.adhikara != rule.adhikara
+                and not (rule.is_tripadi and step.adhikara == "tripadi")
+                and not (rule.adhikara == "pada" and step.adhikara == "pada")
+            ):
+                violations.append(
+                    f"ADHIKARA_MISMATCH:{sid}:step={step.adhikara}:rule={rule.adhikara}@step_{step.step_index}"
+                )
+
+        is_terminal_pada_closure = (
+            step.stage == "final"
+            and step.adhikara == "pada"
+            and [sid for sid, _, _ in rules] == ["1.4.14"]
+        )
+
+        for sid, rule, coord in rules:
+            in_tripadi = is_tripadi_coord(coord) or rule.is_tripadi
+            if in_tripadi:
+                seen_tripadi = True
+                if last_tripadi_coord is not None and coord < last_tripadi_coord:
+                    violations.append(
+                        f"TRIPADI_ORDER_VIOLATION:{sid}({coord})<prev({last_tripadi_coord})@step_{step.step_index}"
+                    )
+                last_tripadi_coord = coord
+            else:
+                if seen_tripadi and not is_terminal_pada_closure:
+                    violations.append(
+                        f"PURVATRASIDDHAM_VIOLATION:sapadasaptadhyayee:{sid}({coord})_after_tripadi({last_tripadi_coord})@step_{step.step_index}"
+                    )
+
+    return violations
+
 def derive_form(form: str) -> Optional[PrakriyaTrace]:
     key = form.strip()
     fn = DERIVATION_TRACES.get(key)
