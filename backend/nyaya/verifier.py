@@ -23,11 +23,21 @@ class NyayaVerifier:
         # 5. Nigamana (Conclusion)
         conclusion = f"Therefore, {req.candidate_id} is logically and grammatically valid."
         
-        # Logical validation: If the sutra chain is empty, the proof fails.
-        is_valid = bool(req.sutra_chain) and bool(req.sutra_chain[0])
+        # Logical validation: require non-empty sutra chain and non-heuristic classification.
+        has_chain = bool(req.sutra_chain) and bool(req.sutra_chain[0])
+        cls = (req.result_classification or "").strip()
+        is_heuristic = cls == "HEURISTIC_UNVERIFIED"
+        is_known_non_deterministic = cls in ("AMBIGUOUS_DERIVATION", "UNRESOLVED")
         notes = []
-        if not is_valid:
+        if not has_chain:
             notes.append("Hetu is empty. No sūtra chain provided.")
+        if is_heuristic:
+            notes.append("Candidate is HEURISTIC_UNVERIFIED; heuristic output cannot be certified as a deterministic proof.")
+        if is_known_non_deterministic:
+            notes.append(f"Candidate classification is {cls}; insufficient derivation evidence for valid proof.")
+        if not cls:
+            notes.append("Missing result_classification; unverified classification cannot establish a valid proof.")
+        is_valid = bool(has_chain and cls == "DETERMINISTIC_DERIVATION")
             
         return NyayaProof(
             pratijna=prop,

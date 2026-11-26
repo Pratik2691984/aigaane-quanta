@@ -16,3 +16,4 @@ class NyayaVerifyRequest(BaseModel):
     sutra_chain: List[str]
     vigraha: Optional[str] = None
     samasa_type: Optional[str] = None
+    result_classification: Optional[str] = None

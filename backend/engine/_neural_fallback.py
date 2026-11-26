@@ -65,6 +65,7 @@ def fallback_parse(surface: str, raw_surface: str, deva: str, script_original: s
         "sandhi_splits": [],
         "ambiguous_parses": [],
         "canon_refs": [],
+        "result_classification": "HEURISTIC_UNVERIFIED",
         "confidence": 0.50,
         "confidence_aggregate": {"min": 0.50, "mean": 0.50},
         "provenance": ["engine=heuristic-unknown-fallback"],

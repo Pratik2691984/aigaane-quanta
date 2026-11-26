@@ -1,6 +1,13 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Literal
 
+ResultClassification = Literal[
+    "DETERMINISTIC_DERIVATION",
+    "AMBIGUOUS_DERIVATION",
+    "HEURISTIC_UNVERIFIED",
+    "UNRESOLVED",
+]
+
 
 class OrthographicTriad(BaseModel):
     devanagari: str
@@ -31,6 +38,7 @@ class Candidate(BaseModel):
     vigraha: Optional[str] = None
     sutra_chain: List[str]
     authority: Authority
+    result_classification: Optional[ResultClassification] = None
     score: float = Field(ge=0.0, le=1.0)
 
 

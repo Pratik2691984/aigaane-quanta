@@ -1,0 +1,320 @@
+"""
+P2 Deterministic Paninian Prakriya Derivation Engine Prototype.
+
+Models a declarative rule registry, adhikara (governing scope) and anuvrtti
+(inherited context) bindings, intermediate PrakriyaState snapshots, Tripadi
+(8.2.1 purvatrasiddham) vs. Sapadasaptadhyayee adjudication, and reproducible
+step-by-step traces for canonical forms such as *gacchati* and *ramah*.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field, asdict
+from typing import Callable, Dict, List, Literal, Optional, Tuple
+
+PrakriyaClassification = Literal[
+    "DETERMINISTIC_DERIVATION",
+    "AMBIGUOUS_DERIVATION",
+    "UNRESOLVED",
+]
+
+
+@dataclass(frozen=True)
+class SutraRule:
+    sutra_id: str
+    title: str
+    domain: Literal["samjna", "paribhasa", "adhikara", "pratyaya", "vikarana", "anga", "sandhi", "tripadi"]
+    adhikara: str
+    is_tripadi: bool = False
+    priority: int = 100
+    authority: str = "Kasika_Vrtti"
+
+
+@dataclass
+class PrakriyaStep:
+    step_index: int
+    stage: str
+    sutra_id: str
+    rule_title: str
+    adhikara: str
+    before_segments: List[str]
+    after_segments: List[str]
+    surface_after: str
+    anuvrtti_snapshot: Dict[str, str]
+    notes: str = ""
+
+
+@dataclass
+class PrakriyaTrace:
+    query_form: str
+    prakruti: str
+    category: Literal["tinanta", "subanta"]
+    adhikaras_active: List[str]
+    anuvrtti: Dict[str, str]
+    segments: List[str]
+    surface: str
+    sutra_chain: List[str]
+    steps: List[PrakriyaStep] = field(default_factory=list)
+    branches: List[List[str]] = field(default_factory=list)
+    result_classification: PrakriyaClassification = "UNRESOLVED"
+
+    def to_dict(self) -> Dict[str, object]:
+        return {
+            "query_form": self.query_form,
+            "prakruti": self.prakruti,
+            "category": self.category,
+            "adhikaras_active": list(self.adhikaras_active),
+            "anuvrtti": dict(self.anuvrtti),
+            "segments": list(self.segments),
+            "surface": self.surface,
+            "sutra_chain": list(self.sutra_chain),
+            "steps": [asdict(s) for s in self.steps],
+            "branches": [list(b) for b in self.branches],
+            "result_classification": self.result_classification,
+        }
+
+
+RULE_REGISTRY: Dict[str, SutraRule] = {
+    "1.3.2": SutraRule("1.3.2", "upadese 'janunasika it", "samjna", "pratyaya", is_tripadi=False, priority=10),
+    "1.3.3": SutraRule("1.3.3", "hal antyam", "samjna", "pratyaya", is_tripadi=False, priority=11),
+    "1.3.8": SutraRule("1.3.8", "lasakvataddhite", "samjna", "pratyaya", is_tripadi=False, priority=12),
+    "1.3.9": SutraRule("1.3.9", "tasya lopah", "samjna", "pratyaya", is_tripadi=False, priority=13),
+    "1.4.2": SutraRule("1.4.2", "vipratisedhe param karyam", "paribhasa", "sarvam", is_tripadi=False, priority=5),
+    "1.4.14": SutraRule("1.4.14", "suptinantam padam", "samjna", "pada", is_tripadi=False, priority=90),
+    "1.4.101": SutraRule("1.4.101", "tinah trini trini prathamamadhyamottamah", "samjna", "pratyaya", is_tripadi=False, priority=20),
+    "2.3.46": SutraRule("2.3.46", "pratipadhikarthalingaparimanavacanamatram prathama", "adhikara", "sup", is_tripadi=False, priority=21),
+    "3.1.68": SutraRule("3.1.68", "kartari sap", "vikarana", "dhatu", is_tripadi=False, priority=30),
+    "3.2.123": SutraRule("3.2.123", "vartamane lat", "pratyaya", "dhatu", is_tripadi=False, priority=15),
+    "3.4.78": SutraRule("3.4.78", "tiptasjhisipthasthamibvasmas...", "pratyaya", "dhatu", is_tripadi=False, priority=22),
+    "4.1.2": SutraRule("4.1.2", "svaujasamaut...", "pratyaya", "sup", is_tripadi=False, priority=20),
+    "7.3.77": SutraRule("7.3.77", "isugamiyamamasau chandi / gamu-gaccha adesa", "anga", "angasya", is_tripadi=False, priority=40),
+    "8.2.1": SutraRule("8.2.1", "purvatrasiddham", "adhikara", "tripadi", is_tripadi=True, priority=1),
+    "8.2.66": SutraRule("8.2.66", "sasajuso ruh", "tripadi", "tripadi", is_tripadi=True, priority=50),
+    "8.3.15": SutraRule("8.3.15", "kharavasanayor visarjaniyah", "tripadi", "tripadi", is_tripadi=True, priority=60),
+}
+
+
+def _record_step(
+    trace: PrakriyaTrace,
+    stage: str,
+    sutra_ids: List[str],
+    rule_title: str,
+    adhikara: str,
+    next_segments: List[str],
+    next_surface: str,
+    notes: str = "",
+) -> None:
+    for sid in sutra_ids:
+        if sid not in RULE_REGISTRY:
+            raise KeyError(f"Unregistered sutra_id: {sid}")
+        if sid not in trace.sutra_chain:
+            trace.sutra_chain.append(sid)
+
+    step = PrakriyaStep(
+        step_index=len(trace.steps),
+        stage=stage,
+        sutra_id=" + ".join(sutra_ids),
+        rule_title=rule_title,
+        adhikara=adhikara,
+        before_segments=list(trace.segments),
+        after_segments=list(next_segments),
+        surface_after=next_surface,
+        anuvrtti_snapshot=dict(trace.anuvrtti),
+        notes=notes,
+    )
+    trace.segments = list(next_segments)
+    trace.surface = next_surface
+    trace.steps.append(step)
+
+
+def derive_gacchati(
+    dhatu: str = "gam",
+    lakara: str = "laṭ",
+    purusha: str = "prathama_purusha",
+    vacana: str = "ekavacana",
+    pada: str = "parasmaipada",
+) -> PrakriyaTrace:
+    """Deterministic step-by-step prakriya trace for *gacchati*."""
+    if dhatu != "gam":
+        return PrakriyaTrace(
+            query_form="gacchati",
+            prakruti=dhatu,
+            category="tinanta",
+            adhikaras_active=[],
+            anuvrtti={},
+            segments=[dhatu],
+            surface=dhatu,
+            sutra_chain=[],
+            result_classification="UNRESOLVED",
+        )
+
+    anuvrtti: Dict[str, str] = {
+        "dhatu": dhatu,
+        "gana": "1 (bhvadi)",
+        "lakara": lakara,
+        "purusha": purusha,
+        "vacana": vacana,
+        "pada": pada,
+    }
+    trace = PrakriyaTrace(
+        query_form="gacchati",
+        prakruti=dhatu,
+        category="tinanta",
+        adhikaras_active=["dhatu", "pratyaya", "angasya", "pada"],
+        anuvrtti=anuvrtti,
+        segments=[dhatu],
+        surface=dhatu,
+        sutra_chain=[],
+        result_classification="UNRESOLVED",
+    )
+
+    _record_step(
+        trace=trace,
+        stage="pratyaya_yojana",
+        sutra_ids=["3.2.123", "3.4.78", "1.4.101", "1.3.3", "1.3.9"],
+        rule_title="lat -> tip (3sg parasmaipada) -> ti after halantyam/tasya lopah",
+        adhikara="pratyaya",
+        next_segments=[dhatu, "ti"],
+        next_surface=f"{dhatu}+ti",
+        notes="Final p of tip is it (1.3.3) and elided (1.3.9).",
+    )
+
+    trace.anuvrtti["vikarana"] = "sap (a)"
+    _record_step(
+        trace=trace,
+        stage="vikarana_anga",
+        sutra_ids=["3.1.68", "1.3.8", "1.3.3", "1.3.9"],
+        rule_title="kartari sap -> a between dhatu and tin ending",
+        adhikara="dhatu",
+        next_segments=[dhatu, "a", "ti"],
+        next_surface=f"{dhatu}+a+ti",
+        notes="s and p of sap are it-markers elided by 1.3.9, leaving a.",
+    )
+
+    trace.anuvrtti["anga_stem"] = "gaccha"
+    _record_step(
+        trace=trace,
+        stage="anga",
+        sutra_ids=["7.3.77"],
+        rule_title="gamu -> gaccha stem replacement before sap/sarvadhatuka",
+        adhikara="angasya",
+        next_segments=["gaccha", "ti"],
+        next_surface="gaccha+ti",
+        notes="gaccha combines with pratyaya ti.",
+    )
+
+    _record_step(
+        trace=trace,
+        stage="final",
+        sutra_ids=["1.4.14"],
+        rule_title="suptinantam padam closure",
+        adhikara="pada",
+        next_segments=["gacchati"],
+        next_surface="gacchati",
+        notes="Complete tinanta pada form.",
+    )
+
+    trace.result_classification = "DETERMINISTIC_DERIVATION"
+    return trace
+
+
+def derive_ramah(
+    pratipadika: str = "rāma",
+    vibhakti: str = "prathama",
+    vacana: str = "ekavacana",
+    sandhi_context: Literal["avasana", "samhita_visarga"] = "avasana",
+) -> PrakriyaTrace:
+    """Deterministic step-by-step prakriya trace for *ramah*."""
+    if pratipadika not in ("rāma", "rama"):
+        return PrakriyaTrace(
+            query_form="rāmaḥ",
+            prakruti=pratipadika,
+            category="subanta",
+            adhikaras_active=[],
+            anuvrtti={},
+            segments=[pratipadika],
+            surface=pratipadika,
+            sutra_chain=[],
+            result_classification="UNRESOLVED",
+        )
+
+    base = "rāma"
+    anuvrtti: Dict[str, str] = {
+        "pratipadika": base,
+        "linga": "pullinga",
+        "vibhakti": vibhakti,
+        "vacana": vacana,
+        "sandhi_context": sandhi_context,
+    }
+    trace = PrakriyaTrace(
+        query_form="rāmaḥ",
+        prakruti=base,
+        category="subanta",
+        adhikaras_active=["sup", "pratyaya", "pada", "tripadi"],
+        anuvrtti=anuvrtti,
+        segments=[base],
+        surface=base,
+        sutra_chain=[],
+        result_classification="UNRESOLVED",
+    )
+
+    _record_step(
+        trace=trace,
+        stage="pratyaya_yojana",
+        sutra_ids=["4.1.2", "2.3.46"],
+        rule_title="attach sup suffix su for prathama-ekavacana",
+        adhikara="sup",
+        next_segments=[base, "su"],
+        next_surface=f"{base}+su",
+        notes="Nominative singular sup ending su.",
+    )
+
+    _record_step(
+        trace=trace,
+        stage="sapadasaptadhyayee",
+        sutra_ids=["1.3.2", "1.3.9"],
+        rule_title="elide anunnasika it vowel u of su -> s",
+        adhikara="pratyaya",
+        next_segments=[base, "s"],
+        next_surface=f"{base}+s",
+        notes="u is an it-marker under 1.3.2 and elided under 1.3.9.",
+    )
+
+    _record_step(
+        trace=trace,
+        stage="tripadi",
+        sutra_ids=["8.2.1", "8.2.66", "8.3.15"],
+        rule_title="tripadi purvatrasiddham: s -> ru (8.2.66) -> visarjaniya h (8.3.15)",
+        adhikara="tripadi",
+        next_segments=[base, "ḥ"],
+        next_surface=f"{base}ḥ",
+        notes="Evaluated in Tripadi domain under avasana/final visarga rule 8.3.15.",
+    )
+
+    _record_step(
+        trace=trace,
+        stage="final",
+        sutra_ids=["1.4.14"],
+        rule_title="suptinantam padam closure",
+        adhikara="pada",
+        next_segments=["rāmaḥ"],
+        next_surface="rāmaḥ",
+        notes="Complete subanta pada form.",
+    )
+
+    trace.result_classification = "DETERMINISTIC_DERIVATION"
+    return trace
+
+
+DERIVATION_TRACES: Dict[str, Callable[[], PrakriyaTrace]] = {
+    "gacchati": derive_gacchati,
+    "rāmaḥ": derive_ramah,
+    "ramah": derive_ramah,
+}
+
+
+def derive_form(form: str) -> Optional[PrakriyaTrace]:
+    key = form.strip()
+    fn = DERIVATION_TRACES.get(key)
+    if fn is None:
+        return None
+    return fn()

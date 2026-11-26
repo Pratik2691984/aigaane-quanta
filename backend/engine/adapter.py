@@ -27,7 +27,7 @@ except Exception as _e:
 
 from backend.engine.pydantic_models import (
     KernelEnvelope, Candidate, RejectedCandidate,
-    OrthographicTriad, Authority, ParseToken
+    OrthographicTriad, Authority, ParseToken, ResultClassification
 )
 
 logger = logging.getLogger(__name__)
@@ -195,6 +195,8 @@ class EngineAdapter:
         score = float(legacy.get("confidence") or 0.0)
         score = max(0.0, min(1.0, score))
 
+        classification: ResultClassification = self._classify_primary(legacy)
+
         return Candidate(
             candidate_id="cand_01",
             parse=parse_tokens,
@@ -202,8 +204,37 @@ class EngineAdapter:
             vigraha=vigraha,
             sutra_chain=sutra_chain,
             authority=authority,
+            result_classification=classification,
             score=score
         )
+
+    def _classify_primary(self, legacy: dict) -> ResultClassification:
+        raw_cls = legacy.get("result_classification")
+        if raw_cls in (
+            "DETERMINISTIC_DERIVATION",
+            "AMBIGUOUS_DERIVATION",
+            "HEURISTIC_UNVERIFIED",
+            "UNRESOLVED",
+        ):
+            if raw_cls != "DETERMINISTIC_DERIVATION":
+                return raw_cls  # type: ignore[return-value]
+
+        provenance = [str(p) for p in (legacy.get("provenance") or [])]
+        if any("heuristic" in p.lower() or "fallback" in p.lower() for p in provenance):
+            return "HEURISTIC_UNVERIFIED"
+
+        # Only assign DETERMINISTIC_DERIVATION when legacy carries an explicit derivation trace
+        # or canonical rule-backed engine provenance; never from default sutra chains alone.
+        trace = legacy.get("derivation_trace")
+        if isinstance(trace, list) and len(trace) > 0:
+            return "DETERMINISTIC_DERIVATION"
+        if any(
+            p.startswith(("engine=dhatupatha-generative", "engine=0.3.0-sentence"))
+            for p in provenance
+        ):
+            return "DETERMINISTIC_DERIVATION"
+
+        return "UNRESOLVED"
 
     def _adapt_ambiguous(self, amb: dict, rank: int) -> Candidate | None:
         tokens = amb.get("tokens") or []
@@ -237,6 +268,7 @@ class EngineAdapter:
             vigraha=None,
             sutra_chain=sutra_chain,
             authority=authority,
+            result_classification="AMBIGUOUS_DERIVATION",
             score=score
         )
 

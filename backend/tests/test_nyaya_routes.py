@@ -14,7 +14,8 @@ def test_nyaya_verify_valid_proof(client):
         "candidate_id": "cand_01",
         "sutra_chain": ["1.1.1", "1.1.2"],
         "vigraha": "rāja-putraḥ",
-        "samasa_type": "Tatpuruṣa"
+        "samasa_type": "Tatpuruṣa",
+        "result_classification": "DETERMINISTIC_DERIVATION",
     }
     r = client.post("/api/v3/nyaya/verify", json=payload)
     assert r.status_code == 200, r.text

@@ -248,6 +248,8 @@ class CegarGatekeeper:
                     break
 
             if bad_stem is None:
+                if cand.result_classification is None:
+                    cand.result_classification = "UNRESOLVED"
                 kept.append(cand)
             else:
                 rejected.append(
