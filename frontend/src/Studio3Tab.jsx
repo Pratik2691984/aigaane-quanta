@@ -573,30 +573,30 @@ export default function Studio3Tab() {
         >
           {talaPlaying ? "Stop" : "Play Tala"}
         </button>
-
-          <VedicPanel
-            text={vedicText}
-            setText={setVedicText}
-            recension={vedicRecension}
-            setRecension={setVedicRecension}
-            loading={vedicLoading}
-            playing={vedicPlaying}
-            notice={vedicNotice}
-            onPlay={playVedicChant}
-            onStop={stopVedicChant}
-            align={vedicAlign}
-            setAlign={setVedicAlign}
-            talaList={talaList}
-            tala={vedicTala}
-            setTala={setVedicTala}
-            bpm={bpm}
-            onDownload={downloadVedicWav}
-            downloading={vedicDownloading}
-            renderInfo={vedicRenderInfo}
-            drone={vedicDrone}
-            setDrone={setVedicDrone}
-          />
       </div>
+
+      <VedicPanel
+        text={vedicText}
+        setText={setVedicText}
+        recension={vedicRecension}
+        setRecension={setVedicRecension}
+        loading={vedicLoading}
+        playing={vedicPlaying}
+        notice={vedicNotice}
+        onPlay={playVedicChant}
+        onStop={stopVedicChant}
+        align={vedicAlign}
+        setAlign={setVedicAlign}
+        talaList={talaList}
+        tala={vedicTala}
+        setTala={setVedicTala}
+        bpm={bpm}
+        onDownload={downloadVedicWav}
+        downloading={vedicDownloading}
+        renderInfo={vedicRenderInfo}
+        drone={vedicDrone}
+        setDrone={setVedicDrone}
+      />
 
       {talaPlaying && selectedTala && (
         <div style={{ padding: "12px", background: "#0f172a", borderRadius: "6px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
