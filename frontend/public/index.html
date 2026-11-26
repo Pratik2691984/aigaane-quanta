@@ -168,6 +168,27 @@
       color: var(--text-muted);
     }
 
+    .sutra-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--gold);
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 999px;
+      padding: 1px 8px;
+      vertical-align: middle;
+    }
+
+    .trace-box {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
     h1 {
       margin: 0 0 10px;
       font-size: clamp(1.45rem, 4vw, 2.2rem);
@@ -251,6 +272,7 @@
     @media (min-width: 640px) {
       .card {
         padding: 20px;
+        min-height: 270px;
       }
     }
 
@@ -846,8 +868,9 @@
         const r = document.getElementById("sandhi-p2").value;
         const res = combineSandhi(l, r);
         document.getElementById("sandhi-result").innerHTML =
-          `<div><strong style="color: var(--text-main); font-size: 1.05rem;">${esc(res.out)}</strong> · <span class="sutra-tag">${esc(res.sutra)}</span></div>` +
-          `<div style="margin-top: 4px; font-size: 0.84rem;">${esc(res.rule)} · Dev: ${esc(toDev(res.out))} · SLP1: <code>${esc(toSlp1(res.out))}</code></div>`;
+          `<div><strong style="color: var(--text-main); font-size: 1.05rem;">${esc(res.out)}</strong> <span class="sutra-pill">Sūtra ${esc(res.sutra)}</span></div>` +
+          `<div style="margin-top: 5px; font-size: 0.84rem;">${esc(res.rule)} · Dev: ${esc(toDev(res.out))} · SLP1: <code>${esc(toSlp1(res.out))}</code></div>` +
+          `<div class="trace-box">Trace: NFC("${esc(l.trim())}") + NFC("${esc(r.trim())}") → ${esc(res.rule)} (${esc(res.sutra)}) → "${esc(res.out)}"</div>`;
       }
 
       const GOLDEN = [
@@ -892,9 +915,9 @@
           ["Madhyamā (2nd)", [`${d} 2sg ~`, `${d} 2du ~`, `${d} 2pl ~`]],
           ["Uttamā (1st)", [`${d} 1sg ~`, `${d} 1du ~`, `${d} 1pl ~`]]
         ];
-        document.getElementById("tinanta-meta").textContent = hit
-          ? `✓ verified paradigm table · ${d} · ${l} · ${p}`
-          : `~ generated fallback view · ${d} · ${l} · ${p}`;
+        document.getElementById("tinanta-meta").innerHTML = hit
+          ? `<span style="color: var(--ok); font-weight: 600;">✓ verified paradigm table</span> <span class="sutra-pill">${esc(d)} · ${esc(l)} · ${esc(p)}</span>`
+          : `<span style="color: var(--warn); font-weight: 600;">~ generated fallback view</span> <span class="sutra-pill">${esc(d)} · ${esc(l)} · ${esc(p)}</span>`;
         document.getElementById("tinanta-result").innerHTML =
           `<table><thead><tr><th>Puruṣa</th><th>Ekavacana</th><th>Dvivacana</th><th>Bahuvacana</th></tr></thead><tbody>` +
           rows.map(([pur, cells]) =>
