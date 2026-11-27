@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TFAQN Quantum Supercluster v4.0-VEDIC — Advanced Lab</title>
+  <style>
+    :root {
+      --bg: #080c14;
+      --panel: #0f1624;
+      --panel-2: #141e30;
+      --border: #24324a;
+      --text: #e8eef8;
+      --muted: #93a4bc;
+      --accent: #38bdf8;
+      --gold: #f59e0b;
+      --ok: #22c55e;
+      --warn: #eab308;
+      --danger: #ef4444;
+    }
+    *, *::before, *::after { box-sizing: border-box; min-width: 0; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      line-height: 1.45;
+    }
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .ver-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.14);
+      color: var(--gold);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    .sim-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.14);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+    .controls-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    button, select, textarea, a.nav-btn {
+      font: inherit;
+      font-size: 12.5px;
+      color: var(--text);
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 11px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    button.active, a.nav-btn.active {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.16);
+      color: #bae6fd;
+    }
+    button.fire-btn {
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      border-color: #f87171;
+      color: #fff;
+      font-weight: 700;
+      padding: 10px 16px;
+      width: 100%;
+    }
+    .wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+    .banner {
+      background: rgba(234, 179, 8, 0.1);
+      border: 1px solid rgba(234, 179, 8, 0.35);
+      color: #fde68a;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+    }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .card-title { margin: 0; font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .muted { color: var(--muted); font-size: 12px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .pin-btn {
+      width: 100%;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      background: var(--panel-2);
+    }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(110px, 1fr)); gap: 8px; }
+    .kpi { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+    .kpi-val { font-size: 15px; font-weight: 700; color: var(--accent); }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+    th { color: var(--muted); font-weight: 600; }
+    tr.is-selected { background: rgba(56, 189, 248, 0.1); }
+    pre.log-box {
+      margin: 0;
+      padding: 12px;
+      background: #060910;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+      max-height: 240px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+    canvas.viz-canvas {
+      width: 100%;
+      height: 230px;
+      background: #060910;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-row">
+      <strong>TFAQN Quantum Supercluster</strong>
+      <span class="ver-pill">v4.0-VEDIC</span>
+      <span class="sim-pill">EXPERIMENTAL SANDBOX · UNVERIFIED</span>
+      <span class="muted">Topological Fluidic-Acoustic Quantum Node · Shivlinga Theoretical Architecture</span>
+    </div>
+    <div class="controls-row">
+      <button type="button" id="btn-isolation" class="active">Core Isolation: Zero-Noise Coherence</button>
+      <button type="button" id="btn-tone">Acoustic Tone</button>
+      <button type="button" id="btn-haptics" class="active">Haptics On</button>
+      <button type="button" id="btn-stress">Boundary Stress Tests</button>
+      <a class="nav-btn" href="/advanced-lab.html">← Advanced Lab</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="banner">
+      <strong>Sandbox &amp; Provenance Notice:</strong> Simulated architectural &amp; telemetry model under
+      <code>/advanced-lab/tfqn-v4.html</code>. Experimental only—non-authoritative for core Sanskrit grammar,
+      Canon provenance, or Mode 1 Vedic recitation.
+    </div>
+
+    <div class="controls-row">
+      <button type="button" class="active" data-tab="theory">Architecture Theory</button>
+      <button type="button" data-tab="pipeline">Input Pipeline</button>
+      <button type="button" data-tab="waveguide">Waveguide &amp; Logic Formulation</button>
+      <span class="muted mono" id="active-tab-readout" style="margin-left:auto;">Active View: Architecture Theory</span>
+    </div>
+
+    <!-- Node & Tripundra Row -->
+    <section class="grid-2">
+      <article class="card">
+        <div class="card-title">
+          <span>Target Jyotirlinga Quantum Node</span>
+          <span class="sim-pill">12 Nodes Online</span>
+        </div>
+        <label class="muted" for="node-select">Select Active Computational Cluster:</label>
+        <select id="node-select"></select>
+        <div id="node-detail-box" class="kpi"></div>
+        <div class="grid-3">
+          <div class="kpi"><div class="muted">QoS Density</div><div class="kpi-val" id="node-qos">99.84%</div></div>
+          <div class="kpi"><div class="muted">Harmonic</div><div class="kpi-val" id="node-hz">108 Hz</div></div>
+          <div class="kpi"><div class="muted">Q-Factor</div><div class="kpi-val" id="node-q">12,400</div></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-title">
+          <span>Tripundra Qutrit Logic Unit (3-Rail Matrix)</span>
+          <span class="mono muted">Dim ℋ₃ · [-1, 0, +1]</span>
+        </div>
+        <div class="controls-row">
+          <button type="button" data-preset="low">Low [0, 0, -1]</button>
+          <button type="button" data-preset="medium">Medium [1, 0, -1]</button>
+          <button type="button" class="active" data-preset="high">High [1, 1, -1]</button>
+        </div>
+        <button type="button" class="pin-btn" id="pin-sattva">
+          <span>Line 1 • Sattva (Ground/Vacuum)</span>
+          <strong class="mono" id="val-sattva">+1</strong>
+        </button>
+        <button type="button" class="pin-btn" id="pin-rajas">
+          <span>Line 2 • Rajas (Active Hamiltonian)</span>
+          <strong class="mono" id="val-rajas">0</strong>
+        </button>
+        <button type="button" class="pin-btn" id="pin-tamas">
+          <span>Line 3 • Tamas (Error-Correction Lattice)</span>
+          <strong class="mono" id="val-tamas">-1</strong>
+        </button>
+        <div class="mono muted" id="footprint-readout">Compiled Footprint: Sattva: 1 | Rajas: 0 | Tamas: -1</div>
+      </article>
+    </section>
+
+    <!-- Bhupura Firewall, Environmental Isolation & Acoustic Waveguide -->
+    <section class="grid-3">
+      <article class="card">
+        <div class="card-title">
+          <span>Bhupura Firewall Gateway</span>
+          <span class="sim-pill">Layer 1</span>
+        </div>
+        <p class="muted" style="margin:0;">Google GenAI Core Synced · Profile: <span class="mono">gemini-3.8-flash</span> (sandbox mode)</p>
+        <label class="muted" for="thinking-select">Gemini Reasoning Architecture (<code>thinking_level</code>):</label>
+        <select id="thinking-select">
+          <option value="minimal">Minimal</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high" selected>High</option>
+        </select>
+        <div class="muted">*Uses <code>thinking_level</code> without legacy <code>temperature</code> / <code>top_p</code> fields.</div>
+      </article>
+
+      <article class="card">
+        <div class="card-title">
+          <span>Environmental Isolation</span>
+          <span class="ver-pill" id="iso-badge">ISOLATED</span>
+        </div>
+        <label><input type="checkbox" id="chk-nandi" checked /> Nandi Seismic Damping Chassis (-80 dB)</label>
+        <label><input type="checkbox" id="chk-kurma" checked /> Seal Kurma Faraday Shielding Cage (14 T)</label>
+        <div class="muted" id="iso-status-text">CORE STATUS: Zero-Noise Acoustic &amp; Electromagnetic Isolation Achieved.</div>
+      </article>
+
+      <article class="card">
+        <div class="card-title">
+          <span>Acoustic Waveguide Tuning</span>
+          <span class="mono" id="drive-hz-label">432 Hz</span>
+        </div>
+        <div class="controls-row">
+          <button type="button" data-hz="32">32 Hz</button>
+          <button type="button" data-hz="108">108 Hz</button>
+          <button type="button" data-hz="216">216 Hz</button>
+          <button type="button" class="active" data-hz="432">432 Hz</button>
+          <button type="button" data-hz="528">528 Hz</button>
+          <button type="button" data-hz="864">864 Hz</button>
+          <button type="button" data-hz="1080">1080 Hz</button>
+        </div>
+        <label class="muted" for="visc-select">Laminar Fluidic Film Viscosity:</label>
+        <select id="visc-select">
+          <option value="0.80">Superfluid Helium (0.80 mPa·s)</option>
+          <option value="1.02" selected>Water / Milk Abhisheka (1.02 mPa·s)</option>
+          <option value="2.50">Herbal Decoction (2.50 mPa·s)</option>
+        </select>
+      </article>
+    </section>
+
+    <!-- Visualizer & Bindu Execution -->
+    <section class="grid-2">
+      <article class="card">
+        <div class="card-title">
+          <span>Quantum Execution &amp; Visualizer (Bindu Point)</span>
+          <span class="mono muted" id="yantra-meta">SRI YANTRA · 9 CONES · 432 Hz</span>
+        </div>
+        <div class="controls-row">
+          <button type="button" class="active" data-viz="yantra">Sacred Yantra &amp; Bindu</button>
+          <button type="button" data-viz="cavity">Cavity Cross-Section</button>
+          <button type="button" data-viz="cymatics">Faraday Cymatics</button>
+          <button type="button" data-viz="mesh">12-Node Cluster Mesh</button>
+        </div>
+        <canvas id="viz-canvas" class="viz-canvas" width="640" height="230"></canvas>
+      </article>
+
+      <article class="card">
+        <div class="card-title">
+          <span>Computational Problem Payload</span>
+          <span class="mono muted" id="route-label">Somnath Routing</span>
+        </div>
+        <div class="controls-row">
+          <button type="button" data-preset-prompt="ocean">Ocean Boundary Entropy</button>
+          <button type="button" data-preset-prompt="anyon">Topological Anyon Braiding</button>
+          <button type="button" data-preset-prompt="levitation">Acoustic Levitation Well</button>
+          <button type="button" data-preset-prompt="entropy">Entropy Inversion Loop</button>
+        </div>
+        <textarea id="payload-input" rows="3">Simulate global ocean temperature trends using laminar surface boundary values to counter local atmospheric entropy.</textarea>
+        <button type="button" class="fire-btn" id="btn-fire-bindu">Fire Laser Pulse to Bindu (Execute Algorithm)</button>
+        <div class="mono muted" id="haptic-readout">Zero-Noise Coherence Verified · Optical Pulse Power: 4.8 MW peak · Cadence: [90ms · 145ms · 95ms] (420ms)</div>
+        <pre class="log-box" id="execution-log">{
+  "status": "unverified_experimental",
+  "message": "Ready for Bindu pulse checkpoint or draft evidence export."
+}</pre>
+      </article>
+    </section>
+
+    <!-- Entanglement Density Trend -->
+    <section class="card">
+      <div class="card-title">
+        <span>Entanglement Density Performance Trend — <span id="trend-node-name">Somnath Node</span></span>
+        <div class="controls-row">
+          <button type="button" id="btn-live-toggle" class="active">LIVE (3s)</button>
+          <button type="button" data-tf="15m">15m</button>
+          <button type="button" data-tf="1h">1h</button>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="muted">Current Density</div><div class="kpi-val" id="m-curr">99.751%</div></div>
+        <div class="kpi"><div class="muted">Mean Coherence</div><div class="kpi-val" id="m-mean">99.806%</div></div>
+        <div class="kpi"><div class="muted">Peak Recorded</div><div class="kpi-val" id="m-peak">99.898%</div></div>
+        <div class="kpi"><div class="muted">Minimum Floor</div><div class="kpi-val" id="m-min">99.737%</div></div>
+      </div>
+      <canvas id="trend-canvas" class="viz-canvas" style="height:150px;" width="1280" height="150"></canvas>
+    </section>
+
+    <!-- Global 12-Node Cluster Status Table -->
+    <section class="card">
+      <div class="card-title">
+        <span>Global 12-Node Entanglement Swapping Cluster Status</span>
+        <span class="sim-pill">All Vertices Coherent (Simulated)</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Node Entity</th>
+              <th>Geographic Grounding</th>
+              <th>Hardware Sub-System</th>
+              <th>Resonant Harmonic</th>
+              <th>Entanglement Density</th>
+              <th>Route</th>
+            </tr>
+          </thead>
+          <tbody id="cluster-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const NODES = [
+        { name: "Somnath", place: "Saurashtra, Gujarat", sub: "Synced (Laminar Sweep Enabled)", hz: 108, q: "12,400", qos: 99.84, desc: "Cryogenic Fluid Dynamics Core • Optimized for Ocean/Weather Simulation" },
+        { name: "Mallikarjuna", place: "Srisailam, Andhra Pradesh", sub: "Coherent (Cryo Stable)", hz: 216, q: "11,800", qos: 99.91, desc: "Symmetrical Dual-Rail Logic Gate • High-Fidelity Error Checking" },
+        { name: "Mahakaleshwar", place: "Ujjain, Madhya Pradesh", sub: "Synced (Laminar Sweep Enabled)", hz: 432, q: "13,100", qos: 99.57, desc: "Entropy Inversion & Time Engine • Anti-Decay Computations" },
+        { name: "Omkareshwar", place: "Narmada River, Madhya Pradesh", sub: "Coherent (Cryo Stable)", hz: 528, q: "14,200", qos: 99.99, desc: "Topological Qubit Waveguide • Zero-Scattering Geometric Tracks" },
+        { name: "Kedarnath", place: "Himalayas, Uttarakhand", sub: "Synced (Laminar Sweep Enabled)", hz: 64, q: "15,000", qos: 100.00, desc: "Absolute-Zero Cold Storage • Infinite Coherence Preservation" },
+        { name: "Bhimashankar", place: "Pune, Maharashtra", sub: "Coherent (Cryo Stable)", hz: 720, q: "10,900", qos: 99.12, desc: "High-Voltage Kinetic Power Grid • Pulse Driving Array" },
+        { name: "Kashi Vishwanath", place: "Varanasi, Uttar Pradesh", sub: "Synced (Laminar Sweep Enabled)", hz: 1080, q: "14,800", qos: 100.00, desc: "Central Optical Photon Router • Cross-Node Optical Switchboard" },
+        { name: "Trimbakeshwar", place: "Nashik, Maharashtra", sub: "Coherent (Cryo Stable)", hz: 324, q: "12,150", qos: 99.76, desc: "Tri-Core Qutrit Matrix • Three-Way Entanglement Array" },
+        { name: "Baidyanath", place: "Deoghar, Jharkhand", sub: "Synced (Laminar Sweep Enabled)", hz: 432, q: "12,600", qos: 99.93, desc: "Algorithmic Self-Healer • Automated Code Repair Engine" },
+        { name: "Nageshwar", place: "Dwarka, Gujarat", sub: "Coherent (Cryo Stable)", hz: 864, q: "13,450", qos: 99.88, desc: "Serpent Shielding Array • Active External Magnetic Vault" },
+        { name: "Ramanathaswamy", place: "Rameswaram, Tamil Nadu", sub: "Synced (Laminar Sweep Enabled)", hz: 144, q: "11,500", qos: 99.64, desc: "High-Density Sand Matrix • Solid-State Core Storage" },
+        { name: "Grishneshwar", place: "Ellora, Maharashtra", sub: "Coherent (Cryo Stable)", hz: 288, q: "12,050", qos: 99.82, desc: "Surface-Acoustic Thermal Bleeder • System Friction Grounding" }
+      ];
+
+      const PROMPTS = {
+        ocean: "Simulate global ocean temperature trends using laminar surface boundary values to counter local atmospheric entropy.",
+        anyon: "Evaluate non-Abelian topological anyon braiding invariants across coupled Sri Yantra waveguide nodes.",
+        levitation: "Stabilize acoustic standing-wave levitation well at zero-gravity nodal minima under laminar film flow.",
+        entropy: "Test local entropy reduction and parity syndrome convergence under coupled Tripundra qutrit evolution."
+      };
+
+      const state = {
+        nodeIdx: 0,
+        qutrit: [1, 0, -1],
+        driveHz: 432,
+        vizMode: "yantra",
+        live: true,
+        haptics: true,
+        series: [99.782, 99.810, 99.795, 99.845, 99.820, 99.770, 99.860, 99.815, 99.751]
+      };
+
+      const nodeSelect = document.getElementById("node-select");
+      const tbody = document.getElementById("cluster-tbody");
+      const execLog = document.getElementById("execution-log");
+
+      NODES.forEach((n, idx) => {
+        const opt = document.createElement("option");
+        opt.value = String(idx);
+        opt.textContent = `${n.name} — ${n.desc.split("•")[0].trim()}`;
+        nodeSelect.appendChild(opt);
+      });
+
+      function fmtPin(v) { return v > 0 ? `+${v}` : String(v); }
+      function cyclePin(i) {
+        const order = [-1, 0, 1];
+        state.qutrit[i] = order[(order.indexOf(state.qutrit[i]) + 1) % order.length];
+        syncUI();
+      }
+
+      function syncUI() {
+        const node = NODES[state.nodeIdx];
+        nodeSelect.value = String(state.nodeIdx);
+        document.getElementById("node-detail-box").innerHTML = `<strong>${node.name}</strong> (${node.place})<br><span class="muted">${node.desc}</span>`;
+        document.getElementById("node-qos").textContent = `${node.qos.toFixed(2)}% QoS`;
+        document.getElementById("node-hz").textContent = `${node.hz} Hz`;
+        document.getElementById("node-q").textContent = node.q;
+        document.getElementById("route-label").textContent = `${node.name} Routing`;
+        document.getElementById("trend-node-name").textContent = `${node.name} Node`;
+        document.getElementById("drive-hz-label").textContent = `${state.driveHz} Hz`;
+        document.getElementById("yantra-meta").textContent = `SRI YANTRA · 9 CONES · ${state.driveHz} Hz`;
+
+        document.getElementById("val-sattva").textContent = fmtPin(state.qutrit[0]);
+        document.getElementById("val-rajas").textContent = fmtPin(state.qutrit[1]);
+        document.getElementById("val-tamas").textContent = fmtPin(state.qutrit[2]);
+        document.getElementById("footprint-readout").textContent =
+          `Compiled Footprint: Sattva: ${state.qutrit[0]} | Rajas: ${state.qutrit[1]} | Tamas: ${state.qutrit[2]}`;
+
+        const nandi = document.getElementById("chk-nandi").checked;
+        const kurma = document.getElementById("chk-kurma").checked;
+        document.getElementById("iso-badge").textContent = (nandi && kurma) ? "ISOLATED" : "DECOHERENCE RISK";
+        document.getElementById("iso-status-text").textContent = (nandi && kurma)
+          ? "CORE STATUS: Zero-Noise Acoustic & Electromagnetic Isolation Achieved."
+          : "CORE STATUS: Activate both Nandi & Kurma safeguards for zero-noise isolation.";
+
+        tbody.innerHTML = "";
+        NODES.forEach((n, idx) => {
+          const tr = document.createElement("tr");
+          if (idx === state.nodeIdx) tr.className = "is-selected";
+          tr.innerHTML = `
+            <td><strong>${n.name}</strong></td>
+            <td>${n.place}</td>
+            <td>${n.sub}</td>
+            <td class="mono">${n.hz} Hz</td>
+            <td class="mono">${n.qos.toFixed(2)}% QoS</td>
+            <td><button type="button" data-pick="${idx}">${idx === state.nodeIdx ? "ACTIVE" : "SELECT"}</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+        tbody.querySelectorAll("button[data-pick]").forEach((b) => {
+          b.addEventListener("click", () => { state.nodeIdx = Number(b.dataset.pick); syncUI(); });
+        });
+
+        drawViz();
+        drawTrend();
+      }
+
+      function drawViz() {
+        const canvas = document.getElementById("viz-canvas");
+        const ctx = canvas.getContext("2d");
+        const w = canvas.width, h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "#060910";
+        ctx.fillRect(0, 0, w, h);
+
+        const cx = w / 2, cy = h / 2, r = Math.min(w, h) * 0.36;
+        ctx.strokeStyle = "#38bdf8";
+        ctx.lineWidth = 1.5;
+
+        if (state.vizMode === "yantra") {
+          for (let i = 0; i < 5; i++) {
+            const scale = 1 - i * 0.16;
+            ctx.beginPath();
+            for (let k = 0; k < 3; k++) {
+              const ang = -Math.PI / 2 + (k * 2 * Math.PI) / 3;
+              const x = cx + Math.cos(ang) * r * scale;
+              const y = cy + Math.sin(ang) * r * scale;
+              if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+          }
+          ctx.strokeStyle = "#f59e0b";
+          for (let i = 0; i < 4; i++) {
+            const scale = 0.92 - i * 0.18;
+            ctx.beginPath();
+            for (let k = 0; k < 3; k++) {
+              const ang = Math.PI / 2 + (k * 2 * Math.PI) / 3;
+              const x = cx + Math.cos(ang) * r * scale;
+              const y = cy + Math.sin(ang) * r * scale;
+              if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+          }
+          ctx.fillStyle = "#ef4444";
+          ctx.beginPath();
+          ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          const freq = (state.driveHz / 108) * 0.08;
+          for (let x = 20; x < w - 20; x += 4) {
+            const y = cy + Math.sin(x * freq) * (h * 0.25);
+            if (x === 20) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+          ctx.fillStyle = "#93a4bc";
+          ctx.fillText(`Mode: ${state.vizMode.toUpperCase()} · Node: ${NODES[state.nodeIdx].name}`, 16, 22);
+        }
+      }
+
+      function drawTrend() {
+        const canvas = document.getElementById("trend-canvas");
+        const ctx = canvas.getContext("2d");
+        const w = canvas.width, h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "#060910";
+        ctx.fillRect(0, 0, w, h);
+
+        const vals = state.series;
+        const curr = vals[vals.length - 1];
+        const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+        const peak = Math.max(...vals);
+        const min = Math.min(...vals);
+
+        document.getElementById("m-curr").textContent = `${curr.toFixed(3)}%`;
+        document.getElementById("m-mean").textContent = `${mean.toFixed(3)}%`;
+        document.getElementById("m-peak").textContent = `${peak.toFixed(3)}%`;
+        document.getElementById("m-min").textContent = `${min.toFixed(3)}%`;
+
+        const pad = 20;
+        const span = Math.max(0.05, peak - min);
+        ctx.strokeStyle = "#38bdf8";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        vals.forEach((v, i) => {
+          const x = pad + (i / Math.max(1, vals.length - 1)) * (w - pad * 2);
+          const y = h - pad - ((v - min) / span) * (h - pad * 2);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      }
+
+      nodeSelect.addEventListener("change", () => { state.nodeIdx = Number(nodeSelect.value); syncUI(); });
+      document.getElementById("pin-sattva").addEventListener("click", () => cyclePin(0));
+      document.getElementById("pin-rajas").addEventListener("click", () => cyclePin(1));
+      document.getElementById("pin-tamas").addEventListener("click", () => cyclePin(2));
+      document.getElementById("chk-nandi").addEventListener("change", syncUI);
+      document.getElementById("chk-kurma").addEventListener("change", syncUI);
+
+      document.querySelectorAll("button[data-preset]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("button[data-preset]").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          if (btn.dataset.preset === "low") state.qutrit = [0, 0, -1];
+          else if (btn.dataset.preset === "medium") state.qutrit = [1, 0, -1];
+          else state.qutrit = [1, 1, -1];
+          syncUI();
+        });
+      });
+
+      document.querySelectorAll("button[data-hz]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("button[data-hz]").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          state.driveHz = Number(btn.dataset.hz);
+          syncUI();
+        });
+      });
+
+      document.querySelectorAll("button[data-viz]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("button[data-viz]").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          state.vizMode = btn.dataset.viz;
+          drawViz();
+        });
+      });
+
+      document.querySelectorAll("button[data-preset-prompt]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const key = btn.dataset.presetPrompt;
+          if (PROMPTS[key]) document.getElementById("payload-input").value = PROMPTS[key];
+        });
+      });
+
+      document.querySelectorAll("button[data-tab]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("button[data-tab]").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById("active-tab-readout").textContent = `Active View: ${btn.textContent}`;
+        });
+      });
+
+      document.getElementById("btn-haptics").addEventListener("click", (e) => {
+        state.haptics = !state.haptics;
+        e.currentTarget.classList.toggle("active", state.haptics);
+        e.currentTarget.textContent = state.haptics ? "Haptics On" : "Haptics Off";
+      });
+
+      document.getElementById("btn-live-toggle").addEventListener("click", (e) => {
+        state.live = !state.live;
+        e.currentTarget.classList.toggle("active", state.live);
+        e.currentTarget.textContent = state.live ? "LIVE (3s)" : "PAUSED";
+      });
+
+      document.getElementById("btn-fire-bindu").addEventListener("click", () => {
+        const node = NODES[state.nodeIdx];
+        const thinkingLevel = document.getElementById("thinking-select").value;
+        const cadence = [90, 145, 95];
+        if (state.haptics && typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
+          try { navigator.vibrate(cadence); } catch (_) {}
+        }
+        const draftRecord = {
+          schema_version: "1.0.0",
+          build_tag: "v4.0-VEDIC",
+          timestamp_utc: new Date().toISOString(),
+          isolated_workspace: "/advanced-lab/tfqn-v4.html",
+          node: node.name,
+          harmonic_hz: state.driveHz,
+          viscosity_mpas: Number(document.getElementById("visc-select").value),
+          tripundra_qutrit: state.qutrit,
+          thinking_level: thinkingLevel,
+          payload: document.getElementById("payload-input").value,
+          verification: {
+            status: "unverified_experimental",
+            authoritative_for_core_domain: false
+          }
+        };
+        execLog.textContent = JSON.stringify(draftRecord, null, 2);
+      });
+
+      setInterval(() => {
+        if (!state.live) return;
+        const base = NODES[state.nodeIdx].qos;
+        const delta = (Math.random() - 0.5) * 0.08;
+        const nextVal = Number(Math.min(100.0, Math.max(99.0, base + delta)).toFixed(3));
+        state.series = [...state.series.slice(1), nextVal];
+        drawTrend();
+      }, 3000);
+
+      syncUI();
+    })();
+  </script>
+</body>
+</html>
