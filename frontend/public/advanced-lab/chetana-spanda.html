@@ -146,19 +146,11 @@
         <strong>Project Chetana-Spanda · Dual-Core Field Sandbox</strong>
         <span class="badge">EXPERIMENTAL · UNVERIFIED</span>
         <div style="font-size: 12px; color: var(--muted);">
-          Ref App: <code>096899b3-789f-42f6-aedc-5378311deb33</code> · Route: <code>/advanced-lab/chetana-spanda.html</code>
+          Route: <code>/advanced-lab/chetana-spanda.html</code> · Standalone Sandbox
         </div>
       </div>
       <div class="toolbar">
         <a class="btn" href="/advanced-lab.html">← Advanced Lab</a>
-        <a
-          class="btn"
-          href="https://aistudio.google.com/apps/096899b3-789f-42f6-aedc-5378311deb33?showPreview=true&showAssistant=true"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Open in AI Studio ↗
-        </a>
         <button type="button" class="primary" id="log-spanda-evidence-btn">
           Log Synthetic Run
         </button>
@@ -200,8 +192,7 @@
 
   <script>
     (function () {
-      const APP_ID = "096899b3-789f-42f6-aedc-5378311deb33";
-      const MODULES = [
+const MODULES = [
         { code: "CS-001", core: "Executive", name: "Dual-Engine Scheduler", artifact: "exec_scheduler.py", note: "Simulated task routing across dual-core sandbox." },
         { code: "CS-002", core: "Executive", name: "Telemetry Bus", artifact: "telemetry_bus.py", note: "Synthetic state frame aggregation." },
         { code: "CS-003", core: "Executive", name: "Policy & Guardrail Check", artifact: "policy_guard.py", note: "Non-authoritative sandbox boundary check." },
@@ -274,8 +265,7 @@
           },
           source: {
             provider: "chetana_spanda_sandbox",
-            reference_app_id: APP_ID,
-            module_code: mod.code,
+module_code: mod.code,
             core_plane: mod.core,
             artifact: mod.artifact
           },
