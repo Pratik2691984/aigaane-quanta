@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Advanced Lab — Project Chetana-Spanda</title>
+  <style>
+    :root {
+      --bg: #0e1116;
+      --panel: #161b22;
+      --panel-alt: #0b0e13;
+      --border: #2a323d;
+      --text: #e6edf3;
+      --muted: #9da7b3;
+      --accent: #58a6ff;
+      --gold: #f2c97d;
+      --warn-bg: #261d0e;
+      --warn-border: #8a6424;
+      --warn-text: #f2c97d;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .lab-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+    .lab-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(242, 201, 125, 0.14);
+      color: var(--gold);
+      border: 1px solid rgba(242, 201, 125, 0.4);
+      margin-left: 8px;
+    }
+    .guardrail {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-text);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    button, a.btn {
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      text-decoration: none;
+    }
+    button.primary {
+      background: #1f6feb;
+      border-color: #388bfd;
+      color: #fff;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 8px;
+    }
+    .mod-btn {
+      text-align: left;
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: grid;
+      gap: 2px;
+    }
+    .mod-btn.active {
+      border-color: var(--accent);
+      background: rgba(88, 166, 255, 0.12);
+    }
+    .mod-code {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: monospace;
+    }
+    .mod-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .inspector-box, pre.evidence-out {
+      margin: 0;
+      padding: 12px;
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+      color: #c9d1d9;
+      overflow: auto;
+    }
+    pre.evidence-out { max-height: 280px; }
+  </style>
+</head>
+<body>
+  <main class="lab-wrap" id="chetana-spanda-module" data-module-id="lab-chetana-spanda">
+    <header class="lab-header">
+      <div>
+        <strong>Project Chetana-Spanda · Dual-Core Field Sandbox</strong>
+        <span class="badge">EXPERIMENTAL · UNVERIFIED</span>
+        <div style="font-size: 12px; color: var(--muted);">
+          Ref App: <code>096899b3-789f-42f6-aedc-5378311deb33</code> · Route: <code>/advanced-lab/chetana-spanda.html</code>
+        </div>
+      </div>
+      <div class="toolbar">
+        <a class="btn" href="/advanced-lab.html">← Advanced Lab</a>
+        <a
+          class="btn"
+          href="https://aistudio.google.com/apps/096899b3-789f-42f6-aedc-5378311deb33?showPreview=true&showAssistant=true"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open in AI Studio ↗
+        </a>
+        <button type="button" class="primary" id="log-spanda-evidence-btn">
+          Log Synthetic Run
+        </button>
+        <button type="button" id="copy-spanda-evidence-btn">
+          Copy JSON
+        </button>
+      </div>
+    </header>
+
+    <div class="guardrail">
+      <strong>Sandbox Guardrail:</strong> Experimental dual-core model isolated to <code>/advanced-lab/*</code>.
+      Non-authoritative for deterministic Sanskrit grammar/prosody, Canon provenance, Mode 1 Vedic recitation,
+      or 22-<em>śruti</em> / <em>tāla</em> / MIDI synthesis.
+    </div>
+
+    <div class="grid-2">
+      <section class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong>Dual-Core Topology Preview (Simulated)</strong>
+          <span style="font-size:12px; color:var(--muted);" id="active-core-label">Field Core + Executive Core</span>
+        </div>
+        <div id="spanda-topology-svg"></div>
+        <div class="inspector-box" id="module-inspector"></div>
+      </section>
+
+      <section class="card">
+        <strong>16-Module Sandbox Matrix (Select to Inspect)</strong>
+        <div class="module-grid" id="spanda-module-grid"></div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div style="font-size: 13px; font-weight: 600;">
+        Research Evidence Record (Synthetic / Unverified)
+      </div>
+      <pre class="evidence-out" id="spanda-evidence-json"></pre>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const APP_ID = "096899b3-789f-42f6-aedc-5378311deb33";
+      const MODULES = [
+        { code: "CS-001", core: "Executive", name: "Dual-Engine Scheduler", artifact: "exec_scheduler.py", note: "Simulated task routing across dual-core sandbox." },
+        { code: "CS-002", core: "Executive", name: "Telemetry Bus", artifact: "telemetry_bus.py", note: "Synthetic state frame aggregation." },
+        { code: "CS-003", core: "Executive", name: "Policy & Guardrail Check", artifact: "policy_guard.py", note: "Non-authoritative sandbox boundary check." },
+        { code: "CS-004", core: "Field", name: "Triton DAG Tree-Attention", artifact: "triton_dag_tree.py", note: "Experimental speculative DAG attention kernel spec." },
+        { code: "CS-005", core: "Field", name: "Ring Cordon Watchdog", artifact: "cluster_ring_cordon_controller.sv", note: "SystemVerilog SVA watchdog prototype for ring isolation." },
+        { code: "CS-006", core: "Field", name: "Microtonal Ratio Mapper", artifact: "sruti_ratio_sim.ts", note: "Experimental frequency ratio mapping (isolated from core)." },
+        { code: "CS-007", core: "Field", name: "Field Mesh Topology", artifact: "field_mesh.ts", note: "Simulated topological node coupling graph." },
+        { code: "CS-008", core: "Executive", name: "Speculative Branch Buffer", artifact: "branch_buffer.py", note: "Simulated candidate path staging." },
+        { code: "CS-009", core: "Executive", name: "Watchdog Fault Latch", artifact: "fault_latch.sv", note: "Simulated fault-state latch behavior." },
+        { code: "CS-010", core: "Field", name: "Phase Coherence Probe", artifact: "phase_probe.py", note: "Synthetic phase-drift diagnostic check." },
+        { code: "CS-011", core: "Field", name: "Cordon Boundary Filter", artifact: "cordon_filter.py", note: "Experimental boundary attenuation model." },
+        { code: "CS-012", core: "Executive", name: "Snapshot Serializer", artifact: "snapshot_io.py", note: "JSON checkpoint formatting helper." },
+        { code: "CS-013", core: "Field", name: "Spectral Mode Sampler", artifact: "spectral_sampler.py", note: "Simulated spectral mode inspection." },
+        { code: "CS-014", core: "Executive", name: "Latency Budget Tracker", artifact: "latency_tracker.py", note: "Synthetic step-timing summary." },
+        { code: "CS-015", core: "Field", name: "Coupling Matrix Sim", artifact: "coupling_sim.py", note: "Synthetic adjacency weight simulator." },
+        { code: "CS-016", core: "Executive", name: "Evidence Seal Formatter", artifact: "evidence_seal.py", note: "Packages unverified synthetic runs into JSON." }
+      ];
+
+      let selectedMod = MODULES[3];
+      let latestRecord = null;
+
+      const gridEl = document.getElementById("spanda-module-grid");
+      const inspectorEl = document.getElementById("module-inspector");
+      const svgHostEl = document.getElementById("spanda-topology-svg");
+      const coreLabelEl = document.getElementById("active-core-label");
+      const jsonPreEl = document.getElementById("spanda-evidence-json");
+      const logBtn = document.getElementById("log-spanda-evidence-btn");
+      const copyBtn = document.getElementById("copy-spanda-evidence-btn");
+
+      function renderSvg(mod) {
+        const isField = mod.core === "Field";
+        coreLabelEl.textContent = `${mod.core} Core · ${mod.code}`;
+        svgHostEl.innerHTML = `
+          <svg viewBox="0 0 360 190" width="100%" height="190" role="img" aria-label="Chetana-Spanda dual-core diagram">
+            <rect x="4" y="4" width="352" height="182" rx="10" fill="#0b0e13" stroke="#26303d" />
+            <circle cx="115" cy="95" r="46" fill="${isField ? "rgba(88,166,255,0.14)" : "rgba(88,166,255,0.06)"}" stroke="#58a6ff" stroke-width="${isField ? "2.2" : "1.2"}" />
+            <text x="115" y="91" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="monospace">FIELD CORE</text>
+            <text x="115" y="106" text-anchor="middle" fill="#9da7b3" font-size="10" font-family="monospace">(SIM)</text>
+
+            <line x1="161" y1="95" x2="199" y2="95" stroke="#f2c97d" stroke-width="1.6" stroke-dasharray="4 3" />
+
+            <circle cx="245" cy="95" r="46" fill="${!isField ? "rgba(242,201,125,0.14)" : "rgba(242,201,125,0.06)"}" stroke="#f2c97d" stroke-width="${!isField ? "2.2" : "1.2"}" />
+            <text x="245" y="91" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="monospace">EXEC CORE</text>
+            <text x="245" y="106" text-anchor="middle" fill="#9da7b3" font-size="10" font-family="monospace">(SIM)</text>
+
+            <text x="14" y="172" fill="#9da7b3" font-size="10" font-family="monospace">SELECTED: ${mod.code} · ${mod.artifact}</text>
+          </svg>
+        `;
+      }
+
+      function renderInspector(mod) {
+        inspectorEl.innerHTML = `
+          <div><strong>${mod.code} — ${mod.name}</strong> (${mod.core} Core)</div>
+          <div style="color:#9da7b3; margin-top:4px;">Artifact: <code>${mod.artifact}</code></div>
+          <div style="margin-top:4px;">${mod.note}</div>
+        `;
+      }
+
+      function buildEvidence(mod) {
+        const now = new Date().toISOString();
+        const suffix = Math.random().toString(36).slice(2, 7);
+        return {
+          schema_version: "1.0.0",
+          run_id: `spanda-sim-${now.slice(0, 10).replace(/-/g, "")}-${suffix}`,
+          timestamp_utc: now,
+          workspace: {
+            host: window.location.hostname || "aigaane.in",
+            route: window.location.pathname || "/advanced-lab/chetana-spanda.html",
+            isolated_from_core: true
+          },
+          source: {
+            provider: "chetana_spanda_sandbox",
+            reference_app_id: APP_ID,
+            module_code: mod.code,
+            core_plane: mod.core,
+            artifact: mod.artifact
+          },
+          execution: {
+            target_type: "synthetic_sandbox",
+            simulation_mode: "synthetic",
+            deterministic: false
+          },
+          verification: {
+            status: "unverified_experimental",
+            measured_hardware: false,
+            authoritative_for_core_domain: false
+          }
+        };
+      }
+
+      function selectModule(mod) {
+        selectedMod = mod;
+        gridEl.querySelectorAll(".mod-btn").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.code === mod.code);
+        });
+        renderSvg(mod);
+        renderInspector(mod);
+      }
+
+      MODULES.forEach((mod) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mod-btn" + (mod.code === selectedMod.code ? " active" : "");
+        btn.dataset.code = mod.code;
+        btn.innerHTML = `
+          <span class="mod-code">${mod.code} · ${mod.core}</span>
+          <span class="mod-name">${mod.name}</span>
+        `;
+        btn.addEventListener("click", () => selectModule(mod));
+        gridEl.appendChild(btn);
+      });
+
+      selectModule(selectedMod);
+      latestRecord = buildEvidence(selectedMod);
+      jsonPreEl.textContent = JSON.stringify(latestRecord, null, 2);
+
+      logBtn.addEventListener("click", () => {
+        latestRecord = buildEvidence(selectedMod);
+        jsonPreEl.textContent = JSON.stringify(latestRecord, null, 2);
+      });
+
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(jsonPreEl.textContent);
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = "Copied ✓";
+          setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+        } catch (_) {
+          // Keep JSON visible in <pre> if clipboard permission is unavailable
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
