@@ -516,22 +516,19 @@
 
       function renderSacredYantraSvg(container, st) {
         if (!container) return;
-        const size = 320, cx = 160, cy = 160;
-        const freqFactor = clamp(st.harmonicHz / 432, 0.35, 1.8);
-        const qSum = st.qutrit[0] + st.qutrit[1] + st.qutrit[2];
-        const rotDeg = (qSum * 15 + st.phase * 18) % 360;
-        const binduR = clamp(4.5 + Math.abs(st.qutrit[1]) * 2.5 + st.pulseEnergy * 3.5, 4, 11);
+        const size = 340, cx = 170, cy = 170;
+        const scale = clamp(0.88 + ((st.harmonicHz - 432) / 1400), 0.72, 1.12);
+        const qTwist = (st.qutrit[0] * 8 + st.qutrit[1] * 4 - st.qutrit[2] * 6) + Math.sin(st.phase) * 4;
+        const binduR = clamp(4 + Math.abs(st.qutrit[1]) * 2 + st.pulseEnergy * 3.5, 4, 10);
 
-        const petals = [];
-        for (let i = 0; i < 12; i += 1) {
-          const a0 = (i * 30) * Math.PI / 180;
-          const aMid = ((i + 0.5) * 30) * Math.PI / 180;
-          const a1 = ((i + 1) * 30) * Math.PI / 180;
-          petals.push(
-            `<path d="M ${(cx + Math.cos(a0) * 110).toFixed(1)} ${(cy + Math.sin(a0) * 110).toFixed(1)} ` +
-            `Q ${(cx + Math.cos(aMid) * 136).toFixed(1)} ${(cy + Math.sin(aMid) * 136).toFixed(1)} ` +
-            `${(cx + Math.cos(a1) * 110).toFixed(1)} ${(cy + Math.sin(a1) * 110).toFixed(1)}" ` +
-            `fill="rgba(56,189,248,0.06)" stroke="#38bdf8" stroke-width="1.1" />`
+        const outerTicks = [];
+        for (let i = 0; i < 16; i += 1) {
+          const ang = (i * 22.5) * Math.PI / 180;
+          const rIn = 128, rOut = 138;
+          outerTicks.push(
+            `<circle cx="${(cx + Math.cos(ang) * ((rIn + rOut) / 2)).toFixed(1)}" ` +
+            `cy="${(cy + Math.sin(ang) * ((rIn + rOut) / 2)).toFixed(1)}" r="3.2" ` +
+            `fill="none" stroke="rgba(245,158,11,0.55)" stroke-width="1" />`
           );
         }
 
@@ -544,22 +541,37 @@
           return pts.join(" ");
         }
 
-        const sc = clamp(0.84 + (freqFactor - 1) * 0.12, 0.68, 1.04);
+        const shivaRadii = [98, 78, 58, 38];
+        const shaktiRadii = [92, 74, 56, 38, 22];
+
+        const shivaPolys = shivaRadii.map((r, idx) =>
+          `<polygon points="${tri(r * scale, true, qTwist * (idx % 2 === 0 ? 0.4 : -0.35))}" ` +
+          `fill="${idx === 0 ? "rgba(245,158,11,0.06)" : "none"}" ` +
+          `stroke="${idx % 2 === 0 ? "#f59e0b" : "#fbbf24"}" stroke-width="${idx === 0 ? "1.5" : "1.1"}" />`
+        ).join("");
+
+        const shaktiPolys = shaktiRadii.map((r, idx) =>
+          `<polygon points="${tri(r * scale, false, -qTwist * (idx % 2 === 0 ? 0.35 : -0.3))}" ` +
+          `fill="${idx === 0 ? "rgba(56,189,248,0.06)" : "none"}" ` +
+          `stroke="${idx % 2 === 0 ? "#38bdf8" : "#22d3ee"}" stroke-width="${idx === 0 ? "1.5" : "1.1"}" />`
+        ).join("");
+
         container.innerHTML = `
           <svg viewBox="0 0 ${size} ${size}" width="100%" height="290" role="img"
                aria-label="Sacred Yantra and Bindu for ${st.node} at ${st.harmonicHz} Hz">
             <rect x="4" y="4" width="${size - 8}" height="${size - 8}" rx="10" fill="#060910" stroke="#24324a" stroke-width="1.2" />
-            <g>${petals.join("")}</g>
-            <circle cx="${cx}" cy="${cy}" r="110" fill="none" stroke="#334155" stroke-width="1.2" />
-            <polygon points="${tri(92 * sc, true, rotDeg * 0.25)}" fill="rgba(56,189,248,0.08)" stroke="#38bdf8" stroke-width="1.4" />
-            <polygon points="${tri(74 * sc, true, -rotDeg * 0.2)}" fill="none" stroke="#7dd3fc" stroke-width="1.1" />
-            <polygon points="${tri(54 * sc, true, rotDeg * 0.35)}" fill="none" stroke="#38bdf8" stroke-width="1.0" />
-            <polygon points="${tri(92 * sc, false, -rotDeg * 0.25)}" fill="rgba(245,158,11,0.08)" stroke="#f59e0b" stroke-width="1.4" />
-            <polygon points="${tri(72 * sc, false, rotDeg * 0.2)}" fill="none" stroke="#fcd34d" stroke-width="1.1" />
-            <polygon points="${tri(52 * sc, false, -rotDeg * 0.35)}" fill="none" stroke="#f59e0b" stroke-width="1.0" />
+            <rect x="26" y="20" width="${size - 52}" height="${size - 48}" fill="none" stroke="rgba(148,163,184,0.22)" stroke-dasharray="4 4" />
+            <circle cx="${cx}" cy="${cy}" r="118" fill="none" stroke="rgba(245,158,11,0.35)" stroke-width="1.2" />
+            <circle cx="${cx}" cy="${cy}" r="106" fill="none" stroke="rgba(56,189,248,0.35)" stroke-width="1.1" />
+            <g>${outerTicks.join("")}</g>
+            <g>${shivaPolys}</g>
+            <g>${shaktiPolys}</g>
             <circle cx="${cx}" cy="${cy}" r="${binduR.toFixed(2)}" fill="#ef4444" stroke="#fca5a5" stroke-width="1.2" />
-            <text x="12" y="${size - 12}" fill="#93a4bc" font-size="10.5" font-family="monospace">
-              BINDU · ${st.node.toUpperCase()} · ${st.harmonicHz} Hz · [${st.qutrit.join(",")}] (SIM)
+            <text x="14" y="24" fill="#93a4bc" font-size="10" font-family="monospace">
+              9 INTERLOCKING CONES (4 SHIVA / 5 SHAKTI) · NODE: ${st.node.toUpperCase()}
+            </text>
+            <text x="14" y="${size - 12}" fill="#93a4bc" font-size="10" font-family="monospace">
+              BINDU · ${st.harmonicHz} Hz · SCALE ${scale.toFixed(3)} · [${st.qutrit.join(",")}] (SIM)
             </text>
           </svg>
         `;
@@ -573,63 +585,91 @@
         ctx.fillStyle = "#060910";
         ctx.fillRect(0, 0, width, height);
 
-        const cx = width / 2, cy = height / 2 + 6;
-        const maxR = Math.min(width, height) * 0.38;
+        const cx = width * 0.54;
+        const topY = 48;
+        const botY = height - 48;
+        const colW = Math.min(96, width * 0.16);
+        const colX = cx - colW / 2;
 
-        // Kurma outer shield & Nandi seismic damping ring
+        // Subtle grid
+        ctx.strokeStyle = "rgba(56,189,248,0.06)";
+        ctx.lineWidth = 1;
+        for (let gx = 24; gx < width - 20; gx += 28) {
+          ctx.beginPath(); ctx.moveTo(gx, 24); ctx.lineTo(gx, height - 24); ctx.stroke();
+        }
+
+        // Kurma outer shield arc
         ctx.strokeStyle = st.kurmaSealed ? "#22c55e" : "#475569";
-        ctx.lineWidth = st.kurmaSealed ? 2.2 : 1.1;
+        ctx.lineWidth = st.kurmaSealed ? 2.2 : 1.2;
         ctx.beginPath();
-        ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
+        ctx.arc(cx, botY - 12, Math.min(width, height) * 0.34, Math.PI, 0);
         ctx.stroke();
 
-        ctx.strokeStyle = st.nandiIsolated ? "#38bdf8" : "#475569";
-        ctx.lineWidth = 1.6;
-        ctx.setLineDash([5, 4]);
+        // Base plinth & Somasutra drain spout on left
+        ctx.fillStyle = "rgba(30,41,59,0.7)";
+        ctx.strokeStyle = "#94a3b8";
+        ctx.lineWidth = 1.4;
         ctx.beginPath();
-        ctx.arc(cx, cy, maxR * 0.84, 0, Math.PI * 2);
+        ctx.roundRect(cx - colW * 1.15, botY - 18, colW * 2.3, 18, 4);
+        ctx.fill();
+        ctx.stroke();
+
+        const spoutX = cx - colW * 1.15;
+        ctx.beginPath();
+        ctx.moveTo(spoutX, botY - 14);
+        ctx.lineTo(spoutX - 38, botY - 10);
+        ctx.lineTo(spoutX - 32, botY - 2);
+        ctx.lineTo(spoutX, botY - 4);
+        ctx.closePath();
+        ctx.strokeStyle = "#38bdf8";
+        ctx.stroke();
+
+        // Vertical Shivlinga cavity column & rounded dome
+        ctx.fillStyle = "rgba(15,23,42,0.85)";
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(colX, botY - 18);
+        ctx.lineTo(colX, topY + 32);
+        ctx.quadraticCurveTo(cx, topY - 4, colX + colW, topY + 32);
+        ctx.lineTo(colX + colW, botY - 18);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Standing-wave nodes & antinodal rings along cavity axis
+        const nodeCount = Math.round(clamp(st.harmonicHz / 150, 3, 7));
+        const damping = Math.exp(-clamp((st.viscosityMPas - 0.5) * 0.25, 0, 1.1));
+        for (let n = 0; n < nodeCount; n += 1) {
+          const frac = (n + 0.7) / (nodeCount + 0.5);
+          const ny = topY + 34 + frac * (botY - topY - 58);
+          const pulse = Math.sin(st.phase * 1.6 - n * 0.85) * 0.5 + 0.5;
+          const rx = (colW * 0.34) * (0.65 + 0.35 * pulse * damping);
+          ctx.strokeStyle = st.nandiIsolated ? "rgba(56,189,248,0.55)" : "rgba(148,163,184,0.35)";
+          ctx.setLineDash([3, 3]);
+          ctx.beginPath();
+          ctx.ellipse(cx, ny, rx, 6, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          ctx.fillStyle = n === 0 ? "#ef4444" : "#f8fafc";
+          ctx.beginPath();
+          ctx.arc(cx, ny, n === 0 ? 3.5 : 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Top Bindu vertical excitation ray
+        ctx.strokeStyle = "#f59e0b";
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        ctx.moveTo(cx, topY + 8);
+        ctx.lineTo(cx, 14);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Granite cylindrical cavity wall & Somasutra drain notch
-        const cavR = maxR * 0.66;
-        ctx.strokeStyle = "#93a4bc";
-        ctx.lineWidth = 1.6;
-        ctx.beginPath();
-        ctx.arc(cx, cy, cavR, 0, Math.PI * 2);
-        ctx.stroke();
-
-        ctx.strokeStyle = "#f59e0b";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(cx + cavR, cy);
-        ctx.lineTo(cx + maxR + 12, cy);
-        ctx.stroke();
-
-        const damping = Math.exp(-clamp((st.viscosityMPas - 0.5) * 0.25, 0, 1.2));
-        const spatialFreq = clamp(st.harmonicHz / 120, 2, 14);
-        const amp = cavR * 0.34 * damping * st.pulseEnergy;
-
-        ctx.beginPath();
-        for (let i = 0; i <= 160; i += 1) {
-          const t = (i / 160) * 2 - 1;
-          const x = cx + t * cavR;
-          const env = Math.cos(t * Math.PI * 0.5);
-          const y = cy + Math.sin(t * Math.PI * spatialFreq + st.phase) * amp * env;
-          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        }
-        ctx.strokeStyle = "#f59e0b";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.fillStyle = "#ef4444";
-        ctx.beginPath();
-        ctx.arc(cx, cy, 4.5, 0, Math.PI * 2);
-        ctx.fill();
-
         ctx.fillStyle = "#93a4bc";
-        ctx.font = "11px monospace";
-        ctx.fillText(`CAVITY · ${st.node} · ${st.harmonicHz} Hz · η=${st.viscosityMPas.toFixed(2)} mPa·s · SOMASUTRA (SIM)`, 12, height - 12);
+        ctx.font = "10.5px monospace";
+        ctx.fillText(`CAVITY · ${st.node.toUpperCase()} · f=${st.harmonicHz} Hz · η=${st.viscosityMPas.toFixed(2)} mPa·s (SIM)`, 12, height - 10);
       }
 
       function renderFaradayCymaticsCanvas(canvas, st) {
@@ -640,34 +680,42 @@
         ctx.fillStyle = "#060910";
         ctx.fillRect(0, 0, width, height);
 
-        const cx = width / 2, cy = height / 2;
+        const cx = width * 0.55, cy = height * 0.52;
         const maxR = Math.min(width, height) * 0.42;
-        const rings = Math.round(clamp(st.harmonicHz / 72, 5, 18));
-        const lobes = Math.max(3, Math.round(clamp(Math.abs(st.qutrit[0]) * 4 + Math.abs(st.qutrit[2]) * 4 + 4, 3, 12)));
-        const sharpness = clamp(1.15 - (st.viscosityMPas - 0.5) * 0.14, 0.35, 1.2);
+        const rings = Math.round(clamp(st.harmonicHz / 55, 7, 18));
+        const lobes = Math.max(4, Math.round(clamp(Math.abs(st.qutrit[0]) * 5 + Math.abs(st.qutrit[2]) * 5 + 5, 4, 14)));
+        const sharpness = clamp(1.2 - (st.viscosityMPas - 0.5) * 0.14, 0.4, 1.25);
 
         for (let rIdx = 1; rIdx <= rings; rIdx += 1) {
           const frac = rIdx / rings;
           const baseR = frac * maxR;
-          const decay = Math.exp(-frac * clamp(st.viscosityMPas * 0.3, 0.05, 1.1));
+          const decay = Math.exp(-frac * clamp(st.viscosityMPas * 0.25, 0.05, 0.95));
+          const hue = ((rIdx * 28 + st.phase * 25 + st.harmonicHz * 0.15) % 360);
           ctx.beginPath();
-          for (let i = 0; i <= 144; i += 1) {
-            const theta = (i / 144) * Math.PI * 2;
-            const mod = Math.cos(theta * lobes + st.phase) * Math.sin(frac * Math.PI * 2) * (6.5 * sharpness * decay * st.pulseEnergy);
-            const rad = Math.max(2, baseR + mod);
+          for (let i = 0; i <= 180; i += 1) {
+            const theta = (i / 180) * Math.PI * 2;
+            const waveA = Math.cos(theta * lobes + st.phase * 1.3);
+            const waveB = Math.sin(theta * Math.max(2, Math.floor(lobes / 2)) - st.phase * 0.8);
+            const amp = (waveA * 0.75 + waveB * 0.25) * Math.sin(frac * Math.PI) * (7.5 * sharpness * decay * st.pulseEnergy);
+            const rad = Math.max(2, baseR + amp);
             const px = cx + Math.cos(theta) * rad;
             const py = cy + Math.sin(theta) * rad;
             if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
           }
           ctx.closePath();
-          ctx.strokeStyle = rIdx % 2 === 0 ? "rgba(56,189,248,0.72)" : "rgba(245,158,11,0.6)";
-          ctx.lineWidth = rIdx === rings ? 1.6 : 1.05;
+          ctx.strokeStyle = `hsla(${hue.toFixed(0)}, 88%, 62%, ${(0.35 + 0.55 * frac).toFixed(2)})`;
+          ctx.lineWidth = rIdx === rings ? 1.8 : 1.15;
           ctx.stroke();
         }
 
+        ctx.fillStyle = "#ef4444";
+        ctx.beginPath();
+        ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+
         ctx.fillStyle = "#93a4bc";
-        ctx.font = "11px monospace";
-        ctx.fillText(`CYMATICS · ${rings} RINGS · LOBES=${lobes} · η=${st.viscosityMPas.toFixed(2)} (SIM)`, 12, height - 12);
+        ctx.font = "10.5px monospace";
+        ctx.fillText(`CYMATICS · ${st.node.toUpperCase()} · ${st.harmonicHz} Hz · RINGS=${rings} · LOBES=${lobes} (SIM)`, 12, height - 10);
       }
 
       function renderTwelveNodeMeshCanvas(canvas, st) {
@@ -865,14 +913,23 @@
         ctx.stroke();
       }
 
-      nodeSelect.addEventListener("change", () => { simState.nodeIdx = Number(nodeSelect.value); syncUI(); });
-      document.getElementById("pin-sattva").addEventListener("click", () => cyclePin(0));
-      document.getElementById("pin-rajas").addEventListener("click", () => cyclePin(1));
-      document.getElementById("pin-tamas").addEventListener("click", () => cyclePin(2));
-      document.getElementById("chk-nandi").addEventListener("change", syncUI);
-      document.getElementById("chk-kurma").addEventListener("change", syncUI);
-      document.getElementById("visc-select").addEventListener("change", syncUI);
-      document.getElementById("thinking-select").addEventListener("change", updateCadenceReadout);
+      function refreshEvidencePreview() {
+        latestEvidence = createBinduEvidenceRecord(getCurrentLabState());
+        execLog.textContent = JSON.stringify(latestEvidence, null, 2);
+      }
+
+      nodeSelect.addEventListener("change", () => {
+        simState.nodeIdx = Number(nodeSelect.value);
+        syncUI();
+        refreshEvidencePreview();
+      });
+      document.getElementById("pin-sattva").addEventListener("click", () => { cyclePin(0); refreshEvidencePreview(); });
+      document.getElementById("pin-rajas").addEventListener("click", () => { cyclePin(1); refreshEvidencePreview(); });
+      document.getElementById("pin-tamas").addEventListener("click", () => { cyclePin(2); refreshEvidencePreview(); });
+      document.getElementById("chk-nandi").addEventListener("change", () => { syncUI(); refreshEvidencePreview(); });
+      document.getElementById("chk-kurma").addEventListener("change", () => { syncUI(); refreshEvidencePreview(); });
+      document.getElementById("visc-select").addEventListener("change", () => { syncUI(); refreshEvidencePreview(); });
+      document.getElementById("thinking-select").addEventListener("change", () => { updateCadenceReadout(); refreshEvidencePreview(); });
 
       document.querySelectorAll("button[data-preset]").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -882,6 +939,7 @@
           else if (btn.dataset.preset === "medium") simState.qutrit = [1, 0, -1];
           else simState.qutrit = [1, 1, -1];
           syncUI();
+          refreshEvidencePreview();
         });
       });
 
@@ -891,6 +949,7 @@
           btn.classList.add("active");
           simState.harmonicHz = Number(btn.dataset.hz);
           syncUI();
+          refreshEvidencePreview();
         });
       });
 
@@ -899,6 +958,7 @@
           document.querySelectorAll("[data-bindu-mode]").forEach((el) => el.classList.toggle("active", el === btn));
           simState.visualizerMode = btn.getAttribute("data-bindu-mode");
           syncUI();
+          refreshEvidencePreview();
         });
       });
 
